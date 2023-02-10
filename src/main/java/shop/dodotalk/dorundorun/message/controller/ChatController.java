@@ -17,8 +17,13 @@ public class ChatController {
     @ResponseBody
     @MessageMapping("/chats") // socket 통신은 request를 안주나??? // 혹시 @Transactional 줘야하나???
     public void message(ChatMessageRequestDto chatMessageRequestDto) {
-        chatMessageService.BinaryImageChange(chatMessageRequestDto);
-        ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto(chatMessageRequestDto);
+        ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto();
+        if (chatMessageRequestDto.getImgCode() != null) {
+            chatMessageResponseDto = chatMessageService.BinaryImageChange(chatMessageRequestDto);
+        } else {
+            chatMessageResponseDto = new ChatMessageResponseDto(chatMessageRequestDto);
+        }
+        System.out.println("chatMessageResponseDto.getImgCode() : " + chatMessageResponseDto.getImgCode());
         messagingTemplate.convertAndSend("/sub/chat/room" + chatMessageRequestDto.getChatRoomId(), chatMessageResponseDto);
     }
 }

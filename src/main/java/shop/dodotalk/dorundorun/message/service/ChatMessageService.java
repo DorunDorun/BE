@@ -25,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.dodotalk.dorundorun.message.dto.ChatMessageResponseDto;
+
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -40,7 +42,8 @@ public class ChatMessageService {
     @Autowired // aws img test
     AmazonS3Client amazonS3Client;
     private String S3Bucket = "mysparta1"; // Bucket 이름 aws img test
-    public void BinaryImageChange(ChatMessageRequestDto chatMessageRequestDto) {
+    @Transactional
+    public ChatMessageResponseDto BinaryImageChange(ChatMessageRequestDto chatMessageRequestDto) {
         try {
             String[] strings = chatMessageRequestDto.getImgCode().split(",");
             String base64Image = strings[1];
@@ -61,17 +64,30 @@ public class ChatMessageService {
             }
 
             String originalName = UUID.randomUUID().toString();
-//            long multipartFileSize = multipartFile.getSize();
-
-//            ObjectMetadata objectMetaData = new ObjectMetadata();
-//            objectMetaData.setContentType(multipartFile.getContentType());
-//            objectMetaData.setContentLength(multipartFileSize);
 
             amazonS3Client.putObject(new PutObjectRequest(S3Bucket, originalName, tempFile).withCannedAcl(CannedAccessControlList.PublicRead));
-//            return s3Service.upload(tempFile, dirName, nickname);
+
+            String awsS3ImageUrl = amazonS3Client.getUrl(S3Bucket, originalName).toString();
+
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(tempFile); // 파일 삭제시 전부 아웃풋 닫아줘야함
+                fileOutputStream.close();
+                if (tempFile.delete()) {
+                    log.info("File delete success");
+                } else {
+                    log.info("File delete fail");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto(chatMessageRequestDto);
+            chatMessageResponseDto.setImgCode(awsS3ImageUrl);
+            return chatMessageResponseDto;
         } catch (IOException ex) {
             log.error("IOException Error Message : {}",ex.getMessage());
             ex.printStackTrace();
         }
+    return new ChatMessageResponseDto(); // 이 부분은 꼭 수정해야할듯
     }
 }

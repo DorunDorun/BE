@@ -2,9 +2,10 @@ package shop.dodotalk.dorundorun.message.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-// @Setter 이거 없애니까 message, userJWT roomUUID가 회색빛으로 바뀜
+@Setter
 @NoArgsConstructor
 public class ChatMessageResponseDto {
     private Long chatRoomId;

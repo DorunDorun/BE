@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller // @ResponseBody 필요할때 쓰기!
 @RequiredArgsConstructor
 public class ChatRoomController {
+    // socket test
     @RequestMapping("/chat/room/{roomId}")
     public ModelAndView chat() {
         ModelAndView mv = new ModelAndView();
@@ -16,6 +17,7 @@ public class ChatRoomController {
         return mv;
     }
 
+    // socket test
     @RequestMapping("/chat/rooms")
     public ModelAndView chatRooms() {
         ModelAndView mv = new ModelAndView();

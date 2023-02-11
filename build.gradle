@@ -25,6 +25,16 @@ dependencies {
     // aws
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+
+    // Web Socket (채팅)
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:stomp-websocket:2.3.3-1'
+    implementation 'org.webjars:sockjs-client:1.1.2'
+
+    // test thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    
+
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
 }

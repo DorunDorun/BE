@@ -2,21 +2,22 @@ package shop.dodotalk.dorundorun.message.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class ChatMessageResponseDto {
-    private Long chatRoomId;
-    private String userEmail;
+    private Long messageId;
+    private String email;
     private String message; // 메시지
-    private String imgCode;
+    private String imgUrl;
 
     public ChatMessageResponseDto(ChatMessageRequestDto chatMessageRequestDto) {
-        this.chatRoomId = chatMessageRequestDto.getChatRoomId();
-        this.userEmail = chatMessageRequestDto.getUserEmail();
+        this.messageId = 1L;
+        this.email = chatMessageRequestDto.getEmail();
         this.message = chatMessageRequestDto.getMessage();
-        this.imgCode = chatMessageRequestDto.getImgCode();
+    }
+
+    public void ChatMessageImgUpdate(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

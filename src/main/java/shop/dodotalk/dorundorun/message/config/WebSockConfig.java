@@ -1,6 +1,7 @@
 package shop.dodotalk.dorundorun.message.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -11,6 +12,7 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+@Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
@@ -27,18 +29,14 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setMessageSizeLimit(50 * 1024 * 1024); // 파일 제한 오류 방지용
+        registration.setMessageSizeLimit(50 * 1024 * 1024);
     }
-
     @EventListener
     public void connectEvent(SessionConnectEvent sessionConnectEvent){
-        System.out.println(sessionConnectEvent);
-        System.out.println("연결 성공 감지!_!#!#!#!@#!@@#!@!#!$!@");
-        //return "redirect:chat/message";
+        log.info("socket 연결 성공");
     }
     @EventListener
     public void onDisconnectEvent(SessionDisconnectEvent sessionDisconnectEvent) {
-        System.out.println(sessionDisconnectEvent.getSessionId());
-        System.out.println("연결 끊어짐 감지!~!!!!!!!!!!!!!!!!!!!!!!!!");
+        log.info("socket 연결 끊어짐");
     }
 }

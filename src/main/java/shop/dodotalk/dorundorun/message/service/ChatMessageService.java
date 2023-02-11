@@ -10,30 +10,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.List;
 
-//import com.project.trysketch.dto.request.GameFlowRequestDto;
-//import com.project.trysketch.entity.*;
-//import com.project.trysketch.dto.GamerEnum;
-//import com.project.trysketch.global.utill.sse.SseEmitters;
-//import com.project.trysketch.repository.*;
-//import com.project.trysketch.global.exception.CustomException;
-//import com.project.trysketch.global.exception.StatusMsgCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.dodotalk.dorundorun.message.dto.ChatMessageResponseDto;
 
-import java.io.*;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,11 +25,11 @@ import java.util.stream.Stream;
 public class ChatMessageService {
     @Autowired // aws img test
     AmazonS3Client amazonS3Client;
-    private String S3Bucket = "mysparta1"; // Bucket 이름 aws img test
+    private String S3Bucket = "mysparta1"; // Bucket 이름
     @Transactional
     public ChatMessageResponseDto BinaryImageChange(ChatMessageRequestDto chatMessageRequestDto) {
         try {
-            String[] strings = chatMessageRequestDto.getImgCode().split(",");
+            String[] strings = chatMessageRequestDto.getImgByteCode().split(",");
             String base64Image = strings[1];
             String extension = "";
             if (strings[0].equals("data:image/jpeg;base64")) {
@@ -82,12 +66,12 @@ public class ChatMessageService {
             }
 
             ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto(chatMessageRequestDto);
-            chatMessageResponseDto.setImgCode(awsS3ImageUrl);
+            chatMessageResponseDto.ChatMessageImgUpdate(awsS3ImageUrl);
             return chatMessageResponseDto;
         } catch (IOException ex) {
             log.error("IOException Error Message : {}",ex.getMessage());
             ex.printStackTrace();
         }
-    return new ChatMessageResponseDto(); // 이 부분은 꼭 수정해야할듯
+    return new ChatMessageResponseDto();
     }
 }

@@ -15,15 +15,14 @@ public class ChatController {
     private final SimpMessageSendingOperations messagingTemplate;
     private final ChatMessageService chatMessageService;
     @ResponseBody
-    @MessageMapping("/chats") // socket 통신은 request를 안주나??? // 혹시 @Transactional 줘야하나???
+    @MessageMapping("/chat/room")
     public void message(ChatMessageRequestDto chatMessageRequestDto) {
-        ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto();
-        if (chatMessageRequestDto.getImgCode() != null) {
+        ChatMessageResponseDto chatMessageResponseDto;
+        if (chatMessageRequestDto.getImgByteCode() != null) {
             chatMessageResponseDto = chatMessageService.BinaryImageChange(chatMessageRequestDto);
         } else {
             chatMessageResponseDto = new ChatMessageResponseDto(chatMessageRequestDto);
         }
-        System.out.println("chatMessageResponseDto.getImgCode() : " + chatMessageResponseDto.getImgCode());
-        messagingTemplate.convertAndSend("/sub/chat/room" + chatMessageRequestDto.getChatRoomId(), chatMessageResponseDto);
+        messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageRequestDto.getRoomId(), chatMessageResponseDto);
     }
 }

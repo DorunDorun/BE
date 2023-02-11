@@ -44,7 +44,7 @@ public class ChatMessageService {
 
             byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
 
-            File tempFile = File.createTempFile("image", "." + extension, new File("C:/test/websocket/"));
+            File tempFile = File.createTempFile("image", "." + extension);
             try (OutputStream outputStream = new FileOutputStream(tempFile)) {
                 outputStream.write(imageBytes);
             }

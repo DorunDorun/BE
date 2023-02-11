@@ -21,12 +21,12 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class AwsService {
-    @Autowired // aws img test
+    @Autowired
     AmazonS3Client amazonS3Client;
     private String S3Bucket = "mysparta1"; // Bucket 이름
 
     @Transactional
-    public String S3ImageUpload(File tempFile) {
+    public String S3FileImageUpload(File tempFile) {
         String originalName = UUID.randomUUID().toString();
 
         amazonS3Client.putObject(new PutObjectRequest(S3Bucket, originalName, tempFile).withCannedAcl(CannedAccessControlList.PublicRead));

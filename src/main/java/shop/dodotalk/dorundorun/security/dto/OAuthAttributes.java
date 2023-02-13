@@ -10,6 +10,7 @@ public enum OAuthAttributes {
     GOOGLE("google", (attributes) -> {
         UserProfile userProfile = new UserProfile();
 
+        userProfile.setSocialUid((String) attributes.get("sub"));
 
         userProfile.setName((String) attributes.get("name"));
         userProfile.setEmail((String) attributes.get("email"));
@@ -27,6 +28,8 @@ public enum OAuthAttributes {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         UserProfile userProfile = new UserProfile();
+
+        userProfile.setSocialUid((String) response.get("id"));
 
         userProfile.setName((String) response.get("name"));
         userProfile.setNickname((String) response.get("nickname"));
@@ -53,6 +56,9 @@ public enum OAuthAttributes {
         Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
 
         UserProfile userProfile = new UserProfile();
+
+        userProfile.setSocialUid(String.valueOf(attributes.get("id")));
+
         userProfile.setName((String) kakaoProfile.get("nickname"));
         userProfile.setEmail((String) kakaoAccount.get("email"));
 

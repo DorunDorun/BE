@@ -96,13 +96,13 @@ public class JwtUtil implements InitializingBean {
             OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
             Map<String, Object> attributes = oAuth2User.getAttributes();
 
-            String uid = oAuth2User.getName();
+            String uid = (String) attributes.get("id");
             String email = (String) attributes.get("email");
             String provider = (String) attributes.get("social");
 
 
             return Jwts.builder()
-                    .setSubject(oAuth2User.getName())
+                    .setSubject(uid)
                     .claim("provider", provider)
                     .claim("email", email)
                     .claim("authorities", authorities)
@@ -221,12 +221,12 @@ public class JwtUtil implements InitializingBean {
             OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
             Map<String, Object> attributes = oAuth2User.getAttributes();
 
-            String uid = oAuth2User.getName();
+            String uid = (String) attributes.get("id");
             String email = (String) attributes.get("email");
             String provider = (String) attributes.get("social");
 
             return Jwts.builder()
-                    .setSubject(oAuth2User.getName())
+                    .setSubject(uid)
                     .claim("provider", provider)
                     .claim("email", email)
                     .claim("authorities", authorities)

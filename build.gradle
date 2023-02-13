@@ -25,6 +25,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
 
+
     implementation group: 'org.json', name: 'json', version: '20220924'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4.2'
 
@@ -45,6 +46,23 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-security', version: '1.6.4'
     testImplementation group: 'org.springdoc', name: 'springdoc-openapi-webmvc-core', version: '1.6.4'
 
+
+
+    // aws
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+
+    // Web Socket (채팅)
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:stomp-websocket:2.3.3-1'
+    implementation 'org.webjars:sockjs-client:1.1.2'
+
+    // test thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    
+
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
 }
 

@@ -16,6 +16,9 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
+    @Column
+    private String socialUid;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -55,11 +58,12 @@ public class User {
 
 
     @Builder //생성을 Builder 패턴으로 하기 위해서
-    public User(Long id, String name, String email, String provider,
+    public User(Long id, String socialUid, String name, String email, String provider,
                 String nickname, String profile, String gender,
                 String birthday, String birthyear, String age_range, String thumbnail,
                 String mobile, String mobile_e164) {
         this.id = id;
+        this.socialUid = socialUid;
         this.name = name;
         this.email = email;
         this.provider = provider;
@@ -75,10 +79,11 @@ public class User {
 
     }
 
-    public User update(String name, String email, String provider,
+    public User update(String name, String socialUid, String email, String provider,
                        String nickname, String profile, String gender,
                        String birthday, String birthyear, String age_range, String thumbnail_image_url,
                        String mobile, String mobile_e164) {
+        this.socialUid = socialUid;
         this.name = name;
         this.email = email;
         this.provider = provider;

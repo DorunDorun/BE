@@ -69,6 +69,7 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
         Map<String, Object> customAttribute = new LinkedHashMap<>();
         customAttribute.put(userNameAttributeName, attributes.get(userNameAttributeName));
 
+        customAttribute.put("id", userProfile.getSocialUid());
         customAttribute.put("email", userProfile.getEmail());
         customAttribute.put("name", userProfile.getName());
         customAttribute.put("social", userProfile.getProvider());
@@ -88,8 +89,7 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
     private User saveOrUpdate(UserProfile userProfile) {
 
         User user = userRepository.findByEmailAndProvider(userProfile.getEmail(), userProfile.getProvider())
-                .map(m -> m.update(userProfile.getName(), userProfile.getEmail(),
-                        userProfile.getProvider(), userProfile.getNickname(),
+                .map(m -> m.update(userProfile.getSocialUid(), userProfile.getName(), userProfile.getEmail(),                        userProfile.getProvider(), userProfile.getNickname(),
                         userProfile.getProfile(), userProfile.getGender(), userProfile.getBirthday(), userProfile.getBirthyear(),
                         userProfile.getAge_range(), userProfile.getThumbnail(),
                         userProfile.getMobile(), userProfile.getMobile_e164()))

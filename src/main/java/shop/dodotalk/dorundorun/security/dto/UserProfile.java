@@ -7,6 +7,7 @@ import shop.dodotalk.dorundorun.users.entity.User;
 @Getter
 @Setter
 public class UserProfile {
+    private String socialUid;
     private String name;
     private String email;
     private String profile;
@@ -22,6 +23,7 @@ public class UserProfile {
 
     public User toUser() {
         return User.builder()
+                .socialUid(socialUid)
                 .name(name)
                 .email(email)
                 .profile(profile)

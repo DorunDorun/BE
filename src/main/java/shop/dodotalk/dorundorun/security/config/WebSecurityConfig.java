@@ -57,7 +57,10 @@ public class WebSecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers("/").permitAll()
-                .anyRequest().authenticated();
+
+                // todo 테스트 시 원활한 진행용으로 일단 모든 접근 허용
+                .anyRequest().permitAll();
+                //.anyRequest().authenticated();
 
 
 

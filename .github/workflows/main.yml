@@ -5,10 +5,12 @@ on:
     branches:
       - release
       - main
+      - feature/nginx,ci,cd
   pull_request:
     branches:
       - release
       - main
+      - feature/nginx,ci,cd
 
 env:
   S3_BUCKET_NAME: dodo-buket

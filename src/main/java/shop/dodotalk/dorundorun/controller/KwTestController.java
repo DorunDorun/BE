@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class KwTestController {
     @GetMapping("/")
-    public ResponseEntity success() {
-        return ResponseEntity.ok().build();
+    public String success() {
+        return "https 도메인 테스트";
     }
 }

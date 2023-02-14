@@ -5,12 +5,10 @@ on:
     branches:
       - release
       - main
-      - develop
   pull_request:
     branches:
       - release
       - main
-      - develop
 
 env:
   S3_BUCKET_NAME: dodo-buket

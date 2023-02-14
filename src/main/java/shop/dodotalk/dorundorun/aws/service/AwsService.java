@@ -23,7 +23,7 @@ import java.util.*;
 public class AwsService {
     @Autowired
     AmazonS3Client amazonS3Client;
-    private String S3Bucket = "dodo-buket"; // Bucket 이름
+    private String S3Bucket = "dodo-buket"; // S3 Bucket 이름
 
     @Transactional
     public String S3FileImageUpload(File tempFile) {

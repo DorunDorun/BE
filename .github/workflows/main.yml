@@ -5,13 +5,15 @@ on:
     branches:
       - release
       - main
+      - develop
   pull_request:
     branches:
       - release
       - main
+      - develop
 
 env:
-  S3_BUCKET_NAME: mysparta1
+  S3_BUCKET_NAME: dodo-buket
 
 jobs:
   build:
@@ -61,7 +63,7 @@ jobs:
       - name: Code Deploy
         run:
           aws deploy create-deployment
-          --application-name DODO-CodeDeploy
+          --application-name DODO-deploy
           --deployment-config-name CodeDeployDefault.AllAtOnce
-          --deployment-group-name DODO-CodeDeploy
+          --deployment-group-name DODO-deploy
           --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=dodo.zip

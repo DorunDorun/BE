@@ -77,12 +77,45 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addCookie(userInfoCookie);
 
 
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/home")
-                .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
-                .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
-                .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
-                .build().encode(StandardCharsets.UTF_8)
-                .toUriString();
+        if ("kakao".equals(attributes.get("social"))) {
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao")
+                    .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
+                    .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
+                    .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
+                    .build().encode(StandardCharsets.UTF_8)
+                    .toUriString();
+
+            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        }
+
+
+        if ("google".equals(attributes.get("social"))) {
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/google")
+                    .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
+                    .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
+                    .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
+                    .build().encode(StandardCharsets.UTF_8)
+                    .toUriString();
+
+            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+        }
+
+
+
+        if ("naver".equals(attributes.get("social"))) {
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/naver")
+                    .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
+                    .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
+                    .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
+                    .build().encode(StandardCharsets.UTF_8)
+                    .toUriString();
+
+            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        }
+
+
+
 
 
 
@@ -90,7 +123,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         /* 마지막에 프론트 엔드 로그인 완료 화면으로 리다이렉트. */
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
 
 
 

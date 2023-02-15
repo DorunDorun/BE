@@ -77,7 +77,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addCookie(userInfoCookie);
 
 
-        if ("kakao".equals(attributes.get("provider"))) {
+        if ("kakao".equals(attributes.get("social"))) {
             String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
@@ -89,7 +89,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         }
 
 
-        if ("google".equals(attributes.get("provider"))) {
+        if ("google".equals(attributes.get("social"))) {
             String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/google")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
@@ -103,7 +103,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
 
-        if ("naver".equals(attributes.get("provider"))) {
+        if ("naver".equals(attributes.get("social"))) {
             String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/naver")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))

@@ -85,7 +85,7 @@ public class WebSecurityConfig {
         /* 일단 기본 설정으로 전부 허용.
         * todo 서버 배포 시 프론트엔드 서버로 바꿀 예정 */
 //        configuration.addAllowedOriginPattern("*");
-        configuration.addAllowedOrigin("http://localhost:3000/");
+        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Set-Cookie");

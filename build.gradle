@@ -64,6 +64,9 @@ dependencies {
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // Open Vidu
+    implementation 'io.openvidu:openvidu-java-client:2.25.0'
+
 }
 
 tasks.named('test') {

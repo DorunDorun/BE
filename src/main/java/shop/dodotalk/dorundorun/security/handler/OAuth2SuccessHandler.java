@@ -46,9 +46,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
 
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/home")
-                .build().encode(StandardCharsets.UTF_8)
-                .toUriString();
 
 
         /* JWT Access Token 발급 헤더에 넣던지, 쿠키로 전달해주던지. */
@@ -80,8 +77,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addCookie(userInfoCookie);
 
 
-        /* 토큰에는 중복이 안되고, 모든 소셜에서 사용하는 컬럼인 userEmail, Provider 정보만 */
-
+        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/home")
+                .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
+                .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
+                .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
+                .build().encode(StandardCharsets.UTF_8)
+                .toUriString();
 
 
 

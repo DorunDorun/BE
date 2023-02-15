@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import shop.dodotalk.dorundorun.users.entity.User;
 import shop.dodotalk.dorundorun.users.service.UserPrincipalService;
 
 import javax.servlet.FilterChain;
@@ -48,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             JwtAuthenticationResult authentication = (JwtAuthenticationResult) jwtUtil.getAuthentication(jwtAccessToken);
 
             /* 위에서 만든 정보를 토대로 userRepository에서 User 객체(유저정보)를 빼온다. */
-            Object principal = userPrincipalService.loadUserPrincipal(authentication);
+            User principal = userPrincipalService.loadUserPrincipal(authentication);
 
             /* 인증 객체에 DB에 있던 User정보 셋팅 */
             authentication.setPrincipal(principal);

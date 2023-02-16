@@ -3,13 +3,10 @@ package shop.dodotalk.dorundorun.chatroom.service;
 
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,7 +112,7 @@ public class ChatRoomService {
         // 방생성 할때 첫유저 (방장)
         RoomUsers roomUsers = RoomUsers.builder()
                 .sessionId(savedRoom.getSessionId())
-                .user(user.getId())
+                .userId(user.getId())
                 .nickname(user.getName())
                 .email(user.getEmail())
                 .profileImage(user.getProfile())
@@ -261,7 +258,7 @@ public class ChatRoomService {
         // 채팅방 인원
         RoomUsers roomUsers = RoomUsers.builder()
                 .sessionId(room.getSessionId())
-                .user(user.getId())
+                .userId(user.getId())
                 .nickname(user.getName())
                 .email(user.getEmail())
                 .profileImage(user.getProfile())
@@ -300,7 +297,7 @@ public class ChatRoomService {
         return RoomUsersResponseDto.builder()
                 .roomUserId(roomUsers.getRoomUserId())
                 .sessionId(roomUsers.getSessionId())
-                .User(roomUsers.getUser())
+                .User(roomUsers.getUserId())
                 .nickname(roomUsers.getNickname())
                 .email(roomUsers.getEmail())
                 .ProfileImage(roomUsers.getProfileImage())

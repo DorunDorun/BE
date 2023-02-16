@@ -34,7 +34,7 @@ public class RoomUsersResponseDto {
     public RoomUsersResponseDto(RoomUsers entity, boolean a){
         this.roomUserId = entity.getRoomUserId();
         this.sessionId = entity.getSessionId();
-        this.User = entity.getUser();
+        this.User = entity.getUserId();
         this.nickname = entity.getNickname();
         this.email = entity.getEmail();
         this.ProfileImage = entity.getProfileImage();
@@ -47,7 +47,7 @@ public class RoomUsersResponseDto {
     public RoomUsersResponseDto(RoomUsers entity) {
         this.roomUserId = entity.getRoomUserId();
         this.sessionId = entity.getSessionId();
-        this.User = entity.getUser();
+        this.User = entity.getUserId();
         this.nickname = entity.getNickname();
         this.email = entity.getEmail();
         this.ProfileImage = entity.getProfileImage();

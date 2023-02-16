@@ -10,7 +10,7 @@ import shop.dodotalk.dorundorun.chatroom.entity.RoomUsers;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-16T23:28:29+0900",
+    date = "2023-02-17T01:05:35+0900",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.17 (Oracle Corporation)"
 )
 @Component
@@ -37,13 +37,13 @@ public class RoomMapperImpl implements RoomMapper {
 
         ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto();
 
+        chatRoomResponseDto.setCategory( room.getCategory() );
         chatRoomResponseDto.setSessionId( room.getSessionId() );
         chatRoomResponseDto.setTitle( room.getTitle() );
         chatRoomResponseDto.setSubtitle( room.getSubtitle() );
         chatRoomResponseDto.setStatus( room.isStatus() );
         chatRoomResponseDto.setButtonImage( room.getButtonImage() );
         chatRoomResponseDto.setPassword( room.getPassword() );
-        chatRoomResponseDto.setCategory( room.getCategory() );
         chatRoomResponseDto.setMaster( room.getMaster() );
         chatRoomResponseDto.setSaying( room.getSaying() );
         List<RoomUsers> list = room.getRoomUsers();

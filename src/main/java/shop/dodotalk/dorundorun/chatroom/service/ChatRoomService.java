@@ -3,13 +3,10 @@ package shop.dodotalk.dorundorun.chatroom.service;
 
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -300,7 +297,7 @@ public class ChatRoomService {
         return RoomUsersResponseDto.builder()
                 .roomUserId(roomUsers.getRoomUserId())
                 .sessionId(roomUsers.getSessionId())
-                .User(roomUsers.getUser())
+                .User(roomUsers.getUserId())
                 .nickname(roomUsers.getNickname())
                 .email(roomUsers.getEmail())
                 .ProfileImage(roomUsers.getProfileImage())

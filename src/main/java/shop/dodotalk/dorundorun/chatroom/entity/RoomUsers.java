@@ -1,7 +1,6 @@
 package shop.dodotalk.dorundorun.chatroom.entity;
 
 import lombok.*;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,7 +22,7 @@ public class RoomUsers {
     private String sessionId;
 
     @Column
-    private Long user;
+    private Long userId;
 
     @Column
     private String nickname;

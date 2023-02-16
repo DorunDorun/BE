@@ -39,6 +39,8 @@ public class RoomUsersResponseDto {
         this.email = entity.getEmail();
         this.ProfileImage = entity.getProfileImage();
         this.enterRoomToken = entity.getEnterRoomToken();
+
+        // todo ???이거모지 이거 때매 일반유저도 룸마스터 true라고 나오나 ?
         this.roomMaster = a;
     }
 

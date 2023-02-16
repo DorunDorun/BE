@@ -80,11 +80,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addCookie(userInfoCookie);
 
 
-        /* 토큰에는 중복이 안되고, 모든 소셜에서 사용하는 컬럼인 userEmail, Provider 정보만 */
-
-
-
-
         log.info("onAuthenticationSuccess() end");
 
 

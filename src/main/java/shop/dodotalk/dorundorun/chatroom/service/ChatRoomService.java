@@ -2,7 +2,7 @@ package shop.dodotalk.dorundorun.chatroom.service;
 
 
 import io.openvidu.java.client.*;
-가import lombok.RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.mapper.Mapper;

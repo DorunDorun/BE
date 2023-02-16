@@ -112,7 +112,7 @@ public class ChatRoomService {
         // 방생성 할때 첫유저 (방장)
         RoomUsers roomUsers = RoomUsers.builder()
                 .sessionId(savedRoom.getSessionId())
-                .user(user.getId())
+                .userId(user.getId())
                 .nickname(user.getName())
                 .email(user.getEmail())
                 .profileImage(user.getProfile())
@@ -258,7 +258,7 @@ public class ChatRoomService {
         // 채팅방 인원
         RoomUsers roomUsers = RoomUsers.builder()
                 .sessionId(room.getSessionId())
-                .user(user.getId())
+                .userId(user.getId())
                 .nickname(user.getName())
                 .email(user.getEmail())
                 .profileImage(user.getProfile())

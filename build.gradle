@@ -64,6 +64,13 @@ dependencies {
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // Open Vidu
+    implementation 'io.openvidu:openvidu-java-client:2.25.0'
+
+    // mapper
+    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+
 }
 
 tasks.named('test') {

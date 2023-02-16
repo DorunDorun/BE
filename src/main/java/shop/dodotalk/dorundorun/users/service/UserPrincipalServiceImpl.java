@@ -16,12 +16,10 @@ public class UserPrincipalServiceImpl implements UserPrincipalService {
 
     private final UserRepository userRepository;
 
-    /**
 
-     * */
     @Transactional
     @Override
-    public Object loadUserPrincipal(Authentication authentication) {
+    public User loadUserPrincipal(Authentication authentication) {
 
         OAuth2UserInfoAuthentication oauth2UserInfoToken = (OAuth2UserInfoAuthentication) authentication;
 

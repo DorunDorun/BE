@@ -3,6 +3,7 @@ package shop.dodotalk.dorundorun.users.service;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import shop.dodotalk.dorundorun.users.entity.User;
 
 
 /**
@@ -16,5 +17,5 @@ import org.springframework.stereotype.Service;
 
 public interface UserPrincipalService {
 
-    <S extends Authentication> Object loadUserPrincipal(S authentication);
+    <S extends Authentication> User loadUserPrincipal(S authentication);
 }

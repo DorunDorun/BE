@@ -20,6 +20,7 @@ public class CreateRoomResponseDto {
     private String sessionId;
     private String title;
     private String subtitle;
+    private String buttonImage;
     private boolean status;
     private String  category;
     private String password;

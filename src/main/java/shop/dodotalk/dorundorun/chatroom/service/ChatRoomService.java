@@ -2,19 +2,21 @@ package shop.dodotalk.dorundorun.chatroom.service;
 
 
 import io.openvidu.java.client.*;
-import lombok.Getter;
+가import lombok.RequiredArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.dodotalk.dorundorun.chatroom.dto.RoomMapper;
 import shop.dodotalk.dorundorun.chatroom.dto.request.CreateRoomRequestDto;
 import shop.dodotalk.dorundorun.chatroom.dto.request.RoomPasswordRequestDto;
-import shop.dodotalk.dorundorun.chatroom.dto.response.CreateRoomResponseDto;
-import shop.dodotalk.dorundorun.chatroom.dto.response.RoomUsersResponseDto;
+import shop.dodotalk.dorundorun.chatroom.dto.response.*;
 import shop.dodotalk.dorundorun.chatroom.entity.BenUser;
 import shop.dodotalk.dorundorun.chatroom.entity.Category;
 import shop.dodotalk.dorundorun.chatroom.entity.Room;
@@ -48,6 +50,7 @@ public class ChatRoomService {
     private final BenUserRepository benUserRepository;
     private final CreateSaying createSaying;
     private final CategoryRepository categoryRepository;
+    private final RoomMapper roomMapper;
 
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
@@ -109,9 +112,6 @@ public class ChatRoomService {
         LocalDateTime createdAt = savedRoom.getCreatedAt();
 
 
-
-
-
         // 방생성 할때 첫유저 (방장)
         RoomUsers roomUsers = RoomUsers.builder()
                 .sessionId(savedRoom.getSessionId())
@@ -165,27 +165,41 @@ public class ChatRoomService {
                 .token(newToken.getToken())
                 .buttonImage(savedRoom.getButtonImage().name())
                 .saying(saying)
-                .category(savedRoom.getCategory().getCategory().name())
+                .category(savedRoom.getCategory().getCategory().getCategoryKr())
                 .password(savedRoom.getPassword())
                 .createdAt(createdAt)
                 .modifiedAt(savedRoom.getModifiedAt())
                 .build();
 
 
-
-
     }
 
 
     // 전체 방 조회하기
-    public Page<Room> getAllRooms(int page) {
+    public ChatRoomAllResponseDto getAllRooms(int page) {
+
+        /* 페이지네이션 설정 */
         PageRequest pageable = PageRequest.of(page - 1, 8);
-        Page<Room> roomlist = roomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
-        if (roomlist.isEmpty()) {
+        Page<Room> roomList = roomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
+
+
+        if (roomList.isEmpty()) {
             throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "200", "검색 결과가 없습니다."));
         }
-        return roomlist;
+
+
+        // Pagenation Dto 생성
+        ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
+                = new ChatRoomPageInfoResponseDto(page, 8, (int) roomList.getTotalElements(), roomList.getTotalPages());
+
+        /* room List 정보 Dto로 변환 */
+        List<Room> rooms = roomList.getContent();
+        List<ChatRoomResponseDto> chatRoomResponseDtos = roomMapper.roomsToRoomResponseDtos(rooms);
+
+
+        return new ChatRoomAllResponseDto(chatRoomResponseDtos, chatRoomPageInfoResponseDto);
     }
+
 
 //    // 키워드로 채팅방 검색하기
 //    public Page<Room> searchRoom(String keyword, int page) {
@@ -234,7 +248,7 @@ public class ChatRoomService {
 
         // 비공개 방일시 비밀번호 체크 등등
         if (!room.isStatus()) {
-            if (null == password || null == password.getPassword())  {    // 패스워드를 입력 안했을 때 에러 발생
+            if (null == password || null == password.getPassword()) {    // 패스워드를 입력 안했을 때 에러 발생
                 throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "비밀번호를 입력해주세요."));
             }
             if (!room.getPassword().equals(password.getPassword())) {  // 비밀번호가 틀리면 에러 발생
@@ -296,8 +310,6 @@ public class ChatRoomService {
     }
 
 
-
-
     // 방 나가기
     @Transactional
     public String outRoomUser(String sessionId, HttpServletRequest request, User user) {
@@ -314,7 +326,6 @@ public class ChatRoomService {
         );
 
 
-
         // 룸 멤버 논리 삭제. soft delete
         // 퇴장(삭제)한 시간 기록
         LocalDateTime roomExitTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
@@ -323,11 +334,11 @@ public class ChatRoomService {
 
 
         /* 룸 유저 수 확인
-        *  자신이 나갈 시 0명이된다면 (현재1명 이라면)
-        * 나감과 동시에 방 논리 삭제. */
+         *  자신이 나갈 시 0명이된다면 (현재1명 이라면)
+         * 나감과 동시에 방 논리 삭제. */
         Long cntUsers = room.getCntUser();
 
-        if ((cntUsers - 1) == 0){
+        if ((cntUsers - 1) == 0) {
 
 
             // 방 논리 삭제 + 방 삭제된 시간 기록
@@ -359,13 +370,9 @@ public class ChatRoomService {
     private CreateRoomResponseDto createNewToken(User user) throws OpenViduJavaClientException, OpenViduHttpException {
 
 
-
-
         // 사용자 연결 시 닉네임 전달
         /*todo serverData에 카카오정보를 넣어서 운용이 가능할까? */
         String serverData = user.getName();
-
-
 
 
         // serverData을 사용하여 connectionProperties 객체를 빌드
@@ -373,14 +380,11 @@ public class ChatRoomService {
                 new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).build();
 
 
-
         // 새로운 OpenVidu 세션(채팅방) 생성
         Session session = openvidu.createSession();
 
 
-
         String token = session.createConnection(connectionProperties).getToken();
-
 
 
         return CreateRoomResponseDto.builder()

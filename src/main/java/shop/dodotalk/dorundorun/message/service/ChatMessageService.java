@@ -2,11 +2,16 @@ package shop.dodotalk.dorundorun.message.service;
 
 import org.springframework.http.HttpStatus;
 import shop.dodotalk.dorundorun.aws.service.AwsService;
+import shop.dodotalk.dorundorun.chatroom.entity.BenUser;
 import shop.dodotalk.dorundorun.chatroom.entity.Room;
+import shop.dodotalk.dorundorun.chatroom.entity.RoomUsers;
 import shop.dodotalk.dorundorun.chatroom.error.ErrorCode;
 import shop.dodotalk.dorundorun.chatroom.error.PrivateException;
+import shop.dodotalk.dorundorun.chatroom.repository.BenUserRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.RoomRepository;
-import shop.dodotalk.dorundorun.message.dto.ChatMessageRequestDto;
+import shop.dodotalk.dorundorun.chatroom.repository.RoomUsersRepository;
+import shop.dodotalk.dorundorun.error.CustomErrorException;
+import shop.dodotalk.dorundorun.message.dto.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.dodotalk.dorundorun.message.dto.ChatMessageResponseDto;
 import shop.dodotalk.dorundorun.message.entity.RoomFileMessage;
 import shop.dodotalk.dorundorun.message.entity.RoomMessage;
 import shop.dodotalk.dorundorun.message.repository.RoomFileMessageRepository;
@@ -33,6 +37,8 @@ public class ChatMessageService {
     private final AwsService awsService;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+    private final RoomUsersRepository roomUsersRepository;
+    private final BenUserRepository benUserRepository;
     private final RoomMessageRepository roomMessageRepository;
     private final RoomFileMessageRepository roomFileMessageRepository;
 
@@ -58,6 +64,54 @@ public class ChatMessageService {
         }
 
         return chatMessageResponseDto;
+    }
+
+    @Transactional
+    public ChatMsgDeleteResponseDto ChatMessageDelete(ChatMsgDeleteRequestDto chatMsgDeleteRequestDto,
+                                                    User user) {
+        Room room = roomRepository.findById(chatMsgDeleteRequestDto.getSessionId()).orElseThrow(
+                () -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다."));
+
+        BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatMsgDeleteRequestDto.getSessionId());
+        if (benUser != null) {
+            throw new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "강퇴당한 방입니다.");
+        }
+
+        RoomUsers alreadyRoomUser = roomUsersRepository.findBySessionIdAndUserId(chatMsgDeleteRequestDto.getSessionId(), user.getId())
+                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
+
+        RoomMessage roomMessage = roomMessageRepository.findBySessionIdAndMessageId(chatMsgDeleteRequestDto.getSessionId(), chatMsgDeleteRequestDto.getMessageId())
+                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 메세지가 없습니다."));
+
+        roomMessage.RoomMessageDelete();
+
+        ChatMsgDeleteResponseDto chatMsgDeleteResponseDto = new ChatMsgDeleteResponseDto(HttpStatus.OK, "성공적으로 메세지가 삭제되었습니다.");
+
+        return chatMsgDeleteResponseDto;
+    }
+
+    @Transactional
+    public ChatFileDeleteResponseDto ChatFileDelete(ChatFileDeleteRequestDto chatFileDeleteRequestDto,
+                                                       User user) {
+        Room room = roomRepository.findById(chatFileDeleteRequestDto.getSessionId()).orElseThrow(
+                () -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다."));
+
+        BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatFileDeleteRequestDto.getSessionId());
+        if (benUser != null) {
+            throw new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "강퇴당한 방입니다.");
+        }
+
+        RoomUsers alreadyRoomUser = roomUsersRepository.findBySessionIdAndUserId(chatFileDeleteRequestDto.getSessionId(), user.getId())
+                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
+
+        RoomFileMessage roomFile = roomFileMessageRepository.findBySessionIdAndFileId(chatFileDeleteRequestDto.getSessionId(), chatFileDeleteRequestDto.getFileId())
+                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 파일메세지가 없습니다."));
+
+        roomFile.RoomFileDelete();
+
+        ChatFileDeleteResponseDto chatFileDeleteResponseDto = new ChatFileDeleteResponseDto(HttpStatus.OK, "성공적으로 파일이 삭제되었습니다.");
+
+        return chatFileDeleteResponseDto;
     }
 
     @Transactional

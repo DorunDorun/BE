@@ -17,17 +17,20 @@ import javax.persistence.*;
 public class RoomFileMessage extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long messageId;
+    private Long fileId;
     @ManyToOne
     private User sender;
     private String imgUrl;
-    @ManyToOne
-    private Room chatRoom;
+    private String sessionId; // 방 sessionId
     private boolean isDelete = false;
 
     public RoomFileMessage(ChatMessageResponseDto chatMessageResponseDto, User user, Room room) {
         this.sender = user;
         this.imgUrl = chatMessageResponseDto.getImgUrl();
-        this.chatRoom = room;
+        this.sessionId = room.getSessionId();
+    }
+
+    public void RoomFileDelete() {
+        this.isDelete = true;
     }
 }

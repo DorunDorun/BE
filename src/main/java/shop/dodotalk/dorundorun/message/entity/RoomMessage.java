@@ -1,12 +1,10 @@
 package shop.dodotalk.dorundorun.message.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.dodotalk.dorundorun.chatroom.entity.Room;
 import shop.dodotalk.dorundorun.chatroom.entity.Timestamped;
-import shop.dodotalk.dorundorun.message.dto.ChatMessageRequestDto;
 import shop.dodotalk.dorundorun.message.dto.ChatMessageResponseDto;
 import shop.dodotalk.dorundorun.users.entity.User;
 
@@ -23,13 +21,16 @@ public class RoomMessage extends Timestamped {
     @ManyToOne
     private User sender;
     private String message;
-    @ManyToOne
-    private Room chatRoom;
+    private String sessionId; // 방 sessionId
     private boolean isDelete = false;
 
     public RoomMessage(ChatMessageResponseDto chatMessageResponseDto, User user, Room room) {
         this.sender = user;
         this.message = chatMessageResponseDto.getMessage();
-        this.chatRoom = room;
+        this.sessionId = room.getSessionId();
+    }
+
+    public void RoomMessageDelete() {
+        this.isDelete = true;
     }
 }

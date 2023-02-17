@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     // custom 예외처리
     @ExceptionHandler
-    public String handleException(CustomErrorException customErrorException){
-        return customErrorException.toString();
+    public ResponseEntity<?> handleException(CustomErrorException customErrorException){
+        return ResponseEntity.badRequest().header("Content-Type","application/json; charset=UTF-8").body(customErrorException.getErrormessage());
     }
     // ExceptionHandler
     @ExceptionHandler

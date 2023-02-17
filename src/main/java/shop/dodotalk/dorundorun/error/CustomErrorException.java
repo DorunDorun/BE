@@ -15,10 +15,4 @@ public class CustomErrorException extends RuntimeException {
         this.errorCode = errorCode;
         this.errormessage = errormessage;
     }
-    @Override
-    public String toString() {
-        return "HttpStatus : " + this.httpStatus + "<br>"
-                + "errorCode : " + this.errorCode + "<br>"
-                + "errormessage : " + this.errormessage;
-    }
 }

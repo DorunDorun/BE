@@ -185,7 +185,7 @@ public class ChatRoomService {
         }
 
 
-        // Pagenation Dto 생성
+        // pagination을 위한 정보를 담은 Dto 생성
         ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
                 = new ChatRoomPageInfoResponseDto(page, 8, (int) roomList.getTotalElements(), roomList.getTotalPages());
 

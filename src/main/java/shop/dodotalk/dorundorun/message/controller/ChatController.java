@@ -17,12 +17,9 @@ public class ChatController {
     @ResponseBody
     @MessageMapping("/chat/room")
     public void message(ChatMessageRequestDto chatMessageRequestDto) {
-        ChatMessageResponseDto chatMessageResponseDto;
-        if (chatMessageRequestDto.getImgByteCode() != null) {
-            chatMessageResponseDto = chatMessageService.BinaryImageChange(chatMessageRequestDto);
-        } else {
-            chatMessageResponseDto = new ChatMessageResponseDto(chatMessageRequestDto);
-        }
+
+        ChatMessageResponseDto chatMessageResponseDto = chatMessageService.ChatMessageCreate(chatMessageRequestDto);
+
         messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageRequestDto.getRoomId(), chatMessageResponseDto);
     }
 }

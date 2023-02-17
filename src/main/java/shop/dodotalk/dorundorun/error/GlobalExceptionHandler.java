@@ -9,33 +9,32 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
     // custom 예외처리
-    @ExceptionHandler({CustomErrorException.class})
+    @ExceptionHandler
     public String handleException(CustomErrorException customErrorException){
         return customErrorException.toString();
     }
     // ExceptionHandler
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler
     protected ResponseEntity<?> handleException(Exception ex) {
-        System.out.println("익셉션오류????");
         return ResponseEntity.badRequest().header("Content-Type","application/json; charset=UTF-8").body(ex.getMessage());
     }
 
     // IllegalArgumentException 예외처리
-    @ExceptionHandler({IllegalArgumentException.class})
+    @ExceptionHandler
     public ResponseEntity<?> handleException(IllegalArgumentException ex){
         return ResponseEntity.badRequest().header("Content-Type","application/json; charset=UTF-8").body(ex.getMessage());
     }
-    @ExceptionHandler({NullPointerException.class})
+    @ExceptionHandler
     public ResponseEntity<?> handleException(NullPointerException ex){
         return ResponseEntity.badRequest().header("Content-Type","application/json; charset=UTF-8").body(ex.getMessage());
     }
 
-    @ExceptionHandler({RuntimeException.class})
+    @ExceptionHandler
     public ResponseEntity<?> handleException(RuntimeException ex){
         return ResponseEntity.badRequest().header("Content-Type","application/json; charset=UTF-8").body(ex.getMessage());
     }
 
-    @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
+    @ExceptionHandler
     public ResponseEntity<?> handleException2(HttpRequestMethodNotSupportedException ex){
         return ResponseEntity.badRequest().header("Content-Type","application/json; charset=UTF-8").body(ex.getMessage());
     }

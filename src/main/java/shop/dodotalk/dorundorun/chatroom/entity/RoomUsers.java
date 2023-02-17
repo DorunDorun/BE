@@ -25,6 +25,9 @@ public class RoomUsers {
     private Long userId;
 
     @Column
+    private String social;
+
+    @Column
     private String nickname;
 
     @Column
@@ -32,6 +35,7 @@ public class RoomUsers {
 
     @Column
     private String profileImage;
+
 
     @Column
     private String enterRoomToken;

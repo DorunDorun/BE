@@ -8,9 +8,12 @@ import java.util.Optional;
 
 public interface RoomUsersRepository extends JpaRepository<RoomUsers, Long> {
 
-    Long countAllBySessionId(String SessionId);
+    Long countAllBySessionId(String sessionId);
 
-    Optional<RoomUsers> findBySessionIdAndNickname(String SessionId, String Nickname);
+    Optional<RoomUsers> findBySessionIdAndNickname(String sessionId, String Nickname);
+
+    Optional<RoomUsers> findBySessionIdAndUserId(String sessionId, Long userId);
+
     List<RoomUsers> findAllBySessionId(String sessionId);
 
 

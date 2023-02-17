@@ -17,8 +17,11 @@ public class RoomUsersResponseDto {
     // 채팅방
     private String sessionId;
 
+    // 소셜 로그인 방법
+    private String social;
+
     // 멤버
-    private Long User;
+    private Long userId;
 
     private String nickname;
 
@@ -31,27 +34,26 @@ public class RoomUsersResponseDto {
 
     private String enterRoomToken;
 
-    public RoomUsersResponseDto(RoomUsers entity, boolean a){
+    public RoomUsersResponseDto(RoomUsers entity, boolean roomMaster){
         this.roomUserId = entity.getRoomUserId();
         this.sessionId = entity.getSessionId();
-        this.User = entity.getUserId();
+        this.social = entity.getSocial();
+        this.userId = entity.getUserId();
         this.nickname = entity.getNickname();
         this.email = entity.getEmail();
         this.ProfileImage = entity.getProfileImage();
         this.enterRoomToken = entity.getEnterRoomToken();
-
-        // todo ???이거모지 이거 때매 일반유저도 룸마스터 true라고 나오나 ?
-        this.roomMaster = a;
+        this.roomMaster = roomMaster;
     }
 
-    public RoomUsersResponseDto(RoomUsers entity) {
-        this.roomUserId = entity.getRoomUserId();
-        this.sessionId = entity.getSessionId();
-        this.User = entity.getUserId();
-        this.nickname = entity.getNickname();
-        this.email = entity.getEmail();
-        this.ProfileImage = entity.getProfileImage();
-        this.enterRoomToken = entity.getEnterRoomToken();
-        this.roomMaster = false;
-    }
+//    public RoomUsersResponseDto(RoomUsers entity) {
+//        this.roomUserId = entity.getRoomUserId();
+//        this.sessionId = entity.getSessionId();
+//        this.userId = entity.getUserId();
+//        this.nickname = entity.getNickname();
+//        this.email = entity.getEmail();
+//        this.ProfileImage = entity.getProfileImage();
+//        this.enterRoomToken = entity.getEnterRoomToken();
+//        this.roomMaster = false;
+//    }
 }

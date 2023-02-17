@@ -12,7 +12,7 @@ import shop.dodotalk.dorundorun.chatroom.entity.RoomUsers;
 @AllArgsConstructor
 public class RoomUsersResponseDto {
 
-    private Long roomUserId;
+//    private Long roomUserId;
 
     // 채팅방
     private String sessionId;
@@ -32,10 +32,13 @@ public class RoomUsersResponseDto {
     // 방장인지 확인
     private boolean roomMaster;
 
+    // 방 접속시 모든 사용자의 정보를 보내기 때문에 현재 접속한 유저 구분용도
+    private boolean nowUser;
+
     private String enterRoomToken;
 
-    public RoomUsersResponseDto(RoomUsers entity, boolean roomMaster){
-        this.roomUserId = entity.getRoomUserId();
+    public RoomUsersResponseDto(RoomUsers entity, boolean roomMaster, boolean nowUser){
+//        this.roomUserId = entity.getRoomUserId();
         this.sessionId = entity.getSessionId();
         this.social = entity.getSocial();
         this.userId = entity.getUserId();
@@ -44,6 +47,7 @@ public class RoomUsersResponseDto {
         this.ProfileImage = entity.getProfileImage();
         this.enterRoomToken = entity.getEnterRoomToken();
         this.roomMaster = roomMaster;
+        this.nowUser = nowUser;
     }
 
 //    public RoomUsersResponseDto(RoomUsers entity) {

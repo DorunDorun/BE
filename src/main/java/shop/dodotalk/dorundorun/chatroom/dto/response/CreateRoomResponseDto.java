@@ -24,7 +24,8 @@ public class CreateRoomResponseDto {
     private boolean status;
     private String  category;
     private String password;
-    private String master;
+    private String masterName;
+    private boolean isRoomMaster;
     private String saying;
     private String token;
 
@@ -34,4 +35,7 @@ public class CreateRoomResponseDto {
     private LocalDateTime modifiedAt;
 
 
+    public boolean getIsRoomMaster() {
+        return isRoomMaster;
+    }
 }

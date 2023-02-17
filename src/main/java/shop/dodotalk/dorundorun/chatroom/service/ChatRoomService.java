@@ -135,26 +135,36 @@ public class ChatRoomService {
 
 
 
-        boolean roomMaster;
+
 
         List<RoomUsers> roomUsersList = roomUsersRepository.findAllBySessionId(savedRoom.getSessionId());
 
         List<RoomUsersResponseDto> roomUsersResponseDtoList = new ArrayList<>();
 
 
+        boolean roomMaster;
+        boolean nowUser;
+
         // 채팅방 인원 추가
         for (RoomUsers roomUsersEle : roomUsersList) {
 
             // 방장일 시
+            // 현재 접속한 유저일 시 본인이 누군지 알기 위해.
             if (user != null && roomUsersEle.getUserId().equals(user.getId())) {
 
                 roomMaster = true;
+                nowUser = true;
             }
             // 방장이 아닐 시
             else {
                 roomMaster = false;
+                nowUser = false;
             }
-            roomUsersResponseDtoList.add(new RoomUsersResponseDto(roomUsersEle, roomMaster));
+
+
+
+
+            roomUsersResponseDtoList.add(new RoomUsersResponseDto(roomUsersEle, roomMaster, nowUser));
 
         }
 
@@ -172,7 +182,8 @@ public class ChatRoomService {
                 .sessionId(savedRoom.getSessionId())
                 .title(savedRoom.getTitle())
                 .subtitle(savedRoom.getSubtitle())
-                .master(savedRoom.getMaster())
+                .masterName(savedRoom.getMaster())
+                .isRoomMaster(true)
                 .status(savedRoom.isStatus())
                 .token(newToken.getToken())
                 .buttonImage(savedRoom.getButtonImage().name())
@@ -290,24 +301,35 @@ public class ChatRoomService {
         /* 프론트엔드에서 해당방의 유저정보 사용을 위해
         * 방금 접속한 사용자포함 해당방의 모든 유저 정보 넘김. */
         boolean roomMaster;
+        boolean nowUser;
 
         List<RoomUsers> roomUsersList = roomUsersRepository.findAllBySessionId(room.getSessionId());
 
         List<RoomUsersResponseDto> roomUsersResponseDtoList = new ArrayList<>();
 
         // 채팅방 인원 추가
+        // 방장 및 현재 접속한 유저 표시.
         for (RoomUsers addRoomUsers : roomUsersList) {
 
 
             // 방장일 시
             if (user != null && room.getMasterUserId().equals(addRoomUsers.getUserId())) {
                 roomMaster = true;
-            }
-            // 방장이 아닐 시
-            else {
+            }else {
                 roomMaster = false;
             }
-            roomUsersResponseDtoList.add(new RoomUsersResponseDto(addRoomUsers, roomMaster));
+
+
+            // 현재 접속한 유저일 시 본인이 누군지 알기 위해.
+            if (user != null && addRoomUsers.getUserId().equals((user.getId()))) {
+                nowUser = true;
+            }else {
+                nowUser = false;
+            }
+
+
+
+            roomUsersResponseDtoList.add(new RoomUsersResponseDto(addRoomUsers, roomMaster, nowUser));
 
         }
 
@@ -316,6 +338,10 @@ public class ChatRoomService {
         room.updateCntUser(currentUser);
 
         roomRepository.save(room);
+
+
+
+
 
 
         return roomUsersResponseDtoList;

@@ -35,4 +35,7 @@ public class CreateRoomResponseDto {
     private LocalDateTime modifiedAt;
 
 
+    public boolean getIsRoomMaster() {
+        return isRoomMaster;
+    }
 }

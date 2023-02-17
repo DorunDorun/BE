@@ -60,7 +60,6 @@ public class ChatMessageService {
         return chatMessageResponseDto;
     }
 
-
     @Transactional
     public ChatMessageResponseDto BinaryImageChange(ChatMessageRequestDto chatMessageRequestDto) {
 

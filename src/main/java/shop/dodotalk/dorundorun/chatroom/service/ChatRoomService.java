@@ -299,8 +299,8 @@ public class ChatRoomService {
 
         /* 프론트엔드에서 해당방의 유저정보 사용을 위해
         * 방금 접속한 사용자포함 해당방의 모든 유저 정보 넘김. */
-        boolean roomMaster = false;
-        boolean nowUser = false;
+        boolean roomMaster;
+        boolean nowUser;
 
         List<RoomUsers> roomUsersList = roomUsersRepository.findAllBySessionId(room.getSessionId());
 
@@ -314,12 +314,16 @@ public class ChatRoomService {
             // 방장일 시
             if (user != null && room.getMasterUserId().equals(addRoomUsers.getUserId())) {
                 roomMaster = true;
+            }else {
+                roomMaster = false;
             }
 
 
             // 현재 접속한 유저일 시 본인이 누군지 알기 위해.
             if (user != null && addRoomUsers.getUserId().equals((user.getId()))) {
                 nowUser = true;
+            }else {
+                nowUser = false;
             }
 
 

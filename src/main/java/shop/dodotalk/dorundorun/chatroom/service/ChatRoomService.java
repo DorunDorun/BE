@@ -192,24 +192,26 @@ public class ChatRoomService {
     }
 
 
-    // 전체 방 조회하기
+    /*전체 방 조회하기*/
     public ChatRoomAllResponseDto getAllRooms(int page) {
 
-        /* 페이지네이션 설정 */
+        /*페이지네이션 설정*/
         PageRequest pageable = PageRequest.of(page - 1, 8);
         Page<Room> roomList = roomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
 
 
+        /*채팅방이 존재하지 않을 경우*/
         if (roomList.isEmpty()) {
-            throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "200", "검색 결과가 없습니다."));
+            throw new PrivateException
+                    (new ErrorCode(HttpStatus.BAD_REQUEST, "200", "채팅방이 존재하지 않습니다."));
         }
 
 
-        // pagination을 위한 정보를 담은 Dto 생성
+        /*pagination을 위한 정보를 담은 Dto 생성*/
         ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
                 = new ChatRoomPageInfoResponseDto(page, 8, (int) roomList.getTotalElements(), roomList.getTotalPages());
 
-        /* room List 정보 Dto로 변환 */
+        /*room List 정보 Dto로 변환*/
         List<Room> rooms = roomList.getContent();
         List<ChatRoomResponseDto> chatRoomResponseDtos = roomMapper.roomsToRoomResponseDtos(rooms);
 
@@ -238,7 +240,7 @@ public class ChatRoomService {
 
 
     /*방 접속*/
-    public List<RoomUsersResponseDto> getRoomData(String SessionId, HttpServletRequest request, RoomPasswordRequestDto
+    public ChatRoomUsersResponseDto getRoomData(String SessionId, HttpServletRequest request, RoomPasswordRequestDto
             password, User user) throws OpenViduJavaClientException, OpenViduHttpException {
 
         /*방이 있는 지 확인*/
@@ -355,13 +357,26 @@ public class ChatRoomService {
 
         }
 
+
+        ChatRoomUsersResponseDto chatRoomResponseDto
+                = new ChatRoomUsersResponseDto(room, roomUsersResponseDtoList);
+
+
         Long currentUser = roomUsersRepository.countAllBySessionId(room.getSessionId());
 
         room.updateCntUser(currentUser);
 
         roomRepository.save(room);
 
-        return roomUsersResponseDtoList;
+
+
+
+
+/*기존버전 : 유저 정보만 다 뿌려줌*/
+//        return roomUsersResponseDtoList;
+
+        /*변경 버전 방정보 까지 포함*/
+        return chatRoomResponseDto;
 
     }
 

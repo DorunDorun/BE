@@ -3,6 +3,7 @@ package shop.dodotalk.dorundorun.chatroom.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -55,12 +56,21 @@ public class RoomUsers {
     private LocalDateTime roomExitTime;
 
 
-
+    /* 방에서 나가는 경우  */
     public void deleteRoomUsers (LocalDateTime roomExitTime) {
         this.isDelete = true;
         this.roomExitTime = roomExitTime;
 
     }
+
+    /* 방에 재입장 하는 경우 */
+    public void reEnterRoomUsers(String enterRoomToken) {
+        this.isDelete = false;
+        this.roomEnterTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
+        this.roomExitTime = null;
+        this.enterRoomToken = enterRoomToken;
+    }
+
 
 
 }

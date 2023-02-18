@@ -109,7 +109,6 @@ public class ChatRoomService {
         Room savedRoom = roomRepository.save(room);
 
 
-
         // 아래 코드 계속 진행시 createdAt이 null로 바뀌어서.
         // 이부분에서 미리 저장해놓음 .
         LocalDateTime createdAt = savedRoom.getCreatedAt();
@@ -132,9 +131,6 @@ public class ChatRoomService {
 
         // 채팅방 인원 저장하기
         roomUsersRepository.save(roomUsers);
-
-
-
 
 
         List<RoomUsers> roomUsersList = roomUsersRepository.findAllBySessionId(savedRoom.getSessionId());
@@ -160,8 +156,6 @@ public class ChatRoomService {
                 roomMaster = false;
                 nowUser = false;
             }
-
-
 
 
             roomUsersResponseDtoList.add(new RoomUsersResponseDto(roomUsersEle, roomMaster, nowUser));
@@ -243,34 +237,27 @@ public class ChatRoomService {
 //    }
 
 
-    // 방 접속
+    /*방 접속*/
     public List<RoomUsersResponseDto> getRoomData(String SessionId, HttpServletRequest request, RoomPasswordRequestDto
             password, User user) throws OpenViduJavaClientException, OpenViduHttpException {
 
-
-        // 방이 있는 지 확인
+        /*방이 있는 지 확인*/
         Room room = roomRepository.findById(SessionId).orElseThrow(
                 () -> new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다.")));
 
 
-        // 방에서 강퇴당한 멤버인지 확인
+        /*방에서 강퇴당한 멤버인지 확인*/
         BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), SessionId);
         if (benUser != null) {
             throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "강퇴당한 방입니다."));
         }
-        // 방 인원 초과 시
+
+        /*방 인원 초과 시*/
         if (room.getCntUser() >= 7) {
             throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "방이 가득찼습니다."));
         }
 
-        // 룸 멤버 있는 지 확인
-        Optional<RoomUsers> alreadyRoomUser = roomUsersRepository.findBySessionIdAndUserId(SessionId, user.getId());
-
-        if (alreadyRoomUser.isPresent()) {
-            throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "이미 입장한 멤버입니다."));
-        }
-
-        // 비공개 방일시 비밀번호 체크 등등
+        /*비공개 방일시 비밀번호 체크*/
         if (!room.isStatus()) {
             if (null == password || null == password.getPassword()) {    // 패스워드를 입력 안했을 때 에러 발생
                 throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "비밀번호를 입력해주세요."));
@@ -279,27 +266,63 @@ public class ChatRoomService {
                 throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "비밀번호가 틀립니다."));
             }
         }
-        //채팅방 입장 시 토큰 발급
-        String enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
 
-        // 채팅방 유저 만들기 (현재접속한 사용자)
-        RoomUsers roomUsers = RoomUsers.builder()
-                .sessionId(room.getSessionId())
-                .userId(user.getId())
-                .social(user.getProvider())
-                .nickname(user.getName())
-                .email(user.getEmail())
-                .profileImage(user.getProfile())
-                .enterRoomToken(enterRoomToken)
-                .roomEnterTime(Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime())
-                .build();
 
-        // 현재 방에 접속한 사용자 저장
-        roomUsersRepository.save(roomUsers);
 
+
+
+        /*룸 멤버 있는 지 확인*/
+        Optional<RoomUsers> alreadyRoomUser = roomUsersRepository.findBySessionIdAndUserId(SessionId, user.getId());
+
+        boolean isReEnterUser = false;
+        String enterRoomToken = null;
+
+        if (alreadyRoomUser.isPresent()) {
+
+            /*해당 유저가 방에서 나간 후 재입장 할 수 있기 때문에,
+             * 1. is_delete false라면 아직 방에 입장해있는 상태이므로 이미 입장한 멤버입니다 발생.
+             * 2. is_delete가 true라면 방에서 나온(삭제된)경우 이므로,
+             *  is_delete를 false로 만들고 방에 다시 입장 시킨다.
+             * openvidu 토큰은 일회성이므로 토큰도업데이트 해줘야함. */
+
+            RoomUsers roomUser = alreadyRoomUser.get();
+
+            /* 방에 이미 입장해있는 상태 */
+            if (!roomUser.isDelete()) {
+                throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "이미 입장한 멤버입니다."));
+            } else {/* 재입장 */
+                isReEnterUser = true;
+                enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
+                roomUser.reEnterRoomUsers(enterRoomToken);
+            }
+
+        }
+
+        if (isReEnterUser == false) {
+            // 채팅방 처음 입장 시 토큰 발급
+            enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
+
+
+            // 채팅방 유저 만들기 (현재접속한 사용자) (처음 접속한 경우만)
+            RoomUsers roomUsers = RoomUsers.builder()
+                    .sessionId(room.getSessionId())
+                    .userId(user.getId())
+                    .social(user.getProvider())
+                    .nickname(user.getName())
+                    .email(user.getEmail())
+                    .profileImage(user.getProfile())
+                    .enterRoomToken(enterRoomToken)
+                    .roomEnterTime(Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime())
+                    .build();
+
+            // 현재 방에 접속한 사용자 저장
+            roomUsersRepository.save(roomUsers);
+
+
+        }
 
         /* 프론트엔드에서 해당방의 유저정보 사용을 위해
-        * 방금 접속한 사용자포함 해당방의 모든 유저 정보 넘김. */
+         * 방금 접속한 사용자포함 해당방의 모든 유저 정보 넘김. */
         boolean roomMaster;
         boolean nowUser;
 
@@ -315,7 +338,7 @@ public class ChatRoomService {
             // 방장일 시
             if (user != null && room.getMasterUserId().equals(addRoomUsers.getUserId())) {
                 roomMaster = true;
-            }else {
+            } else {
                 roomMaster = false;
             }
 
@@ -323,10 +346,9 @@ public class ChatRoomService {
             // 현재 접속한 유저일 시 본인이 누군지 알기 위해.
             if (user != null && addRoomUsers.getUserId().equals((user.getId()))) {
                 nowUser = true;
-            }else {
+            } else {
                 nowUser = false;
             }
-
 
 
             roomUsersResponseDtoList.add(new RoomUsersResponseDto(addRoomUsers, roomMaster, nowUser));
@@ -339,23 +361,8 @@ public class ChatRoomService {
 
         roomRepository.save(room);
 
-
-
-
-
-
         return roomUsersResponseDtoList;
 
-//        return RoomUsersResponseDto.builder()
-//                .roomUserId(roomUsers.getRoomUserId())
-//                .sessionId(roomUsers.getSessionId())
-//                .userId(roomUsers.getUserId())
-//                .nickname(roomUsers.getNickname())
-//                .email(roomUsers.getEmail())
-//                .ProfileImage(roomUsers.getProfileImage())
-//                .enterRoomToken(roomUsers.getEnterRoomToken())
-//                .roomMaster(roomMaster)
-//                .build();
     }
 
 

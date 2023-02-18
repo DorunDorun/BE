@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 public class ChatFileDeleteRequestDto {
     private String sessionId;      // 방 Id
     private Long fileId;           // 방 메세지 파일 Id
+    private String socialUid;      // 유저 socialUid;
 }

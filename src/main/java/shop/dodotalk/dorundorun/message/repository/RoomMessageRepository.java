@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface RoomMessageRepository extends JpaRepository<RoomMessage, Long> {
-    Optional<RoomMessage> findBySessionIdAndMessageId(String sessionId, Long messageId);
+    Optional<RoomMessage> findBySessionIdAndMessageIdAndSocialUid(String sessionId, Long messageId, String SocialUid);
 }

@@ -44,22 +44,15 @@ public class ChatMessageService {
 
     @Transactional
     public ChatMessageResponseDto ChatMessageCreate(ChatMessageRequestDto chatMessageRequestDto) {
-        User user = userRepository.findByEmail(chatMessageRequestDto.getEmail()).orElseThrow(
-                () -> new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "해당 유저가 없습니다.")));
-
-        Room room = roomRepository.findById(chatMessageRequestDto.getRoomId()).orElseThrow(
-                () -> new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다.")));
-
         ChatMessageResponseDto chatMessageResponseDto;
 
         if (chatMessageRequestDto.getImgByteCode() != null) {
-            chatMessageResponseDto = BinaryImageChange(chatMessageRequestDto);
-            RoomFileMessage roomFileMessage = new RoomFileMessage(chatMessageResponseDto, user, room);
+            RoomFileMessage roomFileMessage = BinaryImageChange(chatMessageRequestDto);
+            chatMessageResponseDto = new ChatMessageResponseDto(roomFileMessage);
             roomFileMessageRepository.save(roomFileMessage);
-
         } else {
-            chatMessageResponseDto = new ChatMessageResponseDto(chatMessageRequestDto);
-            RoomMessage roomMessage = new RoomMessage(chatMessageResponseDto, user, room);
+            RoomMessage roomMessage = new RoomMessage(chatMessageRequestDto);
+            chatMessageResponseDto = new ChatMessageResponseDto(roomMessage);
             roomMessageRepository.save(roomMessage);
         }
 
@@ -116,23 +109,13 @@ public class ChatMessageService {
     }
 
     @Transactional
-    public ChatMessageResponseDto BinaryImageChange(ChatMessageRequestDto chatMessageRequestDto) {
-
-        ChatMessageResponseDto chatMessageResponseDto = new ChatMessageResponseDto(chatMessageRequestDto);
-
+    public RoomFileMessage BinaryImageChange(ChatMessageRequestDto chatMessageRequestDto) {
+        RoomFileMessage roomFileMessage;
         try {
             String[] strings = chatMessageRequestDto.getImgByteCode().split(",");
             String base64Image = strings[1];
 
             String extension = strings[0].split(";")[0].split("/")[1];
-
-            //            if (strings[0].equals("data:image/jpeg;base64")) {
-            //                extension = "jpeg";
-            //            } else if (strings[0].equals("data:image/png;base64")){
-            //                extension = "png";
-            //            } else {
-            //                extension = "jpg";
-            //            }
 
             byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
 
@@ -143,13 +126,12 @@ public class ChatMessageService {
 
             String awsS3ImageUrl = awsService.S3FileImageUpload(tempFile);
 
-            chatMessageResponseDto.ChatMessageImgUpdate(awsS3ImageUrl);
+            roomFileMessage = new RoomFileMessage(chatMessageRequestDto, awsS3ImageUrl);
+            return roomFileMessage;
         } catch (IOException ex) {
             log.error("IOException Error Message : {}",ex.getMessage());
             ex.printStackTrace();
         }
-
-        return chatMessageResponseDto;
-
+        throw new CustomErrorException(HttpStatus.OK, "200", "이미지 파일이 생성되지 않았습니다");
     }
 }

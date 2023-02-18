@@ -358,5 +358,17 @@ public class JwtUtil implements InitializingBean {
         return new JwtAuthenticationResult(uid, provider, email, grantedAuthorities);
     }
 
+    /* Socket Access 토큰의 유효성을 검증한다.*/
+    public String socketResolveToken(String bearerToken) {
+        log.info("resolve Token ...");
+
+        if (bearerToken != null && bearerToken.startsWith("Bearer-")) {
+            // Bearer- 제외 토큰 값만 리턴
+            return bearerToken.substring(7);
+        }
+
+        // 토큰이 없다면 null 리턴
+        return null;
+    }
 
 }

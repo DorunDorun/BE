@@ -9,6 +9,7 @@ import shop.dodotalk.dorundorun.message.dto.ChatMessageRequestDto;
 import shop.dodotalk.dorundorun.message.dto.ChatMessageResponseDto;
 import shop.dodotalk.dorundorun.message.service.ChatMessageService;
 
+
 @RequiredArgsConstructor
 @Controller
 public class ChatController {
@@ -17,9 +18,8 @@ public class ChatController {
     @ResponseBody
     @MessageMapping("/chat/room")
     public void message(ChatMessageRequestDto chatMessageRequestDto) {
-
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.ChatMessageCreate(chatMessageRequestDto);
 
-        messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageRequestDto.getRoomId(), chatMessageResponseDto);
+        messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageRequestDto.getSessionId(), chatMessageResponseDto);
     }
 }

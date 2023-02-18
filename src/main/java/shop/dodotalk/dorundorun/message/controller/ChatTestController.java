@@ -15,7 +15,7 @@ public class ChatTestController {
         return "chatrooms";
     }
 
-    @GetMapping("/chat/room/2")
+    @GetMapping("/chat/room/ses_Q6CoXlyYfA")
     public String getAlsadasdlRooms() {
         return "chat";
     }

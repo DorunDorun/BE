@@ -101,6 +101,7 @@ public class ChatMessageService {
             throw new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "강퇴당한 방입니다.");
         }
 
+
         RoomUsers alreadyRoomUser = roomUsersRepository.findBySessionIdAndUserId(chatFileDeleteRequestDto.getSessionId(), user.getId())
                 .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
 
@@ -122,14 +123,16 @@ public class ChatMessageService {
         try {
             String[] strings = chatMessageRequestDto.getImgByteCode().split(",");
             String base64Image = strings[1];
-            String extension = "";
-            if (strings[0].equals("data:image/jpeg;base64")) {
-                extension = "jpeg";
-            } else if (strings[0].equals("data:image/png;base64")){
-                extension = "png";
-            } else {
-                extension = "jpg";
-            }
+
+            String extension = strings[0].split(";")[0].split("/")[1];
+
+            //            if (strings[0].equals("data:image/jpeg;base64")) {
+            //                extension = "jpeg";
+            //            } else if (strings[0].equals("data:image/png;base64")){
+            //                extension = "png";
+            //            } else {
+            //                extension = "jpg";
+            //            }
 
             byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
 

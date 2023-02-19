@@ -10,7 +10,4 @@ import java.util.Optional;
 @Repository
 public interface RoomMessageRepository extends JpaRepository<RoomMessage, Long> {
     Optional<RoomMessage> findBySessionIdAndMessageIdAndSocialUid(String sessionId, Long messageId, String socialUid);
-    Optional<RoomMessage> findBySessionId(String sessionId);
-    Optional<RoomMessage> findByMessageId(Long messageId);
-    Optional<RoomMessage> findBySocialUid(String socialUid);
 }

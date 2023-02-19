@@ -74,28 +74,6 @@ public class ChatMessageService {
 //        RoomUsers alreadyRoomUser = roomUsersRepository.findBySessionIdAndUserId(chatMsgDeleteRequestDto.getSessionId(), user.getId())
 //                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
 
-        System.out.println("-----------------------1412313-------------------");
-        System.out.println(chatMsgDeleteRequestDto.getMessageId());
-        System.out.println(chatMsgDeleteRequestDto.getSessionId());
-        System.out.println(chatMsgDeleteRequestDto.getSocialUid());
-        System.out.println("-----------------------1412313-------------------");
-
-//        Optional<RoomMessage> roomMessage1 = roomMessageRepository.findBySessionId(chatMsgDeleteRequestDto.getSessionId());
-//        System.out.println("-------------------roomMessageId1----------------");
-//        System.out.println(roomMessage1.get().getMessageId());
-//        System.out.println("-------------------roomMessageId1----------------");
-//
-//
-//        Optional<RoomMessage> roomMessage2 = roomMessageRepository.findByMessageId(chatMsgDeleteRequestDto.getMessageId());
-//        System.out.println("-------------------roomMessageId2----------------");
-//        System.out.println(roomMessage2.get().getMessageId());
-//        System.out.println("-------------------roomMessageId1----------------");
-//
-//        Optional<RoomMessage> roomMessage3 = roomMessageRepository.findBySocialUid(chatMsgDeleteRequestDto.getSocialUid());
-//        System.out.println("-------------------roomMessageId3----------------");
-//        System.out.println(roomMessage3.get().getMessageId());
-//        System.out.println("-------------------roomMessageId3----------------");
-
         RoomMessage roomMessage = roomMessageRepository.findBySessionIdAndMessageIdAndSocialUid(
                 chatMsgDeleteRequestDto.getSessionId(), chatMsgDeleteRequestDto.getMessageId(), chatMsgDeleteRequestDto.getSocialUid())
                 .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 메세지가 없습니다."));
@@ -128,7 +106,7 @@ public class ChatMessageService {
 
         roomFile.RoomFileDelete();
 
-        ChatFileDeleteResponseDto chatFileDeleteResponseDto = new ChatFileDeleteResponseDto(HttpStatus.OK, "성공적으로 파일이 삭제되었습니다.");
+        ChatFileDeleteResponseDto chatFileDeleteResponseDto = new ChatFileDeleteResponseDto(HttpStatus.OK, "성공적으로 파일이 삭제되었습니다.", roomFile);
 
         return chatFileDeleteResponseDto;
     }

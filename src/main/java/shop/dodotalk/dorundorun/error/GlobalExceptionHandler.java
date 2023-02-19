@@ -11,7 +11,6 @@ public class GlobalExceptionHandler {
     // custom 예외처리
     @ExceptionHandler
     public ResponseEntity<?> handleException(CustomErrorException customErrorException){
-        System.out.println("커스텀으로 오나");
         return ResponseEntity.badRequest().header("Content-Type","application/json; charset=UTF-8").body(customErrorException.getErrormessage());
     }
     // ExceptionHandler
@@ -23,7 +22,6 @@ public class GlobalExceptionHandler {
     // IllegalArgumentException 예외처리
     @ExceptionHandler
     public ResponseEntity<?> handleException(IllegalArgumentException ex){
-        System.out.println("일리걸 알규먼트 익셉션으로 오나");
         return ResponseEntity.badRequest().header("Content-Type","application/json; charset=UTF-8").body(ex.getMessage());
     }
     @ExceptionHandler

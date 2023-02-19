@@ -48,12 +48,12 @@ public class ChatMessageService {
 
         if (chatMessageRequestDto.getImgByteCode() != null) {
             RoomFileMessage roomFileMessage = BinaryImageChange(chatMessageRequestDto);
-            chatMessageResponseDto = new ChatMessageResponseDto(roomFileMessage);
             roomFileMessageRepository.save(roomFileMessage);
+            chatMessageResponseDto = new ChatMessageResponseDto(roomFileMessage);
         } else {
             RoomMessage roomMessage = new RoomMessage(chatMessageRequestDto);
-            chatMessageResponseDto = new ChatMessageResponseDto(roomMessage);
             roomMessageRepository.save(roomMessage);
+            chatMessageResponseDto = new ChatMessageResponseDto(roomMessage);
         }
 
         System.out.println("--------------------service------------------------");

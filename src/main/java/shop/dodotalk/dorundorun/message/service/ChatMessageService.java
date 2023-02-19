@@ -62,8 +62,8 @@ public class ChatMessageService {
     @Transactional
     public ChatMsgDeleteResponseDto ChatMessageDelete(ChatMsgDeleteRequestDto chatMsgDeleteRequestDto) {
                                                     //User user) {
-        Room room = roomRepository.findById(chatMsgDeleteRequestDto.getSessionId()).orElseThrow(
-                () -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다."));
+//        Room room = roomRepository.findById(chatMsgDeleteRequestDto.getSessionId()).orElseThrow(
+//                () -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다."));
 
 //        BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatMsgDeleteRequestDto.getSessionId());
 //        if (benUser != null) {

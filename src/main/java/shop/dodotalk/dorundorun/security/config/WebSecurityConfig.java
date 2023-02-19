@@ -30,7 +30,6 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
 
         return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toH2Console())
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
@@ -59,8 +58,8 @@ public class WebSecurityConfig {
                 .antMatchers("/").permitAll()
 
                 // todo 테스트 시 원활한 진행용으로 일단 모든 접근 허용
-                .anyRequest().permitAll();
-                //.anyRequest().authenticated();
+                //.anyRequest().permitAll();
+                .anyRequest().authenticated();
 
 
 
@@ -84,10 +83,11 @@ public class WebSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         /* 일단 기본 설정으로 전부 허용.
         * todo 서버 배포 시 프론트엔드 서버로 바꿀 예정 */
-        configuration.addAllowedOriginPattern("*");
+//        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
-        configuration.addExposedHeader("*");
+        configuration.addExposedHeader("Set-Cookie");
 
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

@@ -79,10 +79,11 @@ public class User {
 
     }
 
-    public User update(String name, String socialUid, String email, String provider,
+    public User update(String socialUid, String name, String email, String provider,
                        String nickname, String profile, String gender,
                        String birthday, String birthyear, String age_range, String thumbnail_image_url,
                        String mobile, String mobile_e164) {
+
         this.socialUid = socialUid;
         this.name = name;
         this.email = email;

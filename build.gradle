@@ -23,7 +23,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2'
+
 
 
     implementation group: 'org.json', name: 'json', version: '20220924'
@@ -46,6 +46,8 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-security', version: '1.6.4'
     testImplementation group: 'org.springdoc', name: 'springdoc-openapi-webmvc-core', version: '1.6.4'
 
+    // my slq
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
 
     // aws
@@ -64,6 +66,14 @@ dependencies {
 
     // Swagger
     implementation "io.springfox:springfox-boot-starter:3.0.0"
+
+    // Open Vidu
+    implementation 'io.openvidu:openvidu-java-client:2.25.0'
+
+    // mapper
+    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+    
 }
 
 tasks.named('test') {

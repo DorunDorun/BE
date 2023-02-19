@@ -56,6 +56,11 @@ public class ChatMessageService {
             roomMessageRepository.save(roomMessage);
         }
 
+        System.out.println("--------------------service------------------------");
+        System.out.println(chatMessageResponseDto.getMessageId());
+        System.out.println(chatMessageResponseDto.getMessage());
+        System.out.println("--------------------service------------------------");
+
         return chatMessageResponseDto;
     }
 

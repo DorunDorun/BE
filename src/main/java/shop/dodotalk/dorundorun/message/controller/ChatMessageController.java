@@ -20,6 +20,7 @@ import shop.dodotalk.dorundorun.users.entity.User;
 @RequestMapping("/api")
 public class ChatMessageController {
     private final ChatMessageService chatMessageService;
+
     @PostMapping("/chat/room/msg")
     public ChatMsgDeleteResponseDto chatMsgDelete(@RequestBody ChatMsgDeleteRequestDto chatMsgDeleteRequestDto,
                                                   @Authenticated OAuth2UserInfoAuthentication authentication) {

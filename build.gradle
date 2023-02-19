@@ -65,7 +65,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // Swagger
-    implementation "io.springfox:springfox-boot-starter:3.0.0"
+    //implementation "io.springfox:springfox-boot-starter:3.0.0"
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
 
     // Open Vidu
     implementation 'io.openvidu:openvidu-java-client:2.25.0'

@@ -2,6 +2,7 @@ package shop.dodotalk.dorundorun.message.handler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -34,7 +35,7 @@ public class StompHandler implements ChannelInterceptor {
             }
 
             /* Access 토큰이 만료된 경우 */
-            else if (true) {
+            else if (true) { // jwtAccessToken != null && jwtUtil.validateToken(jwtAccessToken) == JwtUtil.JwtCode.EXPIRED
                 log.info("JWT 토큰이 만료되어, Refresh token 확인 작업을 진행합니다.");
 
                 /* Refresh Token 존재 여부 확인.*/
@@ -44,10 +45,10 @@ public class StompHandler implements ChannelInterceptor {
                 if (jwtRefreshToken != null && jwtUtil.validateRefreshToken(jwtRefreshToken) == JwtUtil.JwtCode.ACCESS) {
                     log.info("리프레시 토큰 인증 성공");
                 }else {
-                    throw new IllegalArgumentException();
+                    throw new CustomErrorException(HttpStatus.OK, "200", "토큰이 일치하지 않습니다.");
                 }
             } else {
-                throw new IllegalArgumentException();
+                throw new CustomErrorException(HttpStatus.OK, "200", "토큰이 부정확합니다.");
             }
         }
 

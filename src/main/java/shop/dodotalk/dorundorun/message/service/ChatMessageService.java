@@ -73,6 +73,12 @@ public class ChatMessageService {
 //        RoomUsers alreadyRoomUser = roomUsersRepository.findBySessionIdAndUserId(chatMsgDeleteRequestDto.getSessionId(), user.getId())
 //                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
 
+        System.out.println("-----------------------1412313-------------------");
+        System.out.println(chatMsgDeleteRequestDto.getMessageId());
+        System.out.println(chatMsgDeleteRequestDto.getSessionId());
+        System.out.println(chatMsgDeleteRequestDto.getSocialUid());
+        System.out.println("-----------------------1412313-------------------");
+
         RoomMessage roomMessage = roomMessageRepository.findBySessionIdAndMessageIdAndSocialUid(
                 chatMsgDeleteRequestDto.getSessionId(), chatMsgDeleteRequestDto.getMessageId(), chatMsgDeleteRequestDto.getSocialUid())
                 .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 메세지가 없습니다."));

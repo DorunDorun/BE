@@ -21,11 +21,11 @@ import shop.dodotalk.dorundorun.users.entity.User;
 public class ChatMessageController {
     private final ChatMessageService chatMessageService;
     @PostMapping("/chat/room/msg")
-    public ChatMsgDeleteResponseDto chatMsgDelete(@RequestBody ChatMsgDeleteRequestDto chatMsgDeleteRequestDto,
-                                                  @Authenticated OAuth2UserInfoAuthentication authentication) {
-        User user = (User) authentication.getPrincipal();
-
-        ChatMsgDeleteResponseDto chatMsgDeleteResponseDto = chatMessageService.ChatMessageDelete(chatMsgDeleteRequestDto, user);
+    public ChatMsgDeleteResponseDto chatMsgDelete(@RequestBody ChatMsgDeleteRequestDto chatMsgDeleteRequestDto) {
+                                                  //@Authenticated OAuth2UserInfoAuthentication authentication) {
+        //User user = (User) authentication.getPrincipal();
+        System.out.println("오고 있긴 한거지??");
+        ChatMsgDeleteResponseDto chatMsgDeleteResponseDto = chatMessageService.ChatMessageDelete(chatMsgDeleteRequestDto); // user
 
         return chatMsgDeleteResponseDto;
 

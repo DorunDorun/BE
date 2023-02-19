@@ -13,6 +13,7 @@ public class ChatMessageResponseDto {
     private String nickname;
     private String message; // 메시지
     private String imgUrl;
+    private Boolean isDelete = false;
 
     public ChatMessageResponseDto(RoomFileMessage roomFileMessage) {
         this.fileId = roomFileMessage.getFileId();

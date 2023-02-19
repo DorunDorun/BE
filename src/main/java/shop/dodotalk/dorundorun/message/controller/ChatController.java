@@ -20,11 +20,6 @@ public class ChatController {
     public void message(ChatMessageRequestDto chatMessageRequestDto) {
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.ChatMessageCreate(chatMessageRequestDto);
 
-        System.out.println("--------------------controller------------------------");
-        System.out.println(chatMessageResponseDto.getMessageId());
-        System.out.println(chatMessageResponseDto.getMessage());
-        System.out.println("--------------------controller------------------------");
-
         messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageRequestDto.getSessionId(), chatMessageResponseDto);
     }
 }

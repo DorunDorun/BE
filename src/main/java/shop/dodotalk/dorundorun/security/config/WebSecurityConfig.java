@@ -48,8 +48,8 @@ public class WebSecurityConfig {
 
 
         /* JWT */
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.apply(new JwtFilterConfigurer(jwtUtil, userPrincipalService));
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//        http.apply(new JwtFilterConfigurer(jwtUtil, userPrincipalService));
 
 
         /* URL Mapping */
@@ -58,8 +58,8 @@ public class WebSecurityConfig {
                 .antMatchers("/").permitAll()
 
                 // todo 테스트 시 원활한 진행용으로 일단 모든 접근 허용
-                //.anyRequest().permitAll();
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
+                //.anyRequest().authenticated();
 
 
 

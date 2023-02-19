@@ -2,9 +2,11 @@ package shop.dodotalk.dorundorun.swagger.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import shop.dodotalk.dorundorun.chatroom.entity.Timestamped;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -27,13 +29,14 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
                 .apis(RequestHandlerSelectors.basePackage("shop.dodotalk.dorundorun"))
                 .paths(PathSelectors.ant("/api/**"))
                 .build()
-                .apiInfo(apiInfo());
+                .apiInfo(apiInfo())
+                .directModelSubstitute(Timestamped.class, Long.class);
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Test API 명세서")
-                .description("Test의 API명세서.")
+                .title("DoRun")
+                .description("DorunDorun의 API명세서.")
                 .version("1.0")
                 .build();
     }

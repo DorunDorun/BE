@@ -20,12 +20,13 @@ import shop.dodotalk.dorundorun.users.entity.User;
 @RequestMapping("/api")
 public class ChatMessageController {
     private final ChatMessageService chatMessageService;
-    @PostMapping("/chat/room/msg")
-    public ChatMsgDeleteResponseDto chatMsgDelete(@RequestBody ChatMsgDeleteRequestDto chatMsgDeleteRequestDto) {
-                                                  //@Authenticated OAuth2UserInfoAuthentication authentication) {
-        //User user = (User) authentication.getPrincipal();
 
-        ChatMsgDeleteResponseDto chatMsgDeleteResponseDto = chatMessageService.ChatMessageDelete(chatMsgDeleteRequestDto); // user
+    @PostMapping("/chat/room/msg")
+    public ChatMsgDeleteResponseDto chatMsgDelete(@RequestBody ChatMsgDeleteRequestDto chatMsgDeleteRequestDto,
+                                                  @Authenticated OAuth2UserInfoAuthentication authentication) {
+        User user = (User) authentication.getPrincipal();
+
+        ChatMsgDeleteResponseDto chatMsgDeleteResponseDto = chatMessageService.ChatMessageDelete(chatMsgDeleteRequestDto, user);
 
         return chatMsgDeleteResponseDto;
 

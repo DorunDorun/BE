@@ -53,7 +53,6 @@ dependencies {
     // aws
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
-
     // Web Socket (채팅)
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
@@ -61,10 +60,12 @@ dependencies {
 
     // test thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    
 
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Swagger
+    implementation "io.springfox:springfox-boot-starter:3.0.0"
 
     // Open Vidu
     implementation 'io.openvidu:openvidu-java-client:2.25.0'
@@ -72,7 +73,7 @@ dependencies {
     // mapper
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
-
+    
 }
 
 tasks.named('test') {

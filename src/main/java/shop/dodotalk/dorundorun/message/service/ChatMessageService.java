@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,6 +79,22 @@ public class ChatMessageService {
         System.out.println(chatMsgDeleteRequestDto.getSessionId());
         System.out.println(chatMsgDeleteRequestDto.getSocialUid());
         System.out.println("-----------------------1412313-------------------");
+
+        Optional<RoomMessage> roomMessage1 = roomMessageRepository.findBySessionId(chatMsgDeleteRequestDto.getSessionId());
+        System.out.println("-------------------roomMessageId1----------------");
+        System.out.println(roomMessage1.get().getMessageId());
+        System.out.println("-------------------roomMessageId1----------------");
+
+
+        Optional<RoomMessage> roomMessage2 = roomMessageRepository.findByMessageId(chatMsgDeleteRequestDto.getMessageId());
+        System.out.println("-------------------roomMessageId2----------------");
+        System.out.println(roomMessage2.get().getMessageId());
+        System.out.println("-------------------roomMessageId1----------------");
+
+        Optional<RoomMessage> roomMessage3 = roomMessageRepository.findBySocialUid(chatMsgDeleteRequestDto.getSocialUid());
+        System.out.println("-------------------roomMessageId3----------------");
+        System.out.println(roomMessage3.get().getMessageId());
+        System.out.println("-------------------roomMessageId3----------------");
 
         RoomMessage roomMessage = roomMessageRepository.findBySessionIdAndMessageIdAndSocialUid(
                 chatMsgDeleteRequestDto.getSessionId(), chatMsgDeleteRequestDto.getMessageId(), chatMsgDeleteRequestDto.getSocialUid())

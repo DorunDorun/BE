@@ -5,6 +5,7 @@ on:
     branches:
       - release
       - main
+      - feature/swagger-update
   pull_request:
     branches:
       - release

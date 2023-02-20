@@ -193,7 +193,7 @@ public class ChatRoomService {
     public ChatRoomAllResponseDto getAllRooms(int page) {
 
         /*페이지네이션 설정*/
-        PageRequest pageable = PageRequest.of(page - 1, 8);
+        PageRequest pageable = PageRequest.of(page - 1, 12);
         Page<ChatRoom> roomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
 //        Page<ChatRoom> roomList = chatRoomRepository.findByIsDeleteAndChatRoomUserList_IsDeleteOrderByModifiedAtDesc(false, pageable);
 
@@ -207,7 +207,7 @@ public class ChatRoomService {
 
         /*pagination을 위한 정보를 담은 Dto 생성*/
         ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
-                = new ChatRoomPageInfoResponseDto(page, 8, (int) roomList.getTotalElements(), roomList.getTotalPages());
+                = new ChatRoomPageInfoResponseDto(page, 12, (int) roomList.getTotalElements(), roomList.getTotalPages());
 
         /*room List 정보 Dto로 변환*/
         List<ChatRoom> rooms = roomList.getContent();
@@ -239,6 +239,7 @@ public class ChatRoomService {
 
 
     /*방 접속*/
+    @Transactional
     public ChatRoomEnterUsersResponseDto getRoomData(String SessionId, HttpServletRequest request, ChatRoomPasswordRequestDto
             password, Boolean reload, User user) throws OpenViduJavaClientException, OpenViduHttpException {
 
@@ -294,6 +295,7 @@ public class ChatRoomService {
                 isReEnterUser = true;
                 enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
                 roomUser.reEnterRoomUsers(enterRoomToken);
+
             } else if(roomUser.isDelete() && reload == false) {/* 방에서 나갔다가 재입장 */
                 isReEnterUser = true;
                 enterRoomToken = enterRoomCreateSession(user, room.getSessionId());

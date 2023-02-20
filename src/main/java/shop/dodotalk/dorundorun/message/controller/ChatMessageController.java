@@ -1,6 +1,7 @@
 package shop.dodotalk.dorundorun.message.controller;
 
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import shop.dodotalk.dorundorun.message.dto.ChatFileDeleteRequestDto;
@@ -18,6 +19,7 @@ import shop.dodotalk.dorundorun.users.entity.User;
 public class ChatMessageController {
     private final ChatMessageService chatMessageService;
 
+    @Tag(name = "채팅 메세지 삭제 컨트롤러")
     @DeleteMapping("/chat/room/msg")
     public ChatMsgDeleteResponseDto chatMsgDelete(@RequestBody ChatMsgDeleteRequestDto chatMsgDeleteRequestDto,
                                                   @Authenticated OAuth2UserInfoAuthentication authentication) {
@@ -29,6 +31,7 @@ public class ChatMessageController {
 
     }
 
+    @Tag(name = "채팅 파일 삭제 컨트롤러")
     @DeleteMapping("/chat/room/file")
     public ChatFileDeleteResponseDto chatFileDelete(@RequestBody ChatFileDeleteRequestDto chatFileDeleteRequestDto,
                                                     @Authenticated OAuth2UserInfoAuthentication authentication) {

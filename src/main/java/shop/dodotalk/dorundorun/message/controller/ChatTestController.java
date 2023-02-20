@@ -1,5 +1,6 @@
 package shop.dodotalk.dorundorun.message.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@ApiOperation(value="백엔드 메세지 테스트 코드")
 public class ChatTestController {
     private final RoomMessageRepository roomMessageRepository;
     @GetMapping("/chatrooms")

@@ -12,11 +12,13 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
 
     Page<ChatRoom> findByIsDeleteOrderByModifiedAtDesc(Boolean isDelete, Pageable pageable);
+//    Page<ChatRoom> findByIsDeleteAndChatRoomUserList_IsDeleteOrderByModifiedAtDesc(Boolean isDelete, Pageable pageable);
 
 
 
 
-    // Containing을 붙여주면 Like 검색이 가능 --> %{keyword}%
+
+    // Containing을 붙여주면 Like 검색이 가능 --> %{keyword}%x
 
     /*방 제목, 내용, 카테고리 검색*/
 /*    Page<Room> findByTitleContainingOrSubtitleContainingOrCategoryContainingOrderByModifiedAtDesc(String title,

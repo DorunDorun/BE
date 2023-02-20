@@ -65,6 +65,7 @@ public class ChatRoomService {
 
 
     /* 방 생성 */
+    @Transactional
     public ChatRoomCreateResponseDto createRoom(ChatRoomCreateRequestDto chatRoomCreateRequestDto,
                                                 HttpServletRequest request, User user)
             throws OpenViduJavaClientException, OpenViduHttpException {
@@ -83,6 +84,7 @@ public class ChatRoomService {
         }
 
         Category category = optionalCategory.get();
+
 
 
         // 채팅방 빌드
@@ -187,11 +189,13 @@ public class ChatRoomService {
 
 
     /*전체 방 조회하기*/
+    @Transactional
     public ChatRoomAllResponseDto getAllRooms(int page) {
 
         /*페이지네이션 설정*/
         PageRequest pageable = PageRequest.of(page - 1, 8);
         Page<ChatRoom> roomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
+//        Page<ChatRoom> roomList = chatRoomRepository.findByIsDeleteAndChatRoomUserList_IsDeleteOrderByModifiedAtDesc(false, pageable);
 
 
         /*채팅방이 존재하지 않을 경우*/

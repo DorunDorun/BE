@@ -3,7 +3,6 @@ package shop.dodotalk.dorundorun.message.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.dodotalk.dorundorun.chatroom.entity.Room;
 import shop.dodotalk.dorundorun.chatroom.entity.Timestamped;
 import shop.dodotalk.dorundorun.message.dto.ChatMessageRequestDto;
 import shop.dodotalk.dorundorun.message.dto.ChatMessageResponseDto;

@@ -6,8 +6,8 @@ import io.openvidu.java.client.OpenViduJavaClientException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import shop.dodotalk.dorundorun.chatroom.dto.request.CreateRoomRequestDto;
-import shop.dodotalk.dorundorun.chatroom.dto.request.RoomPasswordRequestDto;
+import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomCreateRequestDto;
+import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomPasswordRequestDto;
 import shop.dodotalk.dorundorun.chatroom.error.PrivateResponseBody;
 import shop.dodotalk.dorundorun.chatroom.service.ChatRoomService;
 import shop.dodotalk.dorundorun.chatroom.util.ResponseUtil;
@@ -24,32 +24,34 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
-    // 방 생성
+    /*화상 채팅 방 API Controller*/
+
+    /*
+    * 방 생성 API : 방이 만들어지며, 방을 만든 사람은 즉시 접속 된다.
+    * 방 입장 API : 만들어진 방에 입장하는 API --> 방장 X
+    * 방 목록 API : page 별로 방 목록을 조회해온다. 1 page = 8 rooms
+    * 방 나가기 API : 방을 나갈때 해당 하는 API이며, 해당 방의 모든 유저가 나갈 시 방이 삭제 된다.*/
+
+    /*방 생성 API*/
     @PostMapping("/create/room")
-    public ResponseEntity<PrivateResponseBody> makeRoom(@RequestBody CreateRoomRequestDto createRoomRequestDto,
+    public ResponseEntity<PrivateResponseBody> makeRoom(@RequestBody ChatRoomCreateRequestDto chatRoomCreateRequestDto,
                                                         HttpServletRequest request,
                                                         @Authenticated OAuth2UserInfoAuthentication authentication)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
+
         User user = (User) authentication.getPrincipal();
 
         return new ResponseUtil<>().forSuccess(chatRoomService
-                .createRoom(createRoomRequestDto, request, user));
+                .createRoom(chatRoomCreateRequestDto, request, user));
 
     }
 
-    //전체 방 조회 페이지처리
-    @GetMapping("/rooms/{page}")
-    public ResponseEntity<PrivateResponseBody> getAllRooms(@PathVariable int page) {
-        return new ResponseUtil<>().forSuccess(chatRoomService.getAllRooms(page));
-    }
-
-
-    // 방 접속
+    /*방 입장 API*/
     @PostMapping("/rooms/{sessionid}")
     public ResponseEntity<PrivateResponseBody> enterRoom(@PathVariable(name = "sessionid") String sessionId,
                                                          HttpServletRequest request,
-                                                         @RequestBody(required = false) RoomPasswordRequestDto password,
+                                                         @RequestBody(required = false) ChatRoomPasswordRequestDto password,
                                                          @Authenticated OAuth2UserInfoAuthentication authentication)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
@@ -58,10 +60,18 @@ public class ChatRoomController {
         return new ResponseUtil<>().forSuccess(chatRoomService.getRoomData(sessionId, request, password, user));
     }
 
+    /*방 목록 API*/
+    @GetMapping("/rooms/{page}")
+    public ResponseEntity<PrivateResponseBody> getAllRooms(@PathVariable int page) {
+        return new ResponseUtil<>().forSuccess(chatRoomService.getAllRooms(page));
+    }
 
-    // 방 나가기 -> 모든인원 나가면 방삭제
+
+
+    /*방 나가기 API*/
     @PostMapping("/rooms/{sessionid}/users")
-    public ResponseEntity<PrivateResponseBody> outRoomUser(@PathVariable(name = "sessionid") String sessionId, HttpServletRequest request,
+    public ResponseEntity<PrivateResponseBody> outRoomUser(@PathVariable(name = "sessionid") String sessionId,
+                                                           HttpServletRequest request,
                                                            @Authenticated OAuth2UserInfoAuthentication authentication) {
 
         User user = (User) authentication.getPrincipal();
@@ -70,10 +80,21 @@ public class ChatRoomController {
     }
 
 
-//    // 키워드로 방 검색
-//    @GetMapping("/rooms/search/{page}")
-//    public ResponseEntity<?> searchRoom(@PathVariable int page, @RequestParam String keyword) {
-//        return new ResponseUtil<>().forSuccess(chatRoomService.searchRoom(keyword, page));
-//    }
+    /*
+    * 2차 Scope
+    * 방 검색 API
+    * - SearchTypeEnum
+    *   - 카테고리 검색 --> 아직 미구현 Repository에서 카테고리 타입을 넘겨야함.
+    *   - 글 제목 검색
+    *   - 글 내용 검색
+    */
+
+    /*방 검색 API(키워드)*/
+    @GetMapping("/rooms/search/{page}")
+    public ResponseEntity<?> searchRoom(@PathVariable int page,
+                                        @RequestParam String keyword) {
+
+        return new ResponseUtil<>().forSuccess(chatRoomService.searchRoom(keyword, page));
+    }
 
 }

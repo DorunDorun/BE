@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.dodotalk.dorundorun.chatroom.entity.RoomUsers;
+import shop.dodotalk.dorundorun.chatroom.entity.ChatRoomUser;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomUsersResponseDto {
+public class ChatRoomUserResponseDto {
 
 //    private Long roomUserId;
 
@@ -27,27 +27,20 @@ public class RoomUsersResponseDto {
 
     private String email;
 
-    private String ProfileImage;
-
-    // 방장인지 확인
-    private boolean roomMaster;
-
-    // 방 접속시 모든 사용자의 정보를 보내기 때문에 현재 접속한 유저 구분용도
-    private boolean nowUser;
+    private String profileImage;
 
     private String enterRoomToken;
 
-    public RoomUsersResponseDto(RoomUsers entity, boolean roomMaster, boolean nowUser){
+    public ChatRoomUserResponseDto(ChatRoomUser entity){
 //        this.roomUserId = entity.getRoomUserId();
         this.sessionId = entity.getSessionId();
         this.social = entity.getSocial();
         this.userId = entity.getUserId();
         this.nickname = entity.getNickname();
         this.email = entity.getEmail();
-        this.ProfileImage = entity.getProfileImage();
+        this.profileImage = entity.getProfileImage();
         this.enterRoomToken = entity.getEnterRoomToken();
-        this.roomMaster = roomMaster;
-        this.nowUser = nowUser;
+
     }
 
 //    public RoomUsersResponseDto(RoomUsers entity) {

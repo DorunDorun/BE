@@ -3,13 +3,11 @@ package shop.dodotalk.dorundorun.message.service;
 import org.springframework.http.HttpStatus;
 import shop.dodotalk.dorundorun.aws.service.AwsService;
 import shop.dodotalk.dorundorun.chatroom.entity.BenUser;
-import shop.dodotalk.dorundorun.chatroom.entity.Room;
-import shop.dodotalk.dorundorun.chatroom.entity.RoomUsers;
-import shop.dodotalk.dorundorun.chatroom.error.ErrorCode;
-import shop.dodotalk.dorundorun.chatroom.error.PrivateException;
+import shop.dodotalk.dorundorun.chatroom.entity.ChatRoom;
+import shop.dodotalk.dorundorun.chatroom.entity.ChatRoomUser;
 import shop.dodotalk.dorundorun.chatroom.repository.BenUserRepository;
-import shop.dodotalk.dorundorun.chatroom.repository.RoomRepository;
-import shop.dodotalk.dorundorun.chatroom.repository.RoomUsersRepository;
+import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
+import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomUserRepository;
 import shop.dodotalk.dorundorun.error.CustomErrorException;
 import shop.dodotalk.dorundorun.message.dto.*;
 
@@ -36,8 +34,8 @@ import shop.dodotalk.dorundorun.users.repository.UserRepository;
 public class ChatMessageService {
     private final AwsService awsService;
     private final UserRepository userRepository;
-    private final RoomRepository roomRepository;
-    private final RoomUsersRepository roomUsersRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomUserRepository chatRoomUserRepository;
     private final BenUserRepository benUserRepository;
     private final RoomMessageRepository roomMessageRepository;
     private final RoomFileMessageRepository roomFileMessageRepository;
@@ -62,7 +60,7 @@ public class ChatMessageService {
     @Transactional
     public ChatMsgDeleteResponseDto ChatMessageDelete(ChatMsgDeleteRequestDto chatMsgDeleteRequestDto,
                                                     User user) {
-        Room room = roomRepository.findById(chatMsgDeleteRequestDto.getSessionId()).orElseThrow(
+        ChatRoom room = chatRoomRepository.findById(chatMsgDeleteRequestDto.getSessionId()).orElseThrow(
                 () -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다."));
 
         BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatMsgDeleteRequestDto.getSessionId());
@@ -70,7 +68,7 @@ public class ChatMessageService {
             throw new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "강퇴당한 방입니다.");
         }
 
-        RoomUsers alreadyRoomUser = roomUsersRepository.findBySessionIdAndUserId(chatMsgDeleteRequestDto.getSessionId(), user.getId())
+        ChatRoomUser alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(chatMsgDeleteRequestDto.getSessionId(), user.getId())
                 .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
 
         RoomMessage roomMessage = roomMessageRepository.findBySessionIdAndMessageIdAndSocialUid(
@@ -87,7 +85,7 @@ public class ChatMessageService {
     @Transactional
     public ChatFileDeleteResponseDto ChatFileDelete(ChatFileDeleteRequestDto chatFileDeleteRequestDto,
                                                        User user) {
-        Room room = roomRepository.findById(chatFileDeleteRequestDto.getSessionId()).orElseThrow(
+        ChatRoom room = chatRoomRepository.findById(chatFileDeleteRequestDto.getSessionId()).orElseThrow(
                 () -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다."));
 
         BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatFileDeleteRequestDto.getSessionId());
@@ -96,7 +94,7 @@ public class ChatMessageService {
         }
 
 
-        RoomUsers alreadyRoomUser = roomUsersRepository.findBySessionIdAndUserId(chatFileDeleteRequestDto.getSessionId(), user.getId())
+        ChatRoomUser alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(chatFileDeleteRequestDto.getSessionId(), user.getId())
                 .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
 
         RoomFileMessage roomFile = roomFileMessageRepository.findBySessionIdAndFileIdAndSocialUid(

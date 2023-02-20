@@ -1,14 +1,10 @@
 package shop.dodotalk.dorundorun.chatroom.dto.response;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Page;
 import shop.dodotalk.dorundorun.chatroom.entity.*;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -27,14 +23,15 @@ public class ChatRoomResponseDto {
     private String category;
     private String master;
     private String saying;
-    private List<RoomUsers> roomUsers;
+//    private List<RoomUsers> roomUsers;
+    private List<ChatRoomUserResponseDto> chatRoomUserList;
     private Long cntUser;
 
     public void setCategory(Category category) {
         this.category = category.getCategory().getCategoryKr();
     }
 
-    public ChatRoomResponseDto(Room room) {
+    public ChatRoomResponseDto(ChatRoom room, List<ChatRoomUserResponseDto> chatRoomUserList) {
 
         this.sessionId = room.getSessionId();
         this.title = room.getTitle();
@@ -45,7 +42,7 @@ public class ChatRoomResponseDto {
         this.category = room.getCategory().getCategory().getCategoryKr();
         this.master = room.getMaster();
         this.saying = room.getSaying();
-        this.roomUsers = room.getRoomUsers();
+        this.chatRoomUserList = chatRoomUserList;
         this.cntUser = room.getCntUser();
     }
 }

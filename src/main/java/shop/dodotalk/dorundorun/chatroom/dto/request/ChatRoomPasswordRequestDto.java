@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class RoomPasswordRequestDto {
+public class ChatRoomPasswordRequestDto {
 
     private String password;
 }

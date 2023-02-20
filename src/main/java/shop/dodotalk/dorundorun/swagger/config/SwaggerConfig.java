@@ -52,15 +52,15 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     private List<SecurityScheme> apiKey() {
         List<SecurityScheme> apiKeyList = new ArrayList<>();
-        apiKeyList.add(new ApiKey("JWT1", "Authorization", "header"));
-        apiKeyList.add(new ApiKey("JWT2", "Refresh", "header"));
+        apiKeyList.add(new ApiKey("Access", "Authorization", "header"));
+        apiKeyList.add(new ApiKey("Refresh", "Refresh", "header"));
         return apiKeyList;
     }
 
     private List<SecurityContext> securityContext() {
         List<SecurityContext> contextList = new ArrayList<>();
-        contextList.add(SecurityContext.builder().securityReferences(defaultAuth("JWT1")).build());
-        contextList.add(SecurityContext.builder().securityReferences(defaultAuth("JWT2")).build());
+        contextList.add(SecurityContext.builder().securityReferences(defaultAuth("Access")).build());
+        contextList.add(SecurityContext.builder().securityReferences(defaultAuth("Refresh")).build());
         return contextList;
     }
 

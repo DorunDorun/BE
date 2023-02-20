@@ -93,7 +93,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     successfulAuthentication(request, response, filterChain, authentication);
 
 
-
                     log.info("reissue refresh Token & access Token");
                 }
             }

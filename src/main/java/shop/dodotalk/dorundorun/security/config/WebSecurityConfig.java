@@ -64,13 +64,12 @@ public class WebSecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.apply(new JwtFilterConfigurer(jwtUtil, userPrincipalService));
 
-
         /* URL Mapping */
         http.authorizeRequests()
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
-
+                .antMatchers("/ws-stomp/**").permitAll()
                 // todo 테스트 시 원활한 진행용으로 일단 모든 접근 허용
                 //.anyRequest().permitAll();
                 .anyRequest().authenticated();

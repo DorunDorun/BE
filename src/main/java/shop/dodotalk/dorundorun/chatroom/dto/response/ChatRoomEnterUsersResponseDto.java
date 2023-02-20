@@ -22,7 +22,7 @@ public class ChatRoomEnterUsersResponseDto {
     private String saying;
     private Long cntUser;
 
-    List<ChatRoomEnterUserResponseDto> chatRoomUserResponseDtos;
+    List<ChatRoomEnterUserResponseDto> chatRoomUserList;
 
 
     public ChatRoomEnterUsersResponseDto(ChatRoom room, List<ChatRoomEnterUserResponseDto> chatRoomUserResponseDtos) {
@@ -37,7 +37,7 @@ public class ChatRoomEnterUsersResponseDto {
         this.master = room.getMaster();
         this.saying = room.getSaying();
         this.cntUser = room.getCntUser();
-        this.chatRoomUserResponseDtos = chatRoomUserResponseDtos;
+        this.chatRoomUserList = chatRoomUserResponseDtos;
     }
 
 

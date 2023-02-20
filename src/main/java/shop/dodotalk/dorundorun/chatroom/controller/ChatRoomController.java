@@ -47,17 +47,20 @@ public class ChatRoomController {
 
     }
 
-    /*방 입장 API*/
+    /*방 입장 API
+    * 새로고침 시 reload=true,
+    * 일반 입장 시 reload=false*/
     @PostMapping("/rooms/{sessionid}")
     public ResponseEntity<PrivateResponseBody> enterRoom(@PathVariable(name = "sessionid") String sessionId,
                                                          HttpServletRequest request,
                                                          @RequestBody(required = false) ChatRoomPasswordRequestDto password,
+                                                         @RequestParam Boolean reload,
                                                          @Authenticated OAuth2UserInfoAuthentication authentication)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
         User user = (User) authentication.getPrincipal();
 
-        return new ResponseUtil<>().forSuccess(chatRoomService.getRoomData(sessionId, request, password, user));
+        return new ResponseUtil<>().forSuccess(chatRoomService.getRoomData(sessionId, request, password, reload, user));
     }
 
     /*방 목록 API*/

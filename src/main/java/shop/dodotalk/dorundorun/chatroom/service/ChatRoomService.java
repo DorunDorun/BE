@@ -240,7 +240,7 @@ public class ChatRoomService {
 
     /*방 접속*/
     public ChatRoomEnterUsersResponseDto getRoomData(String SessionId, HttpServletRequest request, ChatRoomPasswordRequestDto
-            password, User user) throws OpenViduJavaClientException, OpenViduHttpException {
+            password, Boolean reload, User user) throws OpenViduJavaClientException, OpenViduHttpException {
 
         /*방이 있는 지 확인*/
         ChatRoom room = chatRoomRepository.findById(SessionId).orElseThrow(
@@ -269,11 +269,9 @@ public class ChatRoomService {
         }
 
 
-
-
-
         /*룸 멤버 있는 지 확인*/
         Optional<ChatRoomUser> alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(SessionId, user.getId());
+
 
         boolean isReEnterUser = false;
         String enterRoomToken = null;
@@ -288,10 +286,15 @@ public class ChatRoomService {
 
             ChatRoomUser roomUser = alreadyRoomUser.get();
 
+
             /* 방에 이미 입장해있는 상태 */
-            if (!roomUser.isDelete()) {
+            if (!roomUser.isDelete() && reload == false) {
                 throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "이미 입장한 멤버입니다."));
-            } else {/* 재입장 */
+            } else if (!roomUser.isDelete() && reload == true) { /*채팅방 안에서 새로고침 시*/
+                isReEnterUser = true;
+                enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
+                roomUser.reEnterRoomUsers(enterRoomToken);
+            } else if(roomUser.isDelete() && reload == false) {/* 방에서 나갔다가 재입장 */
                 isReEnterUser = true;
                 enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
                 roomUser.reEnterRoomUsers(enterRoomToken);

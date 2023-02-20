@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Room extends Timestamped {
+public class ChatRoom extends Timestamped {
 
     @Id
     private String sessionId;      // 방 번호
@@ -56,7 +56,7 @@ public class Room extends Timestamped {
 
 
     @OneToMany(mappedBy = "sessionId", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RoomUsers> roomUsers;
+    private List<ChatRoomUser> chatRoomUserList;
 
     @Column
     private Long cntUser;         // 현재 방 인원

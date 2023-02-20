@@ -10,20 +10,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.dodotalk.dorundorun.chatroom.dto.RoomMapper;
-import shop.dodotalk.dorundorun.chatroom.dto.request.CreateRoomRequestDto;
-import shop.dodotalk.dorundorun.chatroom.dto.request.RoomPasswordRequestDto;
+import shop.dodotalk.dorundorun.chatroom.dto.ChatRoomMapper;
+import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomCreateRequestDto;
+import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomPasswordRequestDto;
 import shop.dodotalk.dorundorun.chatroom.dto.response.*;
 import shop.dodotalk.dorundorun.chatroom.entity.BenUser;
 import shop.dodotalk.dorundorun.chatroom.entity.Category;
-import shop.dodotalk.dorundorun.chatroom.entity.Room;
-import shop.dodotalk.dorundorun.chatroom.entity.RoomUsers;
+import shop.dodotalk.dorundorun.chatroom.entity.ChatRoom;
+import shop.dodotalk.dorundorun.chatroom.entity.ChatRoomUser;
 import shop.dodotalk.dorundorun.chatroom.error.ErrorCode;
 import shop.dodotalk.dorundorun.chatroom.error.PrivateException;
 import shop.dodotalk.dorundorun.chatroom.repository.BenUserRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.CategoryRepository;
-import shop.dodotalk.dorundorun.chatroom.repository.RoomUsersRepository;
-import shop.dodotalk.dorundorun.chatroom.repository.RoomRepository;
+import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomUserRepository;
+import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
 import shop.dodotalk.dorundorun.chatroom.util.CreateSaying;
 import shop.dodotalk.dorundorun.security.jwt.JwtUtil;
 import shop.dodotalk.dorundorun.users.entity.User;
@@ -34,7 +34,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -42,12 +41,12 @@ import java.util.Optional;
 @Slf4j
 public class ChatRoomService {
 
-    private final RoomRepository roomRepository;
-    private final RoomUsersRepository roomUsersRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomUserRepository chatRoomUserRepository;
     private final BenUserRepository benUserRepository;
     private final CreateSaying createSaying;
     private final CategoryRepository categoryRepository;
-    private final RoomMapper roomMapper;
+    private final ChatRoomMapper chatRoomMapper;
 
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
@@ -66,22 +65,18 @@ public class ChatRoomService {
 
 
     /* 방 생성 */
-
-    public CreateRoomResponseDto createRoom(CreateRoomRequestDto createRoomRequestDto,
-                                            HttpServletRequest request, User user)
+    public ChatRoomCreateResponseDto createRoom(ChatRoomCreateRequestDto chatRoomCreateRequestDto,
+                                                HttpServletRequest request, User user)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
-
         /* Session Id, Token 셋팅 */
-        CreateRoomResponseDto newToken = createNewToken(user);
-
-        log.info("생성된 토큰은 : " + newToken + " 입니다.");
+        ChatRoomCreateResponseDto newToken = createNewToken(user);
 
 
         /* 카테고리 확인 후 해당 카테고리에 맞는 랜덤 명언 제조 */
-        String saying = createSaying.createSaying(createRoomRequestDto.getCategory());
+        String saying = createSaying.createSaying(chatRoomCreateRequestDto.getCategory());
 
-        Optional<Category> optionalCategory = categoryRepository.findByCategory(createRoomRequestDto.getCategory());
+        Optional<Category> optionalCategory = categoryRepository.findByCategory(chatRoomCreateRequestDto.getCategory());
 
         if (optionalCategory.isEmpty()) {
             throw new IllegalAccessError("해당 카테고리가 존재하지 않습니다.");
@@ -91,22 +86,22 @@ public class ChatRoomService {
 
 
         // 채팅방 빌드
-        Room room = Room.builder()
+        ChatRoom chatRoom = ChatRoom.builder()
                 .sessionId(newToken.getSessionId())
-                .title(createRoomRequestDto.getTitle())
-                .subtitle(createRoomRequestDto.getSubtitle())
+                .title(chatRoomCreateRequestDto.getTitle())
+                .subtitle(chatRoomCreateRequestDto.getSubtitle())
                 .master(user.getName())
                 .masterUserId(user.getId())
-                .buttonImage(createRoomRequestDto.getButtonImage())
-                .status(createRoomRequestDto.isStatus())
+                .buttonImage(chatRoomCreateRequestDto.getButtonImage())
+                .status(chatRoomCreateRequestDto.isStatus())
                 .category(category)
-                .password(createRoomRequestDto.getPassword())
+                .password(chatRoomCreateRequestDto.getPassword())
                 .saying(saying)
                 .build();
 
 
         /*빌드된 채팅방 저장(생성)*/
-        Room savedRoom = roomRepository.save(room);
+        ChatRoom savedRoom = chatRoomRepository.save(chatRoom);
 
 
         // 아래 코드 계속 진행시 createdAt이 null로 바뀌어서.
@@ -115,9 +110,8 @@ public class ChatRoomService {
 
 
         /*해당 방에 접속한 유저 정보 생성하기.*/
-
         // 방생성 할때 첫유저 (방장)
-        RoomUsers roomUsers = RoomUsers.builder()
+        ChatRoomUser chatRoomUser = ChatRoomUser.builder()
                 .sessionId(savedRoom.getSessionId())
                 .userId(user.getId())
                 .social(user.getProvider())
@@ -130,23 +124,23 @@ public class ChatRoomService {
                 .build();
 
         // 채팅방 인원 저장하기
-        roomUsersRepository.save(roomUsers);
+        chatRoomUserRepository.save(chatRoomUser);
 
 
-        List<RoomUsers> roomUsersList = roomUsersRepository.findAllBySessionId(savedRoom.getSessionId());
+        List<ChatRoomUser> chatRoomUserList = chatRoomUserRepository.findAllBySessionId(savedRoom.getSessionId());
 
-        List<RoomUsersResponseDto> roomUsersResponseDtoList = new ArrayList<>();
+        List<ChatRoomEnterUserResponseDto> chatRoomEnterUserResponseDtoList = new ArrayList<>();
 
 
         boolean roomMaster;
         boolean nowUser;
 
         // 채팅방 인원 추가
-        for (RoomUsers roomUsersEle : roomUsersList) {
+        for (ChatRoomUser chatRoomUsersEle : chatRoomUserList) {
 
             // 방장일 시
             // 현재 접속한 유저일 시 본인이 누군지 알기 위해.
-            if (user != null && roomUsersEle.getUserId().equals(user.getId())) {
+            if (user != null && chatRoomUsersEle.getUserId().equals(user.getId())) {
 
                 roomMaster = true;
                 nowUser = true;
@@ -158,21 +152,21 @@ public class ChatRoomService {
             }
 
 
-            roomUsersResponseDtoList.add(new RoomUsersResponseDto(roomUsersEle, roomMaster, nowUser));
+            chatRoomEnterUserResponseDtoList.add(new ChatRoomEnterUserResponseDto(chatRoomUsersEle, roomMaster, nowUser));
 
         }
 
 
-        Long currentUser = roomUsersRepository.countAllBySessionId(savedRoom.getSessionId());
+        Long currentUser = chatRoomUserRepository.countAllBySessionId(savedRoom.getSessionId());
 
-        room.updateCntUser(currentUser);
-        roomRepository.save(room);
+        chatRoom.updateCntUser(currentUser);
+        chatRoomRepository.save(chatRoom);
 
 
         // 저장된 채팅방의 roomId는 OpenVidu 채팅방의 세션 아이디로써 생성 후 바로 해당 채팅방의 세션 아이디와
         // 오픈 비두 서버에서 미디어 데이터를 받아올 떄 사용할 토큰을 리턴.
         // 채팅방 생성 후 최초 채팅방 생성자는 채팅방에 즉시 입장할 것으로 예상 -> 채팅방이 보여지기 위한 정보들을 리턴
-        return CreateRoomResponseDto.builder()
+        return ChatRoomCreateResponseDto.builder()
                 .sessionId(savedRoom.getSessionId())
                 .title(savedRoom.getTitle())
                 .subtitle(savedRoom.getSubtitle())
@@ -197,7 +191,7 @@ public class ChatRoomService {
 
         /*페이지네이션 설정*/
         PageRequest pageable = PageRequest.of(page - 1, 8);
-        Page<Room> roomList = roomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
+        Page<ChatRoom> roomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
 
 
         /*채팅방이 존재하지 않을 경우*/
@@ -212,11 +206,12 @@ public class ChatRoomService {
                 = new ChatRoomPageInfoResponseDto(page, 8, (int) roomList.getTotalElements(), roomList.getTotalPages());
 
         /*room List 정보 Dto로 변환*/
-        List<Room> rooms = roomList.getContent();
-        List<ChatRoomResponseDto> chatRoomResponseDtos = roomMapper.roomsToRoomResponseDtos(rooms);
+        List<ChatRoom> rooms = roomList.getContent();
+
+        List<ChatRoomResponseDto> chatRoomResponseDtoList = chatRoomMapper.roomsToRoomResponseDtos(rooms);
 
 
-        return new ChatRoomAllResponseDto(chatRoomResponseDtos, chatRoomPageInfoResponseDto);
+        return new ChatRoomAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
     }
 
 
@@ -240,11 +235,11 @@ public class ChatRoomService {
 
 
     /*방 접속*/
-    public ChatRoomUsersResponseDto getRoomData(String SessionId, HttpServletRequest request, RoomPasswordRequestDto
+    public ChatRoomEnterUsersResponseDto getRoomData(String SessionId, HttpServletRequest request, ChatRoomPasswordRequestDto
             password, User user) throws OpenViduJavaClientException, OpenViduHttpException {
 
         /*방이 있는 지 확인*/
-        Room room = roomRepository.findById(SessionId).orElseThrow(
+        ChatRoom room = chatRoomRepository.findById(SessionId).orElseThrow(
                 () -> new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다.")));
 
 
@@ -274,7 +269,7 @@ public class ChatRoomService {
 
 
         /*룸 멤버 있는 지 확인*/
-        Optional<RoomUsers> alreadyRoomUser = roomUsersRepository.findBySessionIdAndUserId(SessionId, user.getId());
+        Optional<ChatRoomUser> alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(SessionId, user.getId());
 
         boolean isReEnterUser = false;
         String enterRoomToken = null;
@@ -287,7 +282,7 @@ public class ChatRoomService {
              *  is_delete를 false로 만들고 방에 다시 입장 시킨다.
              * openvidu 토큰은 일회성이므로 토큰도업데이트 해줘야함. */
 
-            RoomUsers roomUser = alreadyRoomUser.get();
+            ChatRoomUser roomUser = alreadyRoomUser.get();
 
             /* 방에 이미 입장해있는 상태 */
             if (!roomUser.isDelete()) {
@@ -306,7 +301,7 @@ public class ChatRoomService {
 
 
             // 채팅방 유저 만들기 (현재접속한 사용자) (처음 접속한 경우만)
-            RoomUsers roomUsers = RoomUsers.builder()
+            ChatRoomUser chatRoomUsers = ChatRoomUser.builder()
                     .sessionId(room.getSessionId())
                     .userId(user.getId())
                     .social(user.getProvider())
@@ -318,7 +313,7 @@ public class ChatRoomService {
                     .build();
 
             // 현재 방에 접속한 사용자 저장
-            roomUsersRepository.save(roomUsers);
+            chatRoomUserRepository.save(chatRoomUsers);
 
 
         }
@@ -328,17 +323,17 @@ public class ChatRoomService {
         boolean roomMaster;
         boolean nowUser;
 
-        List<RoomUsers> roomUsersList = roomUsersRepository.findAllBySessionId(room.getSessionId());
+        List<ChatRoomUser> chatRoomUsersList = chatRoomUserRepository.findAllBySessionId(room.getSessionId());
 
-        List<RoomUsersResponseDto> roomUsersResponseDtoList = new ArrayList<>();
+        List<ChatRoomEnterUserResponseDto> chatRoomEnterUserResponseDtoList = new ArrayList<>();
 
         // 채팅방 인원 추가
         // 방장 및 현재 접속한 유저 표시.
-        for (RoomUsers addRoomUsers : roomUsersList) {
+        for (ChatRoomUser addChatRoomUsers : chatRoomUsersList) {
 
 
             // 방장일 시
-            if (user != null && room.getMasterUserId().equals(addRoomUsers.getUserId())) {
+            if (user != null && room.getMasterUserId().equals(addChatRoomUsers.getUserId())) {
                 roomMaster = true;
             } else {
                 roomMaster = false;
@@ -346,36 +341,30 @@ public class ChatRoomService {
 
 
             // 현재 접속한 유저일 시 본인이 누군지 알기 위해.
-            if (user != null && addRoomUsers.getUserId().equals((user.getId()))) {
+            if (user != null && addChatRoomUsers.getUserId().equals((user.getId()))) {
                 nowUser = true;
             } else {
                 nowUser = false;
             }
 
 
-            roomUsersResponseDtoList.add(new RoomUsersResponseDto(addRoomUsers, roomMaster, nowUser));
+            chatRoomEnterUserResponseDtoList.add(new ChatRoomEnterUserResponseDto(addChatRoomUsers, roomMaster, nowUser));
 
         }
 
 
-        ChatRoomUsersResponseDto chatRoomResponseDto
-                = new ChatRoomUsersResponseDto(room, roomUsersResponseDtoList);
+        ChatRoomEnterUsersResponseDto chatRoomResponseDto
+                = new ChatRoomEnterUsersResponseDto(room, chatRoomEnterUserResponseDtoList);
 
 
-        Long currentUser = roomUsersRepository.countAllBySessionId(room.getSessionId());
+        Long currentUser = chatRoomUserRepository.countAllBySessionId(room.getSessionId());
 
         room.updateCntUser(currentUser);
 
-        roomRepository.save(room);
+        chatRoomRepository.save(room);
 
 
 
-
-
-/*기존버전 : 유저 정보만 다 뿌려줌*/
-//        return roomUsersResponseDtoList;
-
-        /*변경 버전 방정보 까지 포함*/
         return chatRoomResponseDto;
 
     }
@@ -387,12 +376,12 @@ public class ChatRoomService {
 
 
         // 방이 있는 지 확인
-        Room room = roomRepository.findById(sessionId).orElseThrow(
+        ChatRoom room = chatRoomRepository.findById(sessionId).orElseThrow(
                 () -> new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "방이 존재하지않습니다."))
         );
 
         // 룸 멤버 찾기
-        RoomUsers roomUsers = roomUsersRepository.findBySessionIdAndUserId(sessionId, user.getId()).orElseThrow(
+        ChatRoomUser chatRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(sessionId, user.getId()).orElseThrow(
                 () -> new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "방에 있는 멤버가 아닙니다."))
         );
 
@@ -400,7 +389,7 @@ public class ChatRoomService {
         // 룸 멤버 논리 삭제. soft delete
         // 퇴장(삭제)한 시간 기록
         LocalDateTime roomExitTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
-        roomUsers.deleteRoomUsers(roomExitTime);
+        chatRoomUser.deleteRoomUsers(roomExitTime);
 
 
 
@@ -431,14 +420,14 @@ public class ChatRoomService {
 
 
         // 룸 변경사항 저장
-        roomRepository.save(room);
+        chatRoomRepository.save(room);
 
         return "Success";
     }
 
 
     // 채팅방 생성 시 토큰 발급
-    private CreateRoomResponseDto createNewToken(User user) throws OpenViduJavaClientException, OpenViduHttpException {
+    private ChatRoomCreateResponseDto createNewToken(User user) throws OpenViduJavaClientException, OpenViduHttpException {
 
 
         // 사용자 연결 시 닉네임 전달
@@ -458,7 +447,7 @@ public class ChatRoomService {
         String token = session.createConnection(connectionProperties).getToken();
 
 
-        return CreateRoomResponseDto.builder()
+        return ChatRoomCreateResponseDto.builder()
                 .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
                 .token(token) //이 토큰으로 오픈비두에 해당 유저의 화상 미디어 정보를 받아주세요
                 .build();
@@ -499,6 +488,29 @@ public class ChatRoomService {
         return session.createConnection(connectionProperties).getToken();
     }
 
+
+    /*
+    * 2차 Scope 채팅방 검색
+    * */
+    public Page<ChatRoom> searchRoom(String keyword, int page) {
+
+        PageRequest pageable = PageRequest.of(page - 1, 8);
+
+        Page<ChatRoom> searchRoom =
+                chatRoomRepository.findByTitleContainingOrSubtitleContainingOrderByModifiedAtDesc(keyword
+                        ,keyword
+                        ,pageable);
+
+        if (keyword.length() < 2 || keyword.length() > 14) {
+            throw new PrivateException(new ErrorCode(HttpStatus.OK, "200", "검색 양식에 맞지 않습니다."));
+        }
+
+        // 검색 결과가 없다면
+        if (searchRoom.isEmpty()) {
+            throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "200", "검색 결과가 없습니다."));
+        }
+        return searchRoom;
+    }
 
 }
 

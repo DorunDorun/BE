@@ -27,7 +27,7 @@ public class Category {
 
     @JsonIgnore
     @OneToMany(mappedBy = "category")
-    private List<Room> rooms = new ArrayList<>();
+    private List<ChatRoom> rooms = new ArrayList<>();
 
 
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class ChatRoomUsersResponseDto {
+public class ChatRoomEnterUsersResponseDto {
 
     private String sessionId;
     private String title;
@@ -22,10 +22,10 @@ public class ChatRoomUsersResponseDto {
     private String saying;
     private Long cntUser;
 
-    List<ChatRoomUserResponseDto> chatRoomUserResponseDtos;
+    List<ChatRoomEnterUserResponseDto> chatRoomUserResponseDtos;
 
 
-    public ChatRoomUsersResponseDto(ChatRoom room, List<ChatRoomUserResponseDto> chatRoomUserResponseDtos) {
+    public ChatRoomEnterUsersResponseDto(ChatRoom room, List<ChatRoomEnterUserResponseDto> chatRoomUserResponseDtos) {
 
         this.sessionId = room.getSessionId();
         this.title = room.getTitle();

@@ -3,12 +3,11 @@ package shop.dodotalk.dorundorun.chatroom.dto.request;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import shop.dodotalk.dorundorun.chatroom.entity.ButtonImageEnum;
-import shop.dodotalk.dorundorun.chatroom.entity.ButtonImageEnum;
 import shop.dodotalk.dorundorun.chatroom.entity.CategoryEnum;
 
 @Getter
 @RequiredArgsConstructor
-public class CreateRoomRequestDto {
+public class ChatRoomCreateRequestDto {
 
     private String title;                   // 방 제목
     private String subtitle;                // 방 부제목 (내용)

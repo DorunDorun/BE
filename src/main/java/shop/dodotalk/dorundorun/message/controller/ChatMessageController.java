@@ -2,10 +2,7 @@ package shop.dodotalk.dorundorun.message.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import shop.dodotalk.dorundorun.message.dto.ChatFileDeleteRequestDto;
 import shop.dodotalk.dorundorun.message.dto.ChatFileDeleteResponseDto;
 import shop.dodotalk.dorundorun.message.dto.ChatMsgDeleteRequestDto;
@@ -21,7 +18,7 @@ import shop.dodotalk.dorundorun.users.entity.User;
 public class ChatMessageController {
     private final ChatMessageService chatMessageService;
 
-    @PostMapping("/chat/room/msg")
+    @DeleteMapping("/chat/room/msg")
     public ChatMsgDeleteResponseDto chatMsgDelete(@RequestBody ChatMsgDeleteRequestDto chatMsgDeleteRequestDto,
                                                   @Authenticated OAuth2UserInfoAuthentication authentication) {
         User user = (User) authentication.getPrincipal();
@@ -32,7 +29,7 @@ public class ChatMessageController {
 
     }
 
-    @PostMapping("/chat/room/file")
+    @DeleteMapping("/chat/room/file")
     public ChatFileDeleteResponseDto chatFileDelete(@RequestBody ChatFileDeleteRequestDto chatFileDeleteRequestDto,
                                                     @Authenticated OAuth2UserInfoAuthentication authentication) {
         User user = (User) authentication.getPrincipal();

@@ -94,12 +94,7 @@ public class ChatMessageService {
             throw new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "강퇴당한 방입니다.");
         }
 
-
-
         ChatRoomUser alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(chatFileDeleteRequestDto.getSessionId(), user.getId())
-
-
-
                 .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
 
         RoomFileMessage roomFile = roomFileMessageRepository.findBySessionIdAndFileIdAndSocialUid(

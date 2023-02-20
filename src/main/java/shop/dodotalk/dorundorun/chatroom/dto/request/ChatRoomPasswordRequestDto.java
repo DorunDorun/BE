@@ -8,4 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class ChatRoomPasswordRequestDto {
 
     private String password;
+
+
+
 }

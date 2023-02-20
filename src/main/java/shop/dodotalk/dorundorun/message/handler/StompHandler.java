@@ -24,8 +24,12 @@ public class StompHandler implements ChannelInterceptor {
         String refreshToken = "";
 
         if(accessor.getCommand() == StompCommand.CONNECT) {
-            accessToken = accessor.getFirstNativeHeader("access");
-            refreshToken = accessor.getFirstNativeHeader("refresh");
+            System.out.println("커넥트까지 오나요");
+            accessToken = accessor.getFirstNativeHeader("Authorization");
+            refreshToken = accessor.getFirstNativeHeader("Refresh");
+
+            System.out.println("accessToken : " + accessToken);
+            System.out.println("refreshToken : " + refreshToken);
 
             String jwtAccessToken = jwtUtil.socketResolveToken(accessToken);
 

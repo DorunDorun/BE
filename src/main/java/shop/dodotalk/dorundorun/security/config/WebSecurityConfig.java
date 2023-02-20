@@ -26,6 +26,20 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserPrincipalService userPrincipalService;
 
+    private static final String[] PERMIT_URL_ARRAY = {
+        /* swagger v2 */
+        "/v2/api-docs",
+        "/swagger-resources",
+        "/swagger-resources/**",
+        "/configuration/ui",
+        "/configuration/security",
+        "/swagger-ui.html",
+        "/webjars/**",
+        /* swagger v3 */
+        "/v3/api-docs/**",
+        "/swagger-ui/**"
+    };
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
 
@@ -56,6 +70,7 @@ public class WebSecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers("/").permitAll()
+                .antMatchers(PERMIT_URL_ARRAY).permitAll()
 
                 // todo 테스트 시 원활한 진행용으로 일단 모든 접근 허용
                 //.anyRequest().permitAll();

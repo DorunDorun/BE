@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,12 +47,12 @@ public class ChatMessageService {
 
         if (chatMessageRequestDto.getImgByteCode() != null) {
             RoomFileMessage roomFileMessage = BinaryImageChange(chatMessageRequestDto);
-            chatMessageResponseDto = new ChatMessageResponseDto(roomFileMessage);
             roomFileMessageRepository.save(roomFileMessage);
+            chatMessageResponseDto = new ChatMessageResponseDto(roomFileMessage);
         } else {
             RoomMessage roomMessage = new RoomMessage(chatMessageRequestDto);
-            chatMessageResponseDto = new ChatMessageResponseDto(roomMessage);
             roomMessageRepository.save(roomMessage);
+            chatMessageResponseDto = new ChatMessageResponseDto(roomMessage);
         }
 
         return chatMessageResponseDto;
@@ -77,7 +78,7 @@ public class ChatMessageService {
 
         roomMessage.RoomMessageDelete();
 
-        ChatMsgDeleteResponseDto chatMsgDeleteResponseDto = new ChatMsgDeleteResponseDto(HttpStatus.OK, "성공적으로 메세지가 삭제되었습니다.");
+        ChatMsgDeleteResponseDto chatMsgDeleteResponseDto = new ChatMsgDeleteResponseDto(HttpStatus.OK, "성공적으로 메세지가 삭제되었습니다.", roomMessage);
 
         return chatMsgDeleteResponseDto;
     }
@@ -94,7 +95,11 @@ public class ChatMessageService {
         }
 
 
+
         ChatRoomUser alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(chatFileDeleteRequestDto.getSessionId(), user.getId())
+
+
+
                 .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
 
         RoomFileMessage roomFile = roomFileMessageRepository.findBySessionIdAndFileIdAndSocialUid(
@@ -103,7 +108,7 @@ public class ChatMessageService {
 
         roomFile.RoomFileDelete();
 
-        ChatFileDeleteResponseDto chatFileDeleteResponseDto = new ChatFileDeleteResponseDto(HttpStatus.OK, "성공적으로 파일이 삭제되었습니다.");
+        ChatFileDeleteResponseDto chatFileDeleteResponseDto = new ChatFileDeleteResponseDto(HttpStatus.OK, "성공적으로 파일이 삭제되었습니다.", roomFile);
 
         return chatFileDeleteResponseDto;
     }

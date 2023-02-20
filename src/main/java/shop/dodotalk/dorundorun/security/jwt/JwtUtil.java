@@ -320,12 +320,10 @@ public class JwtUtil implements InitializingBean {
 
     /* JWT Token에서 값을 꺼내오는 유틸 */
     public String resolveToken(HttpServletRequest request, String header) {
-        System.out.println("request : " + request);
 
         log.info("resolve Token ...");
 
         String bearerToken = request.getHeader(header);
-        System.out.println("bearerToken : " + bearerToken);
 
         if (bearerToken != null && bearerToken.startsWith("Bearer-")) {
             // Bearer- 제외 토큰 값만 리턴

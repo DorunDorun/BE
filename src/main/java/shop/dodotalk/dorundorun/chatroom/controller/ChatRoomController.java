@@ -33,7 +33,7 @@ public class ChatRoomController {
     * 방 나가기 API : 방을 나갈때 해당 하는 API이며, 해당 방의 모든 유저가 나갈 시 방이 삭제 된다.*/
 
     /*방 생성 API*/
-    @PostMapping("/create/room")
+    @PostMapping("/rooms")
     public ResponseEntity<PrivateResponseBody> makeRoom(@RequestBody ChatRoomCreateRequestDto chatRoomCreateRequestDto,
                                                         HttpServletRequest request,
                                                         @Authenticated OAuth2UserInfoAuthentication authentication)
@@ -69,7 +69,7 @@ public class ChatRoomController {
 
 
     /*방 나가기 API*/
-    @PostMapping("/rooms/{sessionid}/users")
+    @DeleteMapping("/rooms/{sessionid}")
     public ResponseEntity<PrivateResponseBody> outRoomUser(@PathVariable(name = "sessionid") String sessionId,
                                                            HttpServletRequest request,
                                                            @Authenticated OAuth2UserInfoAuthentication authentication) {
@@ -90,7 +90,7 @@ public class ChatRoomController {
     */
 
     /*방 검색 API(키워드)*/
-    @GetMapping("/rooms/search/{page}")
+    @GetMapping("/rooms/{page}/search")
     public ResponseEntity<?> searchRoom(@PathVariable int page,
                                         @RequestParam String keyword) {
 

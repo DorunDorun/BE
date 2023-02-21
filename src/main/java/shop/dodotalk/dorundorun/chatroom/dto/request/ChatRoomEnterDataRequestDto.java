@@ -11,7 +11,7 @@ import javax.validation.constraints.Null;
 @Getter
 public class ChatRoomEnterDataRequestDto {
 
-    @Null
+
     private String password;
 
     @NotNull(message = "nickname을 설정해 주세요.")

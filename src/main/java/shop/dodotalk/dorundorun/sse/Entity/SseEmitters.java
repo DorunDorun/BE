@@ -16,21 +16,17 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 @RequiredArgsConstructor
 public class SseEmitters {
-    private static final AtomicLong counter = new AtomicLong();
+    //private static final AtomicLong counter = new AtomicLong();
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     private final ChatRoomRepository chatRoomRepository;
 
     public SseEmitter add(SseEmitter emitter) {
         this.emitters.add(emitter);
-        System.out.println("emitter : " + emitter);
-        System.out.println("emitter list size: " + emitters.size());
         emitter.onCompletion(() -> {
-            System.out.println("만료됨");
             this.emitters.remove(emitter);    // 만료되면 리스트에서 삭제
         });
         emitter.onTimeout(() -> {
-            System.out.println("타임아웃");
             emitter.complete();
         });
 
@@ -38,8 +34,11 @@ public class SseEmitters {
     }
 
     public void count() {
-        long count = counter.incrementAndGet();
-        List<ChatRoom> chatRooms = chatRoomRepository.findAll();
+        //long count = counter.incrementAndGet();
+        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
+        System.out.println("------------------채팅방 생성 or 삭제----------------------");
+        System.out.println("chatRooms.size() : " + chatRooms.size());
+        System.out.println("------------------채팅방 생성 or 삭제----------------------");
         emitters.forEach(emitter -> {
             try {
                 emitter.send(SseEmitter.event()

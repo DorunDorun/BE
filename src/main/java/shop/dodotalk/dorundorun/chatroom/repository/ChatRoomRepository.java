@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import shop.dodotalk.dorundorun.chatroom.entity.ChatRoom;
 
+import java.util.List;
+
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
     void delete(ChatRoom room);
@@ -30,6 +32,10 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
     Page<ChatRoom> findByTitleContainingOrSubtitleContainingOrderByModifiedAtDesc(String title,
                                                                                                   String subtitle,
                                                                                                   Pageable pageable);
+
+
+    /* 관우 삭제되지 않은 실시간 채팅방 개수 전부 나타내기 */
+    List<ChatRoom> findAllByIsDelete(boolean isDelete);
 
 
 }

@@ -26,6 +26,7 @@ import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomUserRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
 import shop.dodotalk.dorundorun.chatroom.util.CreateSaying;
 import shop.dodotalk.dorundorun.security.jwt.JwtUtil;
+import shop.dodotalk.dorundorun.sse.Entity.SseEmitters;
 import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.annotation.PostConstruct;
@@ -57,6 +58,8 @@ public class ChatRoomService {
     private OpenVidu openvidu;
 
     private final JwtUtil jwtUtil;
+
+    private final SseEmitters sseEmitters; // 관우 실시간 방 개수 나타내기
 
     @PostConstruct
     public void init() {
@@ -419,6 +422,9 @@ public class ChatRoomService {
 
             // 방이 삭제된 시간 기록.
 
+
+
+            sseEmitters.count(); // 관우 실시간 방 개수 나타내기
 
             return "Success";
         }

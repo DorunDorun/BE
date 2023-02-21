@@ -1,10 +1,15 @@
 package shop.dodotalk.dorundorun.chatroom.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Entity
@@ -56,12 +61,17 @@ public class ChatRoomUser {
     @Column
     private LocalDateTime roomExitTime;
 
+    /*방에서 총 머문 시간 (재 입장 다 합쳐서)*/
+    @Column
+    private Time roomStayTime;
+
+
 
     /* 방에서 나가는 경우  */
-    public void deleteRoomUsers (LocalDateTime roomExitTime) {
+    public void deleteRoomUsers (LocalDateTime roomExitTime, LocalTime roomStayTime) {
         this.isDelete = true;
         this.roomExitTime = roomExitTime;
-
+        this.roomStayTime = Time.valueOf(roomStayTime);
     }
 
     /* 방에 재입장 하는 경우 */

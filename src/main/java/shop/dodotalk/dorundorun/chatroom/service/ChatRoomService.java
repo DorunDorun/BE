@@ -122,6 +122,7 @@ public class ChatRoomService {
                 .profileImage(user.getProfile())
                 .enterRoomToken(savedRoom.getSessionId())
                 .roomEnterTime(Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime())
+                .roomStayTime(Time.valueOf("00:00:00"))
                 .enterRoomToken(newToken.getToken())
                 .build();
 
@@ -398,7 +399,46 @@ public class ChatRoomService {
         // 룸 멤버 논리 삭제. soft delete
         // 퇴장(삭제)한 시간 기록
         LocalDateTime roomExitTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
-        chatRoomUser.deleteRoomUsers(roomExitTime);
+
+        /* 재입장의 경우 방에 머물었던 시간 + (방 삭제 시간 + 입장 시간 = 그 방에 총 머문시간) -> DB저장
+         * 다음 입장시 이방에 몇분있었나? 보여주게 ----> 따로 유틸로 빼기!!*/
+        LocalTime start = chatRoomUser.getRoomEnterTime().toLocalTime();
+        LocalTime end = roomExitTime.toLocalTime();
+
+        /*재입장의 경우 기존 머물었던 시간을 합쳐야 함.*/
+        if (chatRoomUser.getRoomStayTime() != null) {
+            LocalTime beforeRoomStayTime = chatRoomUser.getRoomStayTime().toLocalTime();
+
+            long beforeHours = beforeRoomStayTime.getHour();
+            long beforeMinutes = beforeRoomStayTime.getMinute();
+            long beforeSeconds = beforeRoomStayTime.getSecond();
+
+            long afterSeconds = ChronoUnit.SECONDS.between(start, end);
+
+            LocalTime before = LocalTime.of((int) beforeHours, (int) beforeMinutes, (int) beforeSeconds);
+
+            LocalTime roomStayTime = before.plusSeconds(afterSeconds);
+
+            chatRoomUser.deleteRoomUsers(roomExitTime, roomStayTime);
+
+        } else {/*처음 나간 경우*/
+            Duration duration = Duration.between(start, end);
+
+            long hours = ChronoUnit.HOURS.between(start, end);
+            long minutes = ChronoUnit.MINUTES.between(start, end);
+            long seconds = (ChronoUnit.SECONDS.between(start, end)) - (60 * minutes);
+
+            LocalTime roomStayTime = LocalTime.of((int) hours, (int) minutes, (int) seconds);
+
+            chatRoomUser.deleteRoomUsers(roomExitTime, roomStayTime);
+
+        }
+
+
+
+
+
+
 
 
 

@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.dodotalk.dorundorun.chatroom.entity.ChatRoomUser;
 
+import java.sql.Time;
+import java.time.LocalTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -29,6 +32,9 @@ public class ChatRoomEnterUserResponseDto {
 
     private String ProfileImage;
 
+    /*해당 방에 머물은 시간(재 접속 할경우 +해서 계산됨)*/
+    private Time stayTime;
+
     // 방장인지 확인
     private boolean roomMaster;
 
@@ -46,6 +52,7 @@ public class ChatRoomEnterUserResponseDto {
         this.email = entity.getEmail();
         this.ProfileImage = entity.getProfileImage();
         this.enterRoomToken = entity.getEnterRoomToken();
+        this.stayTime = entity.getRoomStayTime();
         this.roomMaster = roomMaster;
         this.nowUser = nowUser;
     }

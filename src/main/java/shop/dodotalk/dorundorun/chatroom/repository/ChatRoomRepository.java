@@ -21,6 +21,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
     Optional<ChatRoom> findBySessionIdAndIsDelete(String chatRoomId, boolean isDelete);
 
+    Optional<ChatRoom> findBySessionId(String chatRoomId);
+
     // Containing을 붙여주면 Like 검색이 가능 --> %{keyword}%x
 
     /*방 제목, 내용, 카테고리 검색*/

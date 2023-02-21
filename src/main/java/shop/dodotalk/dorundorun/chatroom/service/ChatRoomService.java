@@ -230,10 +230,9 @@ public class ChatRoomService {
 
 
         /*방이 있는 지 확인*/
-        ChatRoom room = chatRoomRepository.findBySessionIdAndIsDelete(SessionId, false).orElseThrow(
+        ChatRoom room = chatRoomRepository.findBySessionId(SessionId).orElseThrow(
                 () -> new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다.")));
 
-        System.out.println("1111");
 
         /*방에서 강퇴당한 멤버인지 확인*/
 //        BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), SessionId);
@@ -256,7 +255,6 @@ public class ChatRoomService {
             }
         }
 
-        System.out.println("2222");
 
         /*룸 멤버 있는 지 확인*/
         Optional<ChatRoomUser> alreadyExitRoomUser
@@ -264,9 +262,8 @@ public class ChatRoomService {
 
 
         Optional<ChatRoomUser> alreadyRoomUser
-                = chatRoomUserRepository.findByUserIdAndSessionId(user.getId(), SessionId);
+                = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), SessionId, false);
 
-        System.out.println("3333");
         boolean isReEnterUser = false;
         String enterRoomToken = null;
 
@@ -276,20 +273,21 @@ public class ChatRoomService {
         }
 
         if (alreadyExitRoomUser.isPresent()) {
-            
-            ChatRoomUser roomUser = alreadyRoomUser.get();
+
+
+            ChatRoomUser roomUser = alreadyExitRoomUser.get();
 
             /* 방에서 나갔다가 재입장 하는 경우!*/
             isReEnterUser = true;
             enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
             roomUser.reEnterRoomUsers(enterRoomToken);
+                room.setDelete(false);
 
         }
 
 
 
         if (isReEnterUser == false) {
-            System.out.println("처음 입장!");
             // 채팅방 처음 입장 시 토큰 발급
             enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
 
@@ -339,7 +337,7 @@ public class ChatRoomService {
 
         /*해당 방에 해당 유저가 접속해 있는 상태여아
         * 방유저 정보 불러오기 API를 사용할 수 있다.*/
-        Optional<ChatRoomUser> alreadyRoomUser = chatRoomUserRepository.findByUserIdAndSessionId(user.getId(), SessionId);
+        Optional<ChatRoomUser> alreadyRoomUser = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), SessionId, false);
 
         if (alreadyRoomUser.isEmpty()) {
             throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "방에 유저가 존재하지 않습니다."));
@@ -399,7 +397,7 @@ public class ChatRoomService {
         );
 
         // 룸 멤버 찾기
-        ChatRoomUser chatRoomUser = chatRoomUserRepository.findByUserIdAndSessionId(user.getId(), sessionId).orElseThrow(
+        ChatRoomUser chatRoomUser = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), sessionId,false).orElseThrow(
                 () -> new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "방에 있는 멤버가 아닙니다."))
         );
 

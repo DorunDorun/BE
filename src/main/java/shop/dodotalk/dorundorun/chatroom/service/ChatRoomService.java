@@ -113,62 +113,63 @@ public class ChatRoomService {
 
         /*해당 방에 접속한 유저 정보 생성하기.*/
         // 방생성 할때 첫유저 (방장)
-        ChatRoomUser chatRoomUser = ChatRoomUser.builder()
-                .sessionId(savedRoom.getSessionId())
-                .userId(user.getId())
-                .social(user.getProvider())
-                .nickname(user.getName())
-                .email(user.getEmail())
-                .profileImage(user.getProfile())
-                .enterRoomToken(savedRoom.getSessionId())
-                .roomEnterTime(Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime())
-                .roomStayTime(Time.valueOf("00:00:00"))
-                .enterRoomToken(newToken.getToken())
-                .build();
+//        ChatRoomUser chatRoomUser = ChatRoomUser.builder()
+//                .sessionId(savedRoom.getSessionId())
+//                .userId(user.getId())
+//                .social(user.getProvider())
+//                .nickname(user.getName())
+//                .email(user.getEmail())
+//                .profileImage(user.getProfile())
+//                .enterRoomToken(savedRoom.getSessionId())
+//                .roomEnterTime(Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime())
+//                .roomStayTime(Time.valueOf("00:00:00"))
+//                .enterRoomToken(newToken.getToken())
+//                .build();
 
         // 채팅방 인원 저장하기
-        chatRoomUserRepository.save(chatRoomUser);
+//        chatRoomUserRepository.save(chatRoomUser);
 
 
-        List<ChatRoomUser> chatRoomUserList = chatRoomUserRepository.findAllBySessionId(savedRoom.getSessionId());
+//        List<ChatRoomUser> chatRoomUserList = chatRoomUserRepository.findAllBySessionId(savedRoom.getSessionId());
 
-        List<ChatRoomEnterUserResponseDto> chatRoomEnterUserResponseDtoList = new ArrayList<>();
+//        List<ChatRoomEnterUserResponseDto> chatRoomEnterUserResponseDtoList = new ArrayList<>();
 
 
-        boolean roomMaster;
-        boolean nowUser;
+//        boolean roomMaster;
+//        boolean nowUser;
 
         // 채팅방 인원 추가
-        for (ChatRoomUser chatRoomUsersEle : chatRoomUserList) {
+//        for (ChatRoomUser chatRoomUsersEle : chatRoomUserList) {
+//
+//            // 방장일 시
+//            // 현재 접속한 유저일 시 본인이 누군지 알기 위해.
+//            if (user != null && chatRoomUsersEle.getUserId().equals(user.getId())) {
+//
+//                roomMaster = true;
+//                nowUser = true;
+//            }
+//            // 방장이 아닐 시
+//            else {
+//                roomMaster = false;
+//                nowUser = false;
+//            }
+//
+//
+//            chatRoomEnterUserResponseDtoList.add(new ChatRoomEnterUserResponseDto(chatRoomUsersEle, roomMaster, nowUser));
+//
+//        }
 
-            // 방장일 시
-            // 현재 접속한 유저일 시 본인이 누군지 알기 위해.
-            if (user != null && chatRoomUsersEle.getUserId().equals(user.getId())) {
 
-                roomMaster = true;
-                nowUser = true;
-            }
-            // 방장이 아닐 시
-            else {
-                roomMaster = false;
-                nowUser = false;
-            }
+//        Long currentUser = chatRoomUserRepository.countAllBySessionId(savedRoom.getSessionId());
 
+        chatRoom.updateCntUser(0L);
 
-            chatRoomEnterUserResponseDtoList.add(new ChatRoomEnterUserResponseDto(chatRoomUsersEle, roomMaster, nowUser));
-
-        }
-
-
-        Long currentUser = chatRoomUserRepository.countAllBySessionId(savedRoom.getSessionId());
-
-        chatRoom.updateCntUser(currentUser);
         chatRoomRepository.save(chatRoom);
 
 
         /*
-        1.방장의 경우 채팅방 생성 시 방으로 바로 입장됨.
-        2.채팅방에 보여질 정보들을 리턴*/
+
+        채팅방에 보여질 정보들을 리턴*/
         return ChatRoomCreateResponseDto.builder()
                 .sessionId(savedRoom.getSessionId())
                 .title(savedRoom.getTitle())
@@ -232,6 +233,7 @@ public class ChatRoomService {
         ChatRoom room = chatRoomRepository.findBySessionIdAndIsDelete(SessionId, false).orElseThrow(
                 () -> new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다.")));
 
+        System.out.println("1111");
 
         /*방에서 강퇴당한 멤버인지 확인*/
 //        BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), SessionId);
@@ -254,6 +256,7 @@ public class ChatRoomService {
             }
         }
 
+        System.out.println("2222");
 
         /*룸 멤버 있는 지 확인*/
         Optional<ChatRoomUser> alreadyExitRoomUser
@@ -263,6 +266,7 @@ public class ChatRoomService {
         Optional<ChatRoomUser> alreadyRoomUser
                 = chatRoomUserRepository.findByUserIdAndSessionId(user.getId(), SessionId);
 
+        System.out.println("3333");
         boolean isReEnterUser = false;
         String enterRoomToken = null;
 
@@ -285,8 +289,10 @@ public class ChatRoomService {
 
 
         if (isReEnterUser == false) {
+            System.out.println("처음 입장!");
             // 채팅방 처음 입장 시 토큰 발급
             enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
+
 
 
             // 채팅방 유저 만들기 (현재접속한 사용자) (처음 접속한 경우만)

@@ -73,8 +73,6 @@ public class WebSecurityConfig {
                 .antMatchers("/api/sse").permitAll()
                 .antMatchers("/api/count").permitAll() // 관우 실시간 채팅방 개수 테스트 용도 지워야함
                 .antMatchers("/api/ssehtml").permitAll() // 관우 실시간 채팅방 개수 테스트 용도 지워야함
-                // todo 테스트 시 원활한 진행용으로 일단 모든 접근 허용
-                //.anyRequest().permitAll();
                 .anyRequest().authenticated();
 
 
@@ -86,7 +84,7 @@ public class WebSecurityConfig {
                 .userService(oAuthService);
 
 
-        // cors 설정.
+        /* cors 설정. */
         http.cors().configurationSource(corsConfigurationSource());
 
 
@@ -97,8 +95,8 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        /* 일단 기본 설정으로 전부 허용.
-        * todo 서버 배포 시 프론트엔드 서버로 바꿀 예정 */
+
+        /* todo 서버 배포 시 프론트엔드 서버로 바꿀 예정 */
 //        configuration.addAllowedOriginPattern("*");
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedMethod("*");

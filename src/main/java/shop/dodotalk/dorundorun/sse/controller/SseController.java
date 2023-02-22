@@ -32,8 +32,10 @@ public class SseController {
     @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connect() {
         SseEmitter emitter = new SseEmitter(30 * 1000L);
+
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
         List<ChatRoom> chatRooms2 = chatRoomRepository.findAll();
+
         sseEmitters.add(emitter);
         try {
             System.out.println("연결됨");

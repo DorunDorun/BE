@@ -15,7 +15,7 @@
 <div id="count2"></div>
 
 <script>
-    const sse = new EventSource("https://dorundorun.shop/api/ssehtml");
+    const sse = new EventSource("https://dorundorun.shop/api/sse");
 
     sse.addEventListener('connect', (e) => {
         const { data: receivedConnectData } = e;
@@ -29,6 +29,14 @@
         handleCountEvent2(receivedConnectData);
     });
 
+    sse.onerror = function (event) {
+        if (event.readyState == EventSource.CLOSED) {
+            console.log("SSE 연결이 종료되었습니다.");
+        } else {
+            console.log("SSE 연결이 에러로 인해 종료되었습니다.");
+        }
+    };
+
     sse.addEventListener('count', e => {
         const { data: receivedCount } = e;
         console.log("현재 채팅방 수 : ", receivedCount);
@@ -38,6 +46,7 @@
     sse.addEventListener('count2', e => {
         const { data: receivedCount } = e;
         console.log("전체 채팅방 수 : ", receivedCount);
+
         handleCountEvent2(receivedCount);
     });
 
@@ -46,6 +55,7 @@
         countElement.innerText = `현재 채팅방 수: ${count}`;
     }
     function handleCountEvent2(count2) {
+        console.log("count event data2:", count2);
         const countElement2 = document.getElementById('count2');
         countElement2.innerText = `전체 채팅방 수: ${count2}`;
     }

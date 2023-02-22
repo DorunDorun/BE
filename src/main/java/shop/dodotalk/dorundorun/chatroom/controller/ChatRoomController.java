@@ -46,7 +46,9 @@ public class ChatRoomController {
 
         User user = (User) authentication.getPrincipal();
 
+        System.out.println("---------------컨트롤러로 오나-------------"); // 관우 실시간 방 개수 나타내기
         sseEmitters.count(); // 관우 실시간 방 개수 나타내기
+        System.out.println("---------------컨트롤러로 오나-------------"); // 관우 실시간 방 개수 나타내기
 
         return new ResponseUtil<>().forSuccess(chatRoomService
                 .createRoom(chatRoomCreateRequestDto, request, user));

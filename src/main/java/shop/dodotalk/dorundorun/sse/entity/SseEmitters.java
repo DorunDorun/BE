@@ -17,7 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SseEmitters {
     //private static final AtomicLong counter = new AtomicLong();
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
-
     private final ChatRoomRepository chatRoomRepository;
 
     public SseEmitter add(SseEmitter emitter) {
@@ -36,14 +35,19 @@ public class SseEmitters {
     public void count() {
         //long count = counter.incrementAndGet();
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
+        List<ChatRoom> chatRooms2 = chatRoomRepository.findAll();
         System.out.println("------------------채팅방 생성 or 삭제----------------------");
         System.out.println("chatRooms.size() : " + chatRooms.size());
+        System.out.println("chatRooms2.size() : " + chatRooms2.size());
         System.out.println("------------------채팅방 생성 or 삭제----------------------");
         emitters.forEach(emitter -> {
             try {
                 emitter.send(SseEmitter.event()
                         .name("count")
                         .data(chatRooms.size()));
+                emitter.send(SseEmitter.event()
+                        .name("count2")
+                        .data(chatRooms2.size()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

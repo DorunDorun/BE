@@ -21,7 +21,7 @@ public class ChatRoomCreateResponseDto {
     private String masterName;
     private boolean isRoomMaster;
     private String saying;
-    private String token;
+
 
     // 방 생성 시간
     private LocalDateTime createdAt;

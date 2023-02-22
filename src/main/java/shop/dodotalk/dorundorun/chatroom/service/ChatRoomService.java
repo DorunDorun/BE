@@ -74,7 +74,7 @@ public class ChatRoomService {
     @Transactional
     public ChatRoomCreateResponseDto createRoom(ChatRoomCreateRequestDto chatRoomCreateRequestDto,
                                                 HttpServletRequest request, User user)
-            throws OpenViduJavaClientException, OpenViduHttpException {
+            throws Exception {
 
         /* Session Id, Token 셋팅 */
         ChatRoomCreateResponseDto newToken = createNewToken(user);
@@ -113,65 +113,12 @@ public class ChatRoomService {
         LocalDateTime createdAt = savedRoom.getCreatedAt();
 
 
-        /*해당 방에 접속한 유저 정보 생성하기.*/
-        // 방생성 할때 첫유저 (방장)
-//        ChatRoomUser chatRoomUser = ChatRoomUser.builder()
-//                .sessionId(savedRoom.getSessionId())
-//                .userId(user.getId())
-//                .social(user.getProvider())
-//                .nickname(user.getName())
-//                .email(user.getEmail())
-//                .profileImage(user.getProfile())
-//                .enterRoomToken(savedRoom.getSessionId())
-//                .roomEnterTime(Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime())
-//                .roomStayTime(Time.valueOf("00:00:00"))
-//                .enterRoomToken(newToken.getToken())
-//                .build();
-
-        // 채팅방 인원 저장하기
-//        chatRoomUserRepository.save(chatRoomUser);
-
-
-//        List<ChatRoomUser> chatRoomUserList = chatRoomUserRepository.findAllBySessionId(savedRoom.getSessionId());
-
-//        List<ChatRoomEnterUserResponseDto> chatRoomEnterUserResponseDtoList = new ArrayList<>();
-
-
-//        boolean roomMaster;
-//        boolean nowUser;
-
-        // 채팅방 인원 추가
-//        for (ChatRoomUser chatRoomUsersEle : chatRoomUserList) {
-//
-//            // 방장일 시
-//            // 현재 접속한 유저일 시 본인이 누군지 알기 위해.
-//            if (user != null && chatRoomUsersEle.getUserId().equals(user.getId())) {
-//
-//                roomMaster = true;
-//                nowUser = true;
-//            }
-//            // 방장이 아닐 시
-//            else {
-//                roomMaster = false;
-//                nowUser = false;
-//            }
-//
-//
-//            chatRoomEnterUserResponseDtoList.add(new ChatRoomEnterUserResponseDto(chatRoomUsersEle, roomMaster, nowUser));
-//
-//        }
-
-
-//        Long currentUser = chatRoomUserRepository.countAllBySessionId(savedRoom.getSessionId());
-
         chatRoom.updateCntUser(0L);
 
         chatRoomRepository.save(chatRoom);
 
 
-        /*
-
-        채팅방에 보여질 정보들을 리턴*/
+        /*채팅방에 보여질 정보들을 리턴*/
         return ChatRoomCreateResponseDto.builder()
                 .sessionId(savedRoom.getSessionId())
                 .title(savedRoom.getTitle())
@@ -179,7 +126,6 @@ public class ChatRoomService {
                 .masterName(savedRoom.getMaster())
                 .isRoomMaster(true)
                 .status(savedRoom.isStatus())
-                .token(newToken.getToken())
                 .buttonImage(savedRoom.getButtonImage().name())
                 .saying(saying)
                 .category(savedRoom.getCategory().getCategory().getCategoryKr())
@@ -278,13 +224,14 @@ public class ChatRoomService {
         if (alreadyExitRoomUser.isPresent()) {
 
 
-            System.out.println("already");
             ChatRoomUser roomUser = alreadyExitRoomUser.get();
+
+            String nickname = requestData.getNickname();
 
             /* 방에서 나갔다가 재입장 하는 경우!*/
             isReEnterUser = true;
             enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
-            roomUser.reEnterRoomUsers(enterRoomToken);
+            roomUser.reEnterRoomUsers(enterRoomToken, nickname);
             room.setDelete(false);
 
         }
@@ -493,7 +440,6 @@ public class ChatRoomService {
 
 
         // 사용자 연결 시 닉네임 전달
-        /*todo serverData에 카카오정보를 넣어서 운용이 가능할까? */
         String serverData = user.getName();
 
 
@@ -511,7 +457,6 @@ public class ChatRoomService {
 
         return ChatRoomCreateResponseDto.builder()
                 .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
-                .token(token) //이 토큰으로 오픈비두에 해당 유저의 화상 미디어 정보를 받아주세요
                 .build();
     }
 

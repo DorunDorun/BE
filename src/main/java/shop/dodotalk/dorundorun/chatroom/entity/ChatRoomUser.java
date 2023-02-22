@@ -75,11 +75,12 @@ public class ChatRoomUser {
     }
 
     /* 방에 재입장 하는 경우 */
-    public void reEnterRoomUsers(String enterRoomToken) {
+    public void reEnterRoomUsers(String enterRoomToken, String nickname) {
         this.isDelete = false;
         this.roomEnterTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
         this.roomExitTime = null;
         this.enterRoomToken = enterRoomToken;
+        this.nickname = nickname;
     }
 
 

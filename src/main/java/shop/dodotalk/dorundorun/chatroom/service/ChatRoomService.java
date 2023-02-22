@@ -217,9 +217,7 @@ public class ChatRoomService {
         List<ChatRoom> rooms = roomList.getContent();
 
 
-
         List<ChatRoomResponseDto> chatRoomResponseDtoList = chatRoomMapper.roomsToRoomResponseDtos(rooms);
-
 
 
         return new ChatRoomAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
@@ -264,8 +262,11 @@ public class ChatRoomService {
                 = chatRoomUserRepository.findBySessionIdAndUserId(SessionId, user.getId());
 
 
+
         Optional<ChatRoomUser> alreadyRoomUser
                 = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), SessionId, false);
+
+
 
         boolean isReEnterUser = false;
         String enterRoomToken = null;
@@ -278,22 +279,21 @@ public class ChatRoomService {
         if (alreadyExitRoomUser.isPresent()) {
 
 
+            System.out.println("already");
             ChatRoomUser roomUser = alreadyExitRoomUser.get();
 
             /* 방에서 나갔다가 재입장 하는 경우!*/
             isReEnterUser = true;
             enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
             roomUser.reEnterRoomUsers(enterRoomToken);
-                room.setDelete(false);
+            room.setDelete(false);
 
         }
-
 
 
         if (isReEnterUser == false) {
             // 채팅방 처음 입장 시 토큰 발급
             enterRoomToken = enterRoomCreateSession(user, room.getSessionId());
-
 
 
             // 채팅방 유저 만들기 (현재접속한 사용자) (처음 접속한 경우만)
@@ -339,7 +339,7 @@ public class ChatRoomService {
 
 
         /*해당 방에 해당 유저가 접속해 있는 상태여아
-        * 방유저 정보 불러오기 API를 사용할 수 있다.*/
+         * 방유저 정보 불러오기 API를 사용할 수 있다.*/
         Optional<ChatRoomUser> alreadyRoomUser = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), SessionId, false);
 
         if (alreadyRoomUser.isEmpty()) {
@@ -400,7 +400,7 @@ public class ChatRoomService {
         );
 
         // 룸 멤버 찾기
-        ChatRoomUser chatRoomUser = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), sessionId,false).orElseThrow(
+        ChatRoomUser chatRoomUser = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), sessionId, false).orElseThrow(
                 () -> new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "방에 있는 멤버가 아닙니다."))
         );
 
@@ -470,7 +470,6 @@ public class ChatRoomService {
 
             // 방인원 0명으로.
             room.updateCntUser(room.getCntUser() - 1);
-
 
 
             sseEmitters.count(); // 관우 실시간 방 개수 나타내기

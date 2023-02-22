@@ -18,7 +18,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Where(clause = "is_delete = false")
 public class ChatRoomUser {
 
     @Id

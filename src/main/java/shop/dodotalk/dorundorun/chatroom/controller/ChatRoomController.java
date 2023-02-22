@@ -13,6 +13,7 @@ import shop.dodotalk.dorundorun.chatroom.service.ChatRoomService;
 import shop.dodotalk.dorundorun.chatroom.util.ResponseUtil;
 import shop.dodotalk.dorundorun.security.annotation.Authenticated;
 import shop.dodotalk.dorundorun.security.jwt.OAuth2UserInfoAuthentication;
+import shop.dodotalk.dorundorun.sse.Entity.SseEmitters;
 import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,8 @@ import javax.validation.Valid;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
+
+    private final SseEmitters sseEmitters; // 관우 실시간 방 개수 나타내기
 
     /*화상 채팅 방 API Controller*/
 
@@ -42,6 +45,8 @@ public class ChatRoomController {
 
 
         User user = (User) authentication.getPrincipal();
+
+        sseEmitters.count(); // 관우 실시간 방 개수 나타내기
 
         return new ResponseUtil<>().forSuccess(chatRoomService
                 .createRoom(chatRoomCreateRequestDto, request, user));

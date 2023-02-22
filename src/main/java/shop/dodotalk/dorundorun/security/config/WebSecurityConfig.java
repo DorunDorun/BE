@@ -70,6 +70,9 @@ public class WebSecurityConfig {
                 .antMatchers("/").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
                 .antMatchers("/ws-stomp/**").permitAll()
+                .antMatchers("/api/sse").permitAll()
+                .antMatchers("/api/count").permitAll() // 관우 실시간 채팅방 개수 테스트 용도 지워야함
+                .antMatchers("/api/ssehtml").permitAll() // 관우 실시간 채팅방 개수 테스트 용도 지워야함
                 // todo 테스트 시 원활한 진행용으로 일단 모든 접근 허용
                 //.anyRequest().permitAll();
                 .anyRequest().authenticated();

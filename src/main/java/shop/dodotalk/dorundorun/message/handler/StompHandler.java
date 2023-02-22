@@ -49,10 +49,10 @@ public class StompHandler implements ChannelInterceptor {
                 if (jwtRefreshToken != null && jwtUtil.validateRefreshToken(jwtRefreshToken) == JwtUtil.JwtCode.ACCESS) {
                     log.info("리프레시 토큰 인증 성공");
                 }else {
-                    throw new CustomErrorException(HttpStatus.OK, "200", "토큰이 일치하지 않습니다.");
+                    throw new CustomErrorException(HttpStatus.OK, 200, "토큰이 일치하지 않습니다.");
                 }
             } else {
-                throw new CustomErrorException(HttpStatus.OK, "200", "토큰이 부정확합니다.");
+                throw new CustomErrorException(HttpStatus.OK, 200, "토큰이 부정확합니다.");
             }
         }
 

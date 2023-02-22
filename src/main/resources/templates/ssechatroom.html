@@ -29,6 +29,14 @@
         handleCountEvent2(receivedConnectData);
     });
 
+    sse.onerror = function (event) {
+        if (event.readyState == EventSource.CLOSED) {
+            console.log("SSE 연결이 종료되었습니다.");
+        } else {
+            console.log("SSE 연결이 에러로 인해 종료되었습니다.");
+        }
+    };
+
     sse.addEventListener('count', e => {
         const { data: receivedCount } = e;
         console.log("현재 채팅방 수 : ", receivedCount);

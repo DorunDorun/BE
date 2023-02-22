@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomCreateRequestDto;
-import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomPasswordRequestDto;
+import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomEnterDataRequestDto;
 import shop.dodotalk.dorundorun.chatroom.error.PrivateResponseBody;
 import shop.dodotalk.dorundorun.chatroom.service.ChatRoomService;
 import shop.dodotalk.dorundorun.chatroom.util.ResponseUtil;
@@ -17,6 +17,7 @@ import shop.dodotalk.dorundorun.sse.Entity.SseEmitters;
 import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,21 +53,33 @@ public class ChatRoomController {
 
     }
 
-    /*방 입장 API
-    * 새로고침 시 reload=true,
-    * 일반 입장 시 reload=false*/
+    /*채팅방 입장 API*/
     @PostMapping("/rooms/{sessionid}")
     public ResponseEntity<PrivateResponseBody> enterRoom(@PathVariable(name = "sessionid") String sessionId,
                                                          HttpServletRequest request,
-                                                         @RequestBody(required = false) ChatRoomPasswordRequestDto password,
-                                                         @RequestParam Boolean reload,
+                                                         @Valid @RequestBody ChatRoomEnterDataRequestDto requestData,
                                                          @Authenticated OAuth2UserInfoAuthentication authentication)
+            throws OpenViduJavaClientException, OpenViduHttpException {
+
+
+        User user = (User) authentication.getPrincipal();
+
+        return new ResponseUtil<>().forSuccess(chatRoomService.enterChatRoom(sessionId, request, requestData, user));
+    }
+
+    /*채팅방(속한 유저들) 정보 불러오기 API*/
+    @GetMapping("/rooms/{sessionid}/users")
+    public ResponseEntity<PrivateResponseBody> getAllRooms(@PathVariable(name = "sessionid") String sessionId,
+                                                           HttpServletRequest request,
+                                                           @Authenticated OAuth2UserInfoAuthentication authentication)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
         User user = (User) authentication.getPrincipal();
 
-        return new ResponseUtil<>().forSuccess(chatRoomService.getRoomData(sessionId, request, password, reload, user));
+        return new ResponseUtil<>().forSuccess(chatRoomService.getRoomUserData(sessionId, request, user));
     }
+
+
 
     /*방 목록 API*/
     @GetMapping("/rooms/{page}")

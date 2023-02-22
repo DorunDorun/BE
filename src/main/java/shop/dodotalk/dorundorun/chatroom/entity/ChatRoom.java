@@ -84,4 +84,7 @@ public class ChatRoom extends Timestamped {
         return !this.master.equals(user.getSocialUid());
     }
 
+    public void setDelete(boolean isDelete) {
+        this.isDelete = isDelete;
+    }
 }

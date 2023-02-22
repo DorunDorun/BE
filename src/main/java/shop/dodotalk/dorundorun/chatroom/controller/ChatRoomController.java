@@ -5,6 +5,7 @@ import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomCreateRequestDto;
 import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomEnterDataRequestDto;
@@ -38,10 +39,10 @@ public class ChatRoomController {
 
     /*방 생성 API*/
     @PostMapping("/rooms")
-    public ResponseEntity<PrivateResponseBody> makeRoom(@RequestBody ChatRoomCreateRequestDto chatRoomCreateRequestDto,
+    public ResponseEntity<PrivateResponseBody> makeRoom(@Valid @RequestBody ChatRoomCreateRequestDto chatRoomCreateRequestDto,
                                                         HttpServletRequest request,
                                                         @Authenticated OAuth2UserInfoAuthentication authentication)
-            throws OpenViduJavaClientException, OpenViduHttpException {
+            throws Exception {
 
 
         User user = (User) authentication.getPrincipal();
@@ -50,7 +51,7 @@ public class ChatRoomController {
         sseEmitters.count(); // 관우 실시간 방 개수 나타내기
         System.out.println("---------------컨트롤러로 오나-------------"); // 관우 실시간 방 개수 나타내기
 
-        return new ResponseUtil<>().forSuccess(chatRoomService
+        return new ResponseUtil<>().forCreatedSuccess(chatRoomService
                 .createRoom(chatRoomCreateRequestDto, request, user));
 
     }

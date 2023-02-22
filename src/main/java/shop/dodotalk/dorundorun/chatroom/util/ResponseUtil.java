@@ -20,4 +20,13 @@ public class ResponseUtil<T> {
                 HttpStatus.OK);
     }
 
+
+    public ResponseEntity<PrivateResponseBody> forCreatedSuccess(T data){
+        return new ResponseEntity<>(
+                new PrivateResponseBody(
+                        new ErrorCode(HttpStatus.OK, "201", "정상") , data
+                ) ,
+                HttpStatus.OK);
+    }
+
 }

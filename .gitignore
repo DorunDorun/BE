@@ -18,11 +18,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-chat.html
-chatrooms.html
-application.properties
-application.yml
-static
+resources
 
 .idea
 *.iws

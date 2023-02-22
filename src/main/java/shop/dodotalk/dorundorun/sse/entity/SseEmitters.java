@@ -17,7 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SseEmitters {
     //private static final AtomicLong counter = new AtomicLong();
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
-
     private final ChatRoomRepository chatRoomRepository;
 
     public SseEmitter add(SseEmitter emitter) {

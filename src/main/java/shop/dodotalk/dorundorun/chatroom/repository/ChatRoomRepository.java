@@ -13,7 +13,6 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
     void delete(ChatRoom room);
 
-    @Where(clause = "is_delete = false")
     Page<ChatRoom> findByIsDeleteOrderByModifiedAtDesc(Boolean isDelete, Pageable pageable);
 
 

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.persistence.*;
@@ -54,7 +55,7 @@ public class ChatRoom extends Timestamped {
     private String saying;          // 방에 들어가면 보이는 / 카테고리 별 랜덤 명언.
 
 
-
+    @Where(clause = "is_delete = false")
     @OneToMany(mappedBy = "sessionId", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatRoomUser> chatRoomUserList;
 

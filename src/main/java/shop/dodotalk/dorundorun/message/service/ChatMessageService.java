@@ -1,6 +1,7 @@
 package shop.dodotalk.dorundorun.message.service;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import shop.dodotalk.dorundorun.aws.service.AwsService;
 import shop.dodotalk.dorundorun.chatroom.entity.BenUser;
 import shop.dodotalk.dorundorun.chatroom.entity.ChatRoom;
@@ -62,15 +63,15 @@ public class ChatMessageService {
     public ChatMsgDeleteResponseDto ChatMessageDelete(ChatMsgDeleteRequestDto chatMsgDeleteRequestDto,
                                                     User user) {
         ChatRoom room = chatRoomRepository.findById(chatMsgDeleteRequestDto.getSessionId()).orElseThrow(
-                () -> new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "해당 방이 없습니다."));
+                () -> new NullPointerException("해당 방이 없습니다."));
 
         BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatMsgDeleteRequestDto.getSessionId());
         if (benUser != null) {
-            throw new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "강퇴당한 방입니다.");
+            throw new NullPointerException("강퇴당한 방입니다.");
         }
 
         ChatRoomUser alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(chatMsgDeleteRequestDto.getSessionId(), user.getId())
-                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "해당 방에 유저가 없습니다."));
+                .orElseThrow(() -> new NullPointerException("해당 방에 유저가 없습니다."));
         
         RoomMessage roomMessage = roomMessageRepository.findBySessionIdAndMessageIdAndSocialUid(
                 chatMsgDeleteRequestDto.getSessionId(), chatMsgDeleteRequestDto.getMessageId(), chatMsgDeleteRequestDto.getSocialUid())
@@ -87,15 +88,15 @@ public class ChatMessageService {
     public ChatFileDeleteResponseDto ChatFileDelete(ChatFileDeleteRequestDto chatFileDeleteRequestDto,
                                                        User user) {
         ChatRoom room = chatRoomRepository.findById(chatFileDeleteRequestDto.getSessionId()).orElseThrow(
-                () -> new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "해당 방이 없습니다."));
+                () -> new NullPointerException("해당 방이 없습니다."));
 
         BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatFileDeleteRequestDto.getSessionId());
         if (benUser != null) {
-            throw new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "강퇴당한 방입니다.");
+            throw new NullPointerException("강퇴당한 방입니다.");
         }
 
         ChatRoomUser alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(chatFileDeleteRequestDto.getSessionId(), user.getId())
-                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "해당 방에 유저가 없습니다."));
+                .orElseThrow(() -> new NullPointerException("해당 방에 유저가 없습니다."));
 
         RoomFileMessage roomFile = roomFileMessageRepository.findBySessionIdAndFileIdAndSocialUid(
                 chatFileDeleteRequestDto.getSessionId(), chatFileDeleteRequestDto.getFileId(), chatFileDeleteRequestDto.getSocialUid())

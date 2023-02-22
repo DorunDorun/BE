@@ -62,19 +62,19 @@ public class ChatMessageService {
     public ChatMsgDeleteResponseDto ChatMessageDelete(ChatMsgDeleteRequestDto chatMsgDeleteRequestDto,
                                                     User user) {
         ChatRoom room = chatRoomRepository.findById(chatMsgDeleteRequestDto.getSessionId()).orElseThrow(
-                () -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다."));
+                () -> new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "해당 방이 없습니다."));
 
         BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatMsgDeleteRequestDto.getSessionId());
         if (benUser != null) {
-            throw new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "강퇴당한 방입니다.");
+            throw new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "강퇴당한 방입니다.");
         }
 
         ChatRoomUser alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(chatMsgDeleteRequestDto.getSessionId(), user.getId())
-                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
-
+                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "해당 방에 유저가 없습니다."));
+        
         RoomMessage roomMessage = roomMessageRepository.findBySessionIdAndMessageIdAndSocialUid(
                 chatMsgDeleteRequestDto.getSessionId(), chatMsgDeleteRequestDto.getMessageId(), chatMsgDeleteRequestDto.getSocialUid())
-                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 메세지가 없습니다."));
+                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "해당 방에 메세지가 없습니다."));
 
         roomMessage.RoomMessageDelete();
 
@@ -87,19 +87,19 @@ public class ChatMessageService {
     public ChatFileDeleteResponseDto ChatFileDelete(ChatFileDeleteRequestDto chatFileDeleteRequestDto,
                                                        User user) {
         ChatRoom room = chatRoomRepository.findById(chatFileDeleteRequestDto.getSessionId()).orElseThrow(
-                () -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방이 없습니다."));
+                () -> new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "해당 방이 없습니다."));
 
         BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatFileDeleteRequestDto.getSessionId());
         if (benUser != null) {
-            throw new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "강퇴당한 방입니다.");
+            throw new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "강퇴당한 방입니다.");
         }
 
         ChatRoomUser alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(chatFileDeleteRequestDto.getSessionId(), user.getId())
-                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 유저가 없습니다."));
+                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "해당 방에 유저가 없습니다."));
 
         RoomFileMessage roomFile = roomFileMessageRepository.findBySessionIdAndFileIdAndSocialUid(
                 chatFileDeleteRequestDto.getSessionId(), chatFileDeleteRequestDto.getFileId(), chatFileDeleteRequestDto.getSocialUid())
-                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, "400", "해당 방에 파일메세지가 없습니다."));
+                .orElseThrow(() -> new CustomErrorException(HttpStatus.BAD_REQUEST, 400, "해당 방에 파일메세지가 없습니다."));
 
         roomFile.RoomFileDelete();
 
@@ -132,6 +132,6 @@ public class ChatMessageService {
             log.error("IOException Error Message : {}",ex.getMessage());
             ex.printStackTrace();
         }
-        throw new CustomErrorException(HttpStatus.OK, "200", "이미지 파일이 생성되지 않았습니다");
+        throw new CustomErrorException(HttpStatus.OK, 200, "이미지 파일이 생성되지 않았습니다");
     }
 }

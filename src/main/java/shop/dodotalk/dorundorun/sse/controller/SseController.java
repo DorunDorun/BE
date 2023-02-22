@@ -1,4 +1,4 @@
-package shop.dodotalk.dorundorun.sse.Controller;
+package shop.dodotalk.dorundorun.sse.controller;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import shop.dodotalk.dorundorun.sse.Entity.SseEmitters;
+import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 
 @Slf4j
 @Controller
@@ -30,6 +30,7 @@ public class SseController {
         SseEmitter emitter = new SseEmitter();
         sseEmitters.add(emitter);
         try {
+            System.out.println("연결됨");
             emitter.send(SseEmitter.event()
                     .name("connect")
                     .data("connected!"));

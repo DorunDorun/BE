@@ -1,4 +1,4 @@
-package shop.dodotalk.dorundorun.sse.Entity;
+package shop.dodotalk.dorundorun.sse.entity;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,6 @@ import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 @Component
@@ -24,6 +23,7 @@ public class SseEmitters {
     public SseEmitter add(SseEmitter emitter) {
         this.emitters.add(emitter);
         emitter.onCompletion(() -> {
+            System.out.println("만료됨");
             this.emitters.remove(emitter);    // 만료되면 리스트에서 삭제
         });
         emitter.onTimeout(() -> {

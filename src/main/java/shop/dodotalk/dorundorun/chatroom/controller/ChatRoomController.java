@@ -13,7 +13,7 @@ import shop.dodotalk.dorundorun.chatroom.service.ChatRoomService;
 import shop.dodotalk.dorundorun.chatroom.util.ResponseUtil;
 import shop.dodotalk.dorundorun.security.annotation.Authenticated;
 import shop.dodotalk.dorundorun.security.jwt.OAuth2UserInfoAuthentication;
-import shop.dodotalk.dorundorun.sse.Entity.SseEmitters;
+import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.servlet.http.HttpServletRequest;

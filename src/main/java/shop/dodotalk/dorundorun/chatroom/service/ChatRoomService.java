@@ -14,7 +14,6 @@ import shop.dodotalk.dorundorun.chatroom.dto.ChatRoomMapper;
 import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomCreateRequestDto;
 import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomEnterDataRequestDto;
 import shop.dodotalk.dorundorun.chatroom.dto.response.*;
-import shop.dodotalk.dorundorun.chatroom.entity.BenUser;
 import shop.dodotalk.dorundorun.chatroom.entity.Category;
 import shop.dodotalk.dorundorun.chatroom.entity.ChatRoom;
 import shop.dodotalk.dorundorun.chatroom.entity.ChatRoomUser;
@@ -26,7 +25,7 @@ import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomUserRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
 import shop.dodotalk.dorundorun.chatroom.util.CreateSaying;
 import shop.dodotalk.dorundorun.security.jwt.JwtUtil;
-import shop.dodotalk.dorundorun.sse.Entity.SseEmitters;
+import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.annotation.PostConstruct;

@@ -26,6 +26,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -438,6 +439,36 @@ public class ChatRoomService {
         return session.createConnection(connectionProperties).getToken();
     }
 
+
+    /*랜딩페이지 정보 뿌려주기*/
+    public ChatRoomInfoResponseDto getRoomInfo() {
+
+        Long totalRoom = chatRoomRepository.countAllBy();
+
+        List<ChatRoom> chatRoomList = chatRoomRepository.findAll();
+
+        Long totalSecond = 0L;
+
+        for (ChatRoom chatRoom : chatRoomList) {
+
+            LocalDateTime deleteTime = chatRoom.getRoomDeleteTime();
+            LocalDateTime createdAt = chatRoom.getCreatedAt();
+
+            if (deleteTime == null) {
+                LocalDateTime now = LocalDateTime.now();
+                Duration duration = Duration.between(createdAt, now);
+                totalSecond = totalSecond + duration.getSeconds();
+
+            }else {
+                Duration duration = Duration.between(createdAt, deleteTime);
+                totalSecond = totalSecond + duration.getSeconds();
+            }
+
+        }
+        Long totalHour = totalSecond / (60*60);
+
+        return new ChatRoomInfoResponseDto(totalHour, totalRoom);
+    }
 
     /*
      * 2차 Scope 채팅방 검색

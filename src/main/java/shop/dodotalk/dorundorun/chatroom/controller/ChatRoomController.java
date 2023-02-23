@@ -89,6 +89,10 @@ public class ChatRoomController {
         return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, request, user));
     }
 
+    /*랜딩 페이지에 보여줄
+    * 1.지금까지 개설된 채팅방 개수 합산.
+    * 2.지금가지*/
+
 
     /*
      * 2차 Scope

@@ -78,7 +78,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         if ("kakao".equals(attributes.get("social"))) {
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundorun-blond.vercel.app/kakao")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
@@ -90,7 +90,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         if ("google".equals(attributes.get("social"))) {
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/google")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundorun-blond.vercel.app/google")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
@@ -104,7 +104,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         if ("naver".equals(attributes.get("social"))) {
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/naver")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundorun-blond.vercel.app/naver")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))

@@ -20,31 +20,23 @@ public class CreateSaying {
 
     private final CategoryRepository categoryRepository;
 
-
     public String createSaying(CategoryEnum category) {
 
-        Optional<Category> categoryOptional = categoryRepository.findByCategory(category);
 
-
-
-        if (categoryOptional.isEmpty()) {
-            throw new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.");
-        }
-
-        Category categoryFind = categoryOptional.get();
+        Category categoryFind = categoryRepository.findByCategory(category).orElseThrow(
+                ()-> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+        );
 
         List<Saying> sayingList = categoryFind.getSayings();
 
-        int cnt = sayingList.size();
-        int randomInt = (int) ((Math.random() * 10000) % cnt);
+        int sayingSize = sayingList.size();
+        int randomInt = (int) ((Math.random() * 10000) % sayingSize);
 
 
         Saying saying = sayingList.get(randomInt);
 
 
         return saying.getSaying();
-
-
 
     }
 

@@ -6,11 +6,11 @@ import java.util.List;
 
 @Getter
 public class ExceptionResponseListMessage {
-    private Integer httpStatus;
-    private List<String> messages;
+    private Integer statusCode;
+    private List<String> statusMsg;
 
-    public ExceptionResponseListMessage(Integer httpStatus, List<String> messages) {
-        this.httpStatus = httpStatus;
-        this.messages = messages;
+    public ExceptionResponseListMessage(Integer statusCode, List<String> statusMsg) {
+        this.statusCode = statusCode;
+        this.statusMsg = statusMsg;
     }
 }

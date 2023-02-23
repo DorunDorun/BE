@@ -6,13 +6,13 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class ChatRoomAllResponseDto {
+public class ChatRoomGetAllResponseDto {
 
     private List<ChatRoomResponseDto> chattingRoomList;
     private ChatRoomPageInfoResponseDto pageInfo;
 
 
-    public ChatRoomAllResponseDto(List<ChatRoomResponseDto> chatRoomResponseDtos, ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto) {
+    public ChatRoomGetAllResponseDto(List<ChatRoomResponseDto> chatRoomResponseDtos, ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto) {
         this.chattingRoomList = chatRoomResponseDtos;
         this.pageInfo = chatRoomPageInfoResponseDto;
     }

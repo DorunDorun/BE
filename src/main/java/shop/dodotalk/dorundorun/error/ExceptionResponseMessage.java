@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Getter
 public class ExceptionResponseMessage {
 
-    private Integer httpStatus;
-    private String errormessage;
+    private Integer statusCode;
+    private String statusMsg;
 
-    public ExceptionResponseMessage(Integer httpStatus, String errormessage) {
-        this.httpStatus = httpStatus;
-        this.errormessage = errormessage;
+    public ExceptionResponseMessage(Integer statusCode, String statusMsg) {
+        this.statusCode = statusCode;
+        this.statusMsg = statusMsg;
     }
 }

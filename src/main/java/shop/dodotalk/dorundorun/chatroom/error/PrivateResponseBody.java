@@ -10,21 +10,17 @@ public class PrivateResponseBody {
     private String statusMsg;
     private Object data;
 
-    public PrivateResponseBody(ErrorCode errorCode) {
-        this.statusCode = errorCode.getErrorCode();
-        this.statusMsg = errorCode.getErrormessage();
+    public PrivateResponseBody(SuccessCode successCode) {
+        this.statusCode = successCode.getErrorCode();
+        this.statusMsg = successCode.getErrormessage();
 
     }
 
-    public PrivateResponseBody(ErrorCode errorCode, Object data){
-        this.statusCode = errorCode.getErrorCode();
-        this.statusMsg = errorCode.getErrormessage();
+    public PrivateResponseBody(SuccessCode successCode, Object data){
+        this.statusCode = successCode.getErrorCode();
+        this.statusMsg = successCode.getErrormessage();
         this.data = data;
     }
 
-
-    public PrivateResponseBody(Exception e) {
-        this.statusMsg = e.getMessage();
-    }
 
 }

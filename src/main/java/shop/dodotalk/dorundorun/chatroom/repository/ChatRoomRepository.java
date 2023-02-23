@@ -25,6 +25,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
     Optional<ChatRoom> findBySessionId(String chatRoomId);
 
+    Long countAllBy();
+
 
 
     /*방 제목, 내용, 카테고리 검색*/

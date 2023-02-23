@@ -89,9 +89,14 @@ public class ChatRoomController {
         return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, request, user));
     }
 
-    /*랜딩 페이지에 보여줄
-    * 1.지금까지 개설된 채팅방 개수 합산.
-    * 2.지금가지*/
+    /*랜딩 페이지에 보여줄정보
+    * 1.지금까지 생성된 채팅방 개수 합산.
+    * 2.방이 생성되고 삭제되기 전까지의 시간 총 합(유저 머문 시간 x)*/
+    @GetMapping("/rooms/info")
+    public ResponseEntity<PrivateResponseBody> getRoomInfo() {
+
+        return new ResponseUtil<>().forSuccess(chatRoomService.getRoomInfo());
+    }
 
 
     /*

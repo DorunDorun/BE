@@ -27,8 +27,6 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
-    private final SseEmitters sseEmitters; // 관우 실시간 방 개수 나타내기
-
     /*화상 채팅 방 API Controller*/
 
     /*
@@ -45,8 +43,6 @@ public class ChatRoomController {
             throws Exception {
 
         User user = (User) authentication.getPrincipal();
-
-        sseEmitters.count(); // 관우 실시간 방 개수 나타내기
 
         return new ResponseUtil<>().forCreatedSuccess(chatRoomService
                 .createChatRoom(chatRoomCreateRequestDto, user));

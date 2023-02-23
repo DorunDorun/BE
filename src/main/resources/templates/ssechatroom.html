@@ -3,34 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>SSE Example</title>
+
+    <head>
+        <link rel="icon" type="image/png" href="data:;base64,iVBORw0KGgo=">
+        <!-- 나머지 head 태그 내용 -->
+    </head>
+
 </head>
 <body>
 <div id="count"></div>
 <div id="count2"></div>
-<button onclick="handleCountEvent()">클릭</button>
 
 <script>
     const sse = new EventSource("https://dorundorun.shop/api/sse");
 
     sse.addEventListener('connect', (e) => {
         const { data: receivedConnectData } = e;
-        console.log('connect event data:', receivedConnectData);  // "connected!"
+        console.log('연결 현재 채팅방 수 :', receivedConnectData);  // "connected!"
+        handleCountEvent(receivedConnectData);
     });
+
+    sse.addEventListener('connect2', (e) => {
+        const { data: receivedConnectData } = e;
+        console.log('연결 전체 채팅방 수 :', receivedConnectData);  // "connected!"
+        handleCountEvent2(receivedConnectData);
+    });
+
+    sse.onerror = function (event) {
+        if (event.readyState == EventSource.CLOSED) {
+            console.log("SSE 연결이 종료되었습니다.");
+        } else {
+            console.log("SSE 연결이 에러로 인해 종료되었습니다.");
+        }
+    };
 
     sse.addEventListener('count', e => {
         const { data: receivedCount } = e;
-        console.log("count event data:", receivedCount);
+        console.log("현재 채팅방 수 : ", receivedCount);
         handleCountEvent(receivedCount);
     });
 
     sse.addEventListener('count2', e => {
         const { data: receivedCount } = e;
-        console.log("count event data:", receivedCount);
+        console.log("전체 채팅방 수 : ", receivedCount);
+
         handleCountEvent2(receivedCount);
     });
 
     function handleCountEvent(count) {
-        console.log("count event data:", count);
         const countElement = document.getElementById('count');
         countElement.innerText = `현재 채팅방 수: ${count}`;
     }

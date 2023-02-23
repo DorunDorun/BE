@@ -97,6 +97,7 @@ public class ChatRoomService {
         /*빌드된 채팅방 저장(생성)*/
         ChatRoom savedRoom = chatRoomRepository.save(chatRoom);
 
+        sseEmitters.count(); // 관우 실시간 방 개수 나타내기
 
         /*채팅방에 보여질 정보들을 리턴*/
         return ChatRoomCreateResponseDto.builder()

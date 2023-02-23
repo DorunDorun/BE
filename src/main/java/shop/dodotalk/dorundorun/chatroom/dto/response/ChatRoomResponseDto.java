@@ -31,18 +31,4 @@ public class ChatRoomResponseDto {
         this.category = category.getCategory().getCategoryKr();
     }
 
-    public ChatRoomResponseDto(ChatRoom room, List<ChatRoomUserResponseDto> chatRoomUserList) {
-
-        this.sessionId = room.getSessionId();
-        this.title = room.getTitle();
-        this.subtitle = room.getSubtitle();
-        this.status = room.isStatus();
-        this.buttonImage = room.getButtonImage();
-        this.password = room.getPassword();
-        this.category = room.getCategory().getCategory().getCategoryKr();
-        this.master = room.getMaster();
-        this.saying = room.getSaying();
-        this.chatRoomUserList = chatRoomUserList;
-        this.cntUser = room.getCntUser();
-    }
 }

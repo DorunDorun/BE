@@ -15,7 +15,7 @@ public class ResponseUtil<T> {
     public ResponseEntity<PrivateResponseBody> forSuccess(T data){
         return new ResponseEntity<>(
                 new PrivateResponseBody(
-                        new ErrorCode(HttpStatus.OK, "200", "정상") , data
+                        new SuccessCode(HttpStatus.OK, "200", "정상") , data
                 ) ,
                 HttpStatus.OK);
     }

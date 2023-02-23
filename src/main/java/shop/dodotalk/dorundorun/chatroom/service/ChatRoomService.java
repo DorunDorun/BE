@@ -47,7 +47,7 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
-    private final BenUserRepository benUserRepository;
+    //    private final BenUserRepository benUserRepository;
     private final CreateSaying createSaying;
     private final CategoryRepository categoryRepository;
     private final ChatRoomMapper chatRoomMapper;

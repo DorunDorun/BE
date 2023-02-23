@@ -39,19 +39,17 @@ public class ChatRoomController {
 
     /*방 생성 API*/
     @PostMapping("/rooms")
-    public ResponseEntity<PrivateResponseBody> makeRoom(@Valid @RequestBody ChatRoomCreateRequestDto chatRoomCreateRequestDto,
-                                                        HttpServletRequest request,
-                                                        @Authenticated OAuth2UserInfoAuthentication authentication)
+    public ResponseEntity<PrivateResponseBody> makeRoom(
+            @Validated @RequestBody ChatRoomCreateRequestDto chatRoomCreateRequestDto,
+            @Authenticated OAuth2UserInfoAuthentication authentication)
             throws Exception {
-
 
         User user = (User) authentication.getPrincipal();
 
         sseEmitters.count(); // 관우 실시간 방 개수 나타내기
 
         return new ResponseUtil<>().forCreatedSuccess(chatRoomService
-                .createRoom(chatRoomCreateRequestDto, request, user));
-
+                .createChatRoom(chatRoomCreateRequestDto, user));
     }
 
     /*채팅방 입장 API*/
@@ -62,32 +60,26 @@ public class ChatRoomController {
                                                          @Authenticated OAuth2UserInfoAuthentication authentication)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
-
         User user = (User) authentication.getPrincipal();
-
         return new ResponseUtil<>().forSuccess(chatRoomService.enterChatRoom(sessionId, request, requestData, user));
     }
 
     /*채팅방(속한 유저들) 정보 불러오기 API*/
     @GetMapping("/rooms/{sessionid}/users")
     public ResponseEntity<PrivateResponseBody> getAllRooms(@PathVariable(name = "sessionid") String sessionId,
-                                                           HttpServletRequest request,
-                                                           @Authenticated OAuth2UserInfoAuthentication authentication)
-            throws OpenViduJavaClientException, OpenViduHttpException {
+                                                           @Authenticated OAuth2UserInfoAuthentication authentication) {
 
         User user = (User) authentication.getPrincipal();
 
-        return new ResponseUtil<>().forSuccess(chatRoomService.getRoomUserData(sessionId, request, user));
+        return new ResponseUtil<>().forSuccess(chatRoomService.getRoomUserData(sessionId, user));
     }
-
 
 
     /*방 목록 API*/
     @GetMapping("/rooms/{page}")
     public ResponseEntity<PrivateResponseBody> getAllRooms(@PathVariable int page) {
-        return new ResponseUtil<>().forSuccess(chatRoomService.getAllRooms(page));
+        return new ResponseUtil<>().forSuccess(chatRoomService.getAllChatRooms(page));
     }
-
 
 
     /*방 나가기 API*/
@@ -98,7 +90,7 @@ public class ChatRoomController {
 
         User user = (User) authentication.getPrincipal();
 
-        return new ResponseUtil<>().forSuccess(chatRoomService.outRoomUser(sessionId, request, user));
+        return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, request, user));
     }
 
 
@@ -113,7 +105,7 @@ public class ChatRoomController {
 
     /*방 검색 API(키워드)*/
     @GetMapping("/rooms/{page}/search")
-    public ResponseEntity<?> searchRoom(@PathVariable int page,
+    public ResponseEntity<PrivateResponseBody> searchRoom(@PathVariable int page,
                                         @RequestParam String keyword) {
 
         return new ResponseUtil<>().forSuccess(chatRoomService.searchRoom(keyword, page));

@@ -47,10 +47,12 @@ public class ChatMessageService {
         ChatMessageResponseDto chatMessageResponseDto;
 
         if (chatMessageRequestDto.getImgByteCode() != null) {
+            System.out.println("이미지 해석 실행");
             RoomFileMessage roomFileMessage = BinaryImageChange(chatMessageRequestDto);
             roomFileMessageRepository.save(roomFileMessage);
             chatMessageResponseDto = new ChatMessageResponseDto(roomFileMessage);
         } else {
+            System.out.println("텍스트 해석 실행");
             RoomMessage roomMessage = new RoomMessage(chatMessageRequestDto);
             roomMessageRepository.save(roomMessage);
             chatMessageResponseDto = new ChatMessageResponseDto(roomMessage);
@@ -113,10 +115,14 @@ public class ChatMessageService {
     public RoomFileMessage BinaryImageChange(ChatMessageRequestDto chatMessageRequestDto) {
         RoomFileMessage roomFileMessage;
         try {
+            System.out.println("=============================== BinaryImageChange ==================================");
             String[] strings = chatMessageRequestDto.getImgByteCode().split(",");
             String base64Image = strings[1];
 
             String extension = strings[0].split(";")[0].split("/")[1];
+
+            System.out.println("base64Image : " + base64Image);
+            System.out.println("extension : " + extension);
 
             byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
 
@@ -127,7 +133,15 @@ public class ChatMessageService {
 
             String awsS3ImageUrl = awsService.S3FileImageUpload(tempFile);
 
+            System.out.println("S3 이미지 url : " + awsS3ImageUrl);
+
             roomFileMessage = new RoomFileMessage(chatMessageRequestDto, awsS3ImageUrl);
+
+            System.out.println("룸 파일 ID : " + roomFileMessage.getFileId());
+            System.out.println("룸 파일 닉넴 : " + roomFileMessage.getNickname());
+            System.out.println("룸 파일 이미지 : " + roomFileMessage.getImgUrl());
+
+            System.out.println("=============================== BinaryImageChange ==================================");
             return roomFileMessage;
         } catch (IOException ex) {
             log.error("IOException Error Message : {}",ex.getMessage());

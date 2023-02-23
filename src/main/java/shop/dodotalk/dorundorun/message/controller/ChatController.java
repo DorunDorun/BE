@@ -16,8 +16,12 @@ public class ChatController {
     private final SimpMessageSendingOperations messagingTemplate;
     private final ChatMessageService chatMessageService;
     @ResponseBody
+    //@CrossOrigin(origins = "https://dorundorun.shop")
     @MessageMapping("/chat/room")
     public void message(ChatMessageRequestDto chatMessageRequestDto) {
+        System.out.println("방 ID : " + chatMessageRequestDto.getSessionId());
+        System.out.println("메세지 바이트 코드 : " + chatMessageRequestDto.getImgByteCode());
+        System.out.println("방 메세지 : " + chatMessageRequestDto.getMessage());
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.ChatMessageCreate(chatMessageRequestDto);
 
         messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageRequestDto.getSessionId(), chatMessageResponseDto);

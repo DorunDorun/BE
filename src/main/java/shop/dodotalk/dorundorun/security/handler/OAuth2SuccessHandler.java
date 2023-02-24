@@ -13,6 +13,8 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 import shop.dodotalk.dorundorun.security.jwt.JwtUtil;
 
@@ -46,8 +48,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
 
-
-
         /* JWT Access Token 발급 헤더에 넣던지, 쿠키로 전달해주던지. */
         log.info("access token 발급");
 //        response.addHeader(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication));
@@ -79,6 +79,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         if ("kakao".equals(attributes.get("social"))) {
             String targetUrl = UriComponentsBuilder.fromUriString("https://dorundorun-blond.vercel.app/kakao")
+//            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
@@ -91,6 +92,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         if ("google".equals(attributes.get("social"))) {
             String targetUrl = UriComponentsBuilder.fromUriString("https://dorundorun-blond.vercel.app/google")
+//            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/google")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
@@ -105,6 +107,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         if ("naver".equals(attributes.get("social"))) {
             String targetUrl = UriComponentsBuilder.fromUriString("https://dorundorun-blond.vercel.app/naver")
+//            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/naver")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))

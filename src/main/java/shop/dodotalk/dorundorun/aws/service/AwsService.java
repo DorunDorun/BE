@@ -37,9 +37,11 @@ public class AwsService {
             FileOutputStream fileOutputStream = new FileOutputStream(tempFile); // 파일 삭제시 전부 아웃풋 닫아줘야함
             fileOutputStream.close();
             if (tempFile.delete()) {
-                log.info("File delete success");
+                System.out.println("파일 성공적으로 삭제됨");
+                //log.info("File delete success");
             } else {
-                log.info("File delete fail");
+                System.out.println("파일 성공적으로 삭제안됨");
+                //log.info("File delete fail");
             }
         } catch (Exception e) {
             e.printStackTrace();

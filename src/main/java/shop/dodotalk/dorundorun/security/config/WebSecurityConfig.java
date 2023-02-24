@@ -99,7 +99,7 @@ public class WebSecurityConfig {
 
 //        configuration.addAllowedOriginPattern("*");
         configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedOrigin("https://dorundorun-blond.vercel.app");
+        configuration.addAllowedOrigin("https://dorundourn.vercel.app");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Set-Cookie");

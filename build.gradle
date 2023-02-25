@@ -79,6 +79,7 @@ dependencies {
     // 프로메테우스
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
 }
 

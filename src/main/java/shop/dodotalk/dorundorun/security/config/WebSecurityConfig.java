@@ -73,6 +73,11 @@ public class WebSecurityConfig {
                 .antMatchers("/api/sse").permitAll()
                 .antMatchers("/api/count").permitAll() // 관우 실시간 채팅방 개수 테스트 용도 지워야함
                 .antMatchers("/api/ssehtml").permitAll() // 관우 실시간 채팅방 개수 테스트 용도 지워야함
+                .antMatchers("/actuator").permitAll() // 관우 프로메테우스
+                .antMatchers("/actuator/**").permitAll() // 관우 프로메테우스
+//                .antMatchers("/actuator/health").permitAll() // 관우 프로메테우스
+//                .antMatchers("/actuator/health/**").permitAll() // 관우 프로메테우스
+//                .antMatchers("/actuator/prometheus").permitAll() // 관우 프로메테우스
                 .anyRequest().authenticated();
 
 

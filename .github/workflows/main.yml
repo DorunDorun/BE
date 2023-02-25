@@ -5,10 +5,12 @@ on:
     branches:
       - release
       - main
+      - feature/prometaus
   pull_request:
     branches:
       - release
       - main
+      - feature/prometaus
 
 env:
   S3_BUCKET_NAME: dodo-buket

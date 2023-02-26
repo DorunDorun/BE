@@ -2,6 +2,7 @@ package shop.dodotalk.dorundorun.message.config;
 
 
 import org.springframework.messaging.simp.config.ChannelRegistration;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.socket.config.annotation.*;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import lombok.RequiredArgsConstructor;
@@ -46,10 +47,27 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
 
     @EventListener
     public void connectEvent(SessionConnectEvent sessionConnectEvent){
-        log.info("socket 연결 성공");
+        System.out.println("------------------------연결성공--------------------");
+        System.out.println("sessionId : " + sessionConnectEvent.getUser());
+        System.out.println("------------------------연결성공--------------------");
+        //log.info("socket 연결 성공");
     }
     @EventListener
     public void onDisconnectEvent(SessionDisconnectEvent sessionDisconnectEvent) {
-        log.info("socket 연결 끊어짐");
+        System.out.println("------------------------연결끊김--------------------");
+        System.out.println("sessionId : " + sessionDisconnectEvent.getSessionId());
+        System.out.println("------------------------연결끊김--------------------");
+        //log.info("socket 연결 끊어짐");
     }
+
+//    @EventListener
+//    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+//        String sessionId = event.getSessionId();
+//        System.out.println("------------------------연결끊김--------------------");
+//        System.out.println("sessionId : " + sessionId);
+//        System.out.println("------------------------연결끊김--------------------");
+//        // 연결이 끊어진 클라이언트의 구독 정보를 모두 해제합니다.
+//        // 세션 종료 이벤트 처리 코드
+//    }
 }

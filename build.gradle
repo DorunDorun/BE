@@ -77,8 +77,11 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 
     // 프로메테우스
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("io.micrometer:micrometer-registry-prometheus")
+    //    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    //    implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-core'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
 
 }

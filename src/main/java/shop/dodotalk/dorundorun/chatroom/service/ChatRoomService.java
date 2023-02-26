@@ -341,7 +341,7 @@ public class ChatRoomService {
         long afterSeconds = ChronoUnit.SECONDS.between(start, end);
 
         /*3. 1번의 기존 머문 시간에 + 다시 들어왔을때의 머문시간을 더한다.
-        * 처음 들어온 유저의 경우 ex) 00:00:00 + 00:05:20 */
+         * 처음 들어온 유저의 경우 ex) 00:00:00 + 00:05:20 */
         LocalTime chatRoomStayTime = beforeChatRoomStayTime.plusSeconds(afterSeconds);
 
         /*4. 채팅방 유저 논리 삭제, 방에서 나간 시간 저장, 방에 머문 시간 교체*/
@@ -459,13 +459,13 @@ public class ChatRoomService {
                 Duration duration = Duration.between(createdAt, now);
                 totalSecond = totalSecond + duration.getSeconds();
 
-            }else {
+            } else {
                 Duration duration = Duration.between(createdAt, deleteTime);
                 totalSecond = totalSecond + duration.getSeconds();
             }
 
         }
-        Long totalHour = totalSecond / (60*60);
+        Long totalHour = totalSecond / (60 * 60);
 
         return new ChatRoomInfoResponseDto(totalHour, totalRoom);
     }
@@ -507,6 +507,43 @@ public class ChatRoomService {
         return new ChatRoomGetAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
 
     }
+
+
+    @Transactional
+    public ChatRoomGetAllResponseDto searchCategory(CategoryEnum categoryEnum, int page) {
+
+        Category category = categoryRepository.findByCategory(CategoryEnum.valueOf(String.valueOf(categoryEnum)))
+                .orElseThrow(
+                        () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+                );
+
+
+        PageRequest pageable = PageRequest.of(page - 1, 16);
+
+        Page<ChatRoom> searchRoom =
+                chatRoomRepository.findByCategoryOrderByModifiedAtDesc(category, pageable);
+
+        /*검색 결과가 없다면*/
+        if (searchRoom.isEmpty()) {
+            throw new EntityNotFoundException("검색 결과가 없습니다.");
+        }
+
+        /*pagination을 위한 정보를 담은 Dto 생성*/
+        ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
+                = new ChatRoomPageInfoResponseDto(page, 16,
+                (int) searchRoom.getTotalElements(), searchRoom.getTotalPages());
+
+
+        /*chatRoomList에서 Page 정보를 제외 ChatRoom만 꺼내온다.*/
+        List<ChatRoom> chatRooms = searchRoom.getContent();
+
+        /*mapper를 활용하여 chatRoom Entity를 Dto로 변환.*/
+        List<ChatRoomResponseDto> chatRoomResponseDtoList = chatRoomMapper.roomsToRoomResponseDtos(chatRooms);
+
+        return new ChatRoomGetAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
+
+    }
+
 
 }
 

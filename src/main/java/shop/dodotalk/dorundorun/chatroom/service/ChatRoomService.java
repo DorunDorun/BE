@@ -124,7 +124,7 @@ public class ChatRoomService {
 
 
         /*페이지네이션 설정 --> 무한 스크롤 예정*/
-        PageRequest pageable = PageRequest.of(page - 1, 12);
+        PageRequest pageable = PageRequest.of(page - 1, 16);
         Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
 
         /*채팅방이 존재하지 않을 경우*/
@@ -134,7 +134,7 @@ public class ChatRoomService {
 
         /*pagination을 위한 정보를 담은 Dto 생성*/
         ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
-                = new ChatRoomPageInfoResponseDto(page, 12,
+                = new ChatRoomPageInfoResponseDto(page, 16,
                 (int) chatRoomList.getTotalElements(), chatRoomList.getTotalPages());
 
 
@@ -480,7 +480,7 @@ public class ChatRoomService {
             throw new IllegalArgumentException("검색 양식에 맞지 않습니다.");
         }
 
-        PageRequest pageable = PageRequest.of(page - 1, 12);
+        PageRequest pageable = PageRequest.of(page - 1, 16);
 
         Page<ChatRoom> searchRoom =
                 chatRoomRepository.findByTitleContainingOrSubtitleContainingOrderByModifiedAtDesc(keyword
@@ -494,7 +494,7 @@ public class ChatRoomService {
 
         /*pagination을 위한 정보를 담은 Dto 생성*/
         ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
-                = new ChatRoomPageInfoResponseDto(page, 12,
+                = new ChatRoomPageInfoResponseDto(page, 16,
                 (int) searchRoom.getTotalElements(), searchRoom.getTotalPages());
 
 

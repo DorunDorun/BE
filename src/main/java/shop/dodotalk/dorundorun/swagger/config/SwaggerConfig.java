@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.StringUtils;
@@ -93,6 +94,11 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
                 .build();
         converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
         super.configureMessageConverters(converters);
+    }
+
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(new StringHttpMessageConverter());
     }
 
     @Bean

@@ -78,8 +78,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         if ("kakao".equals(attributes.get("social"))) {
-//.           String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/kakao")
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao")
+           String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/kakao")
+//            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
@@ -91,8 +91,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         if ("google".equals(attributes.get("social"))) {
-//            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/google")
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/google")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/google")
+//            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/google")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
@@ -106,8 +106,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         if ("naver".equals(attributes.get("social"))) {
-//            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/naver")
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/naver")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/naver")
+  //          String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/naver")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))

@@ -19,6 +19,7 @@ bin/
 
 ### IntelliJ IDEA ###
 resources
+var
 
 .idea
 *.iws

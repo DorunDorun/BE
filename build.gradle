@@ -12,6 +12,12 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    from('src/main/resources') {
+        include 'logback.xml'
+    }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

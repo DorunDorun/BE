@@ -78,7 +78,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         if ("kakao".equals(attributes.get("social"))) {
-//            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/kakao")
+//.           String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/kakao")
             String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))

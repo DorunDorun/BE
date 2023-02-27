@@ -12,17 +12,6 @@ repositories {
     mavenCentral()
 }
 
-jar {
-    from('src/main/resources') {
-        include 'logback.xml'
-    }
-}
-
-application {
-    // 실행 가능한 JAR에 전달할 JVM 인수를 설정합니다.
-    applicationDefaultJvmArgs = ['-Dlogback.configurationFile=logback.xml']
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

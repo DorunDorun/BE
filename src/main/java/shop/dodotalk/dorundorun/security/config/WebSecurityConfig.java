@@ -79,8 +79,6 @@ public class WebSecurityConfig {
                 .antMatchers("/actuator/health").permitAll() // 관우 프로메테우스
                 .antMatchers("/actuator/health/**").permitAll() // 관우 프로메테우스
                 .antMatchers("/actuator/prometheus").permitAll() // 관우 프로메테우스
-                .antMatchers("/management").permitAll() // 관우 프로메테우스
-                .antMatchers("/management/**").permitAll() // 관우 프로메테우스
                 .antMatchers("/end-point1").permitAll() // 관우 프로메테우스
                 .antMatchers("/end-point2").permitAll() // 관우 프로메테우스
                 .anyRequest().authenticated();

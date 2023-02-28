@@ -1,9 +1,17 @@
 package shop.dodotalk.dorundorun.security.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.protocol.UriPatternMatcher;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.filter.OncePerRequestFilter;
+import shop.dodotalk.dorundorun.error.ExceptionResponseMessage;
+
 import shop.dodotalk.dorundorun.users.entity.User;
 import shop.dodotalk.dorundorun.users.service.UserPrincipalService;
 
@@ -12,6 +20,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 
 @Slf4j
@@ -32,11 +43,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     /* 무조건 실행되며,
-    * - JWT 토큰 성공 시 로그인
-    * - JWT 토큰 실패 시 OAuth2 인증과정을 거친다. */
+     * - JWT 토큰 성공 시 로그인
+     * - JWT 토큰 실패 시 OAuth2 인증과정을 거친다. */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("Jwt Filter Start");
+
+        String requestURI = request.getRequestURI();
+        log.info("사용자가 요청한 URI" + requestURI);
+
+        /*소셜 로그인 시 JWT 필터를 탈 필요가 없음.*/
+        if (requestURI.equals("/oauth2/authorization/kakao") ||
+                requestURI.equals("/login/oauth2/code/kakao") ||
+                requestURI.equals("/oauth2/authorization/google") ||
+                requestURI.equals("/login/oauth2/code/google") ||
+                requestURI.equals("/oauth2/authorization/naver") ||
+                requestURI.equals("/login/oauth2/code/naver") ||
+                requestURI.equals("/")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
+
+
 
         /* resolveToken()을 통해 request Header에서 토큰값을 빼온다. */
         String jwtAccessToken = jwtUtil.resolveToken(request, AUTHORIZATION_HEADER);
@@ -95,13 +126,50 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     log.info("reissue refresh Token & access Token");
                 }
+            } else {
+
+                log.info("no valid JWT Refresh token found, uri: {}", request.getRequestURI());
+
+                try (OutputStream os = response.getOutputStream()) {
+
+
+                    ExceptionResponseMessage exceptionDto =
+                            new ExceptionResponseMessage(HttpStatus.UNAUTHORIZED.value(), "Refresh Token이 유효하지 않거나, 만료기간이 지났습니다.");
+
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.writeValue(os, exceptionDto);
+                    os.flush();
+                    return;
+                }
             }
-        } else {
-            log.info("no valid JWT token found, uri: {}", request.getRequestURI());
+
+
+        } else { /*Access Token이 유효하지 않은 경우 -> 로그인할 때 제외.*/
+
+            log.info("no valid JWT Access token found, uri: {}", request.getRequestURI());
+
+            try (OutputStream os = response.getOutputStream()) {
+
+                ExceptionResponseMessage exceptionDto =
+                        new ExceptionResponseMessage(HttpStatus.UNAUTHORIZED.value(), "Access Token이 유효하지 않습니다.");
+
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.writeValue(os, exceptionDto);
+                os.flush();
+                return;
+            }
+
+
         }
 
         /* Access Token이 없거나 검증이 안되는 경우
-        * Refresh Token이 만료된 경우 등은 로그인 처리 하지 않고 다음 필터로 진행 */
+         * Refresh Token이 만료된 경우 등은 로그인 처리 하지 않고 다음 필터로 진행 */
         filterChain.doFilter(request, response);
     }
 
@@ -117,7 +185,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         log.info(String.valueOf(authResult));
         log.info(SecurityContextHolder.getContext().toString());
-
 
 
     }

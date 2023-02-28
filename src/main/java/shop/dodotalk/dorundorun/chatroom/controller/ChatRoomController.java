@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomCreateRequestDto;
 import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomEnterDataRequestDto;
+import shop.dodotalk.dorundorun.chatroom.entity.CategoryEnum;
 import shop.dodotalk.dorundorun.chatroom.error.PrivateResponseBody;
 import shop.dodotalk.dorundorun.chatroom.service.ChatRoomService;
 import shop.dodotalk.dorundorun.chatroom.util.ResponseUtil;
@@ -19,6 +20,7 @@ import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
 
 @RestController
 @RequiredArgsConstructor
@@ -90,8 +92,8 @@ public class ChatRoomController {
     }
 
     /*랜딩 페이지에 보여줄정보
-    * 1.지금까지 생성된 채팅방 개수 합산.
-    * 2.방이 생성되고 삭제되기 전까지의 시간 총 합(유저 머문 시간 x)*/
+     * 1.지금까지 생성된 채팅방 개수 합산.
+     * 2.방이 생성되고 삭제되기 전까지의 시간 총 합(유저 머문 시간 x)*/
     @GetMapping("/rooms/info")
     public ResponseEntity<PrivateResponseBody> getRoomInfo() {
 
@@ -111,9 +113,27 @@ public class ChatRoomController {
     /*방 검색 API(키워드)*/
     @GetMapping("/rooms/{page}/search")
     public ResponseEntity<PrivateResponseBody> searchRoom(@PathVariable int page,
-                                        @RequestParam String keyword) {
+                                                          @RequestParam String keyword) {
 
         return new ResponseUtil<>().forSuccess(chatRoomService.searchRoom(keyword, page));
     }
 
+    /*카테고리 클릭 해당 카테고리의 채팅방 불러오기 API*/
+    @GetMapping("/rooms/{page}/category")
+    public ResponseEntity<PrivateResponseBody> searchCategory(@PathVariable int page,
+                                                              @RequestParam String category) {
+
+        CategoryEnum categoryEnum;
+        try{
+            categoryEnum = CategoryEnum.valueOf(category);
+        }catch (Exception exception){
+            throw new IllegalArgumentException("category 값을 정확하게 입력해 주세요.");
+        }
+
+
+
+        return new ResponseUtil<>().forSuccess(chatRoomService.searchCategory(categoryEnum, page));
+
+
+    }
 }

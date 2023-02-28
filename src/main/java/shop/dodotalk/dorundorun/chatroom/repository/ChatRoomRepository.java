@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import shop.dodotalk.dorundorun.chatroom.entity.Category;
+import shop.dodotalk.dorundorun.chatroom.entity.CategoryEnum;
 import shop.dodotalk.dorundorun.chatroom.entity.ChatRoom;
 
 
@@ -40,6 +42,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
                                                                                                   String subtitle,
                                                                                                   Pageable pageable);
 
+    /*카테고리 클릭 시 해당 카테고리 글 반환*/
+    Page<ChatRoom> findByCategoryOrderByModifiedAtDesc(Category category, Pageable pageable);
 
     /* 관우 삭제되지 않은 실시간 채팅방 개수 전부 나타내기 */
     List<ChatRoom> findAllByIsDelete(boolean isDelete);

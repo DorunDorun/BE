@@ -16,7 +16,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import shop.dodotalk.dorundorun.message.handler.StompHandler;
+//import shop.dodotalk.dorundorun.message.handler.StompHandler;
 
 
 @Slf4j
@@ -24,7 +24,7 @@ import shop.dodotalk.dorundorun.message.handler.StompHandler;
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
-    private final StompHandler stompHandler; // jwt 인증
+    //private final StompHandler stompHandler; // jwt 인증
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/sub");
@@ -40,10 +40,10 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
         registration.setMessageSizeLimit(50 * 1024 * 1024);
     }
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(stompHandler);
-    }
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.interceptors(stompHandler);
+//    }
 
     @EventListener
     public void connectEvent(SessionConnectEvent sessionConnectEvent){

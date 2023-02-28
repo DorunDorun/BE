@@ -53,7 +53,7 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew build --debug > build.log
+        run: ./gradlew build --stacktrace > build.log
         shell: bash
 
       - name: Make zip file

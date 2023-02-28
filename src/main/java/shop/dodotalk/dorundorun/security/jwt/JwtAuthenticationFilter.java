@@ -1,14 +1,17 @@
 package shop.dodotalk.dorundorun.security.jwt;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.protocol.UriPatternMatcher;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.filter.OncePerRequestFilter;
 import shop.dodotalk.dorundorun.error.ExceptionResponseMessage;
 
@@ -21,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.security.URIParameter;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -52,14 +57,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         log.info("사용자가 요청한 URI" + requestURI);
 
-        /*소셜 로그인 시 JWT 필터를 탈 필요가 없음.*/
-        if (requestURI.equals("/oauth2/authorization/kakao") ||
-                requestURI.equals("/login/oauth2/code/kakao") ||
-                requestURI.equals("/oauth2/authorization/google") ||
-                requestURI.equals("/login/oauth2/code/google") ||
-                requestURI.equals("/oauth2/authorization/naver") ||
-                requestURI.equals("/login/oauth2/code/naver") ||
-                requestURI.equals("/")) {
+        /*JWT 필터를 탈 필요가 없는 것들*/
+        if (StringUtils.startsWithAny(request.getRequestURI(), "/oauth2",
+                "/login", "/oauth", "/ws-stomp", "/api/sse", "/actuator") ||
+                requestURI.equals("/") ||
+                requestURI.equals("/actuator")) {
 
             filterChain.doFilter(request, response);
             return;

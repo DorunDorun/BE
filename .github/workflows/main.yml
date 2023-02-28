@@ -26,6 +26,16 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+
+      - name: Make logback-spring.xml
+        run: |
+          echo ">> mkdir & touch"
+          mkdir -p ./src/main/resources
+          cd ./src/main/resources
+          touch ./logback-spring.xml
+          echo ">> copy logback-spring.xml"
+          echo "${{ secrets.LOGBACK }}" >> ./logback-spring.xml
+
       # application.properties 파일 생성
       # touch 파일 생성
       # echo "${{ secrets.PROPERTIES }}" >> ./application.properties ${{ secrets.PROPERTIES }}의 내용을 application.properties로 옮겨라
@@ -37,15 +47,6 @@ jobs:
           touch ./application.yml
           echo ">> copy application.yml"
           echo "${{ secrets.PROPERTIES }}" >> ./application.yml
-
-      - name: Make logback-spring.xml
-        run: |
-          echo ">> mkdir & touch"
-          mkdir -p ./src/main/resources
-          cd ./src/main/resources
-          touch ./logback-spring.xml
-          echo ">> copy logback-spring.xml"
-          echo "${{ secrets.LOGBACK }}" >> ./logback-spring.xml
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

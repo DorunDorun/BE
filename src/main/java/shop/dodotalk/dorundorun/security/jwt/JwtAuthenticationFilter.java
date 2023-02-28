@@ -58,11 +58,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 requestURI.equals("/oauth2/authorization/google") ||
                 requestURI.equals("/login/oauth2/code/google") ||
                 requestURI.equals("/oauth2/authorization/naver") ||
-        requestURI.equals("/login/oauth2/code/naver")){
+                requestURI.equals("/login/oauth2/code/naver") ||
+                requestURI.equals("/")) {
 
             filterChain.doFilter(request, response);
             return;
         }
+
 
 
 

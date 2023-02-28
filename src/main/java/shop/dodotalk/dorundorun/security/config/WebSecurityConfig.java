@@ -18,7 +18,7 @@ import shop.dodotalk.dorundorun.security.jwt.JwtUtil;
 import shop.dodotalk.dorundorun.users.service.UserPrincipalService;
 
 @RequiredArgsConstructor
-@EnableWebSecurity
+@EnableWebSecurity(debug = false)
 public class WebSecurityConfig {
 
     private final OAuthService oAuthService;

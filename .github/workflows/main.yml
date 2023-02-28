@@ -39,21 +39,12 @@ jobs:
           echo ">> copy application.yml"
           echo "${{ secrets.PROPERTIES }}" >> ./application.yml
 
-      - name: make logback-spring.xml
-        run: |
-          echo ">> mkdir & touch"
-          mkdir -p ./src/main/resources
-          cd ./src/main/resources
-          touch ./logback-spring.xml
-          echo ">> copy logback-spring.xml"
-          echo "${{ secrets.LOGBACK }}" >> ./logback-spring.xml
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew build --stacktrace > build.log
+        run: ./gradlew build
         shell: bash
 
       - name: Make zip file

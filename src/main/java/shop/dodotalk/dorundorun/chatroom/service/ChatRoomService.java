@@ -1,12 +1,15 @@
 package shop.dodotalk.dorundorun.chatroom.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.dodotalk.dorundorun.chatroom.dto.ChatRoomMapper;
@@ -19,12 +22,15 @@ import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomUserRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.SayingRepository;
 import shop.dodotalk.dorundorun.chatroom.util.CreateSaying;
+import shop.dodotalk.dorundorun.chatroom.util.ResponseUtil;
+import shop.dodotalk.dorundorun.error.ExceptionResponseMessage;
 import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.OutputStream;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -139,9 +145,11 @@ public class ChatRoomService {
         PageRequest pageable = PageRequest.of(page - 1, 16);
         Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
 
-        /*채팅방이 존재하지 않을 경우*/
+        /*채팅방이 존재하지 않을 경우
+        * 프론트 요청으로 빈배열로 보냄.*/
         if (chatRoomList.isEmpty()) {
-            throw new EntityNotFoundException("채팅방이 존재하지 않습니다.");
+            return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
+
         }
 
         /*pagination을 위한 정보를 담은 Dto 생성*/
@@ -519,9 +527,12 @@ public class ChatRoomService {
                         , pageable);
 
         /*검색 결과가 없다면*/
+        /* 프론트 요청으로 빈배열로 보냄.*/
         if (searchRoom.isEmpty()) {
-            throw new EntityNotFoundException("검색 결과가 없습니다.");
+
+            return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
         }
+
 
         /*pagination을 위한 정보를 담은 Dto 생성*/
         ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
@@ -554,10 +565,17 @@ public class ChatRoomService {
         Page<ChatRoom> searchRoom =
                 chatRoomRepository.findByCategoryOrderByModifiedAtDesc(category, pageable);
 
+
         /*검색 결과가 없다면*/
+        /* 프론트 요청으로 빈배열로 보냄.*/
         if (searchRoom.isEmpty()) {
-            throw new EntityNotFoundException("검색 결과가 없습니다.");
+
+            return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
         }
+
+
+
+
 
         /*pagination을 위한 정보를 담은 Dto 생성*/
         ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto

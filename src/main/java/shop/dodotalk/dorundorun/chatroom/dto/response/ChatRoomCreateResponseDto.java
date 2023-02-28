@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -14,13 +15,12 @@ public class ChatRoomCreateResponseDto {
     private String sessionId;
     private String title;
     private String subtitle;
-    private String buttonImage;
     private boolean status;
     private String  category;
     private String password;
     private String masterName;
     private boolean isRoomMaster;
-    private String saying;
+
 
 
     // 방 생성 시간
@@ -28,8 +28,13 @@ public class ChatRoomCreateResponseDto {
     // 방 수정 시간
     private LocalDateTime modifiedAt;
 
+    /*카테고리별 명언 리스트*/
+    private List<ChatRoomSayingResponseDto> sayingList;
+
 
     public boolean getIsRoomMaster() {
         return isRoomMaster;
     }
+
+
 }

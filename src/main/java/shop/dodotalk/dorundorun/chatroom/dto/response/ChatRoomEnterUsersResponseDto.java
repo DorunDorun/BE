@@ -18,13 +18,15 @@ public class ChatRoomEnterUsersResponseDto {
     private String password;
     private String category;
     private String master;
-    private String saying;
     private Long cntUser;
 
     List<ChatRoomEnterUserResponseDto> chatRoomUserList;
+    List<ChatRoomSayingResponseDto> chatRoomSayingList;
 
 
-    public ChatRoomEnterUsersResponseDto(ChatRoom room, List<ChatRoomEnterUserResponseDto> chatRoomUserResponseDtos) {
+    public ChatRoomEnterUsersResponseDto(ChatRoom room,
+                                         List<ChatRoomEnterUserResponseDto> chatRoomUserResponseDtos,
+                                         List<ChatRoomSayingResponseDto> chatRoomSayingResponseDtos) {
 
         this.sessionId = room.getSessionId();
         this.title = room.getTitle();
@@ -33,9 +35,10 @@ public class ChatRoomEnterUsersResponseDto {
         this.password = room.getPassword();
         this.category = room.getCategory().getCategory().getCategoryKr();
         this.master = room.getMaster();
-        this.saying = room.getSaying();
+
         this.cntUser = room.getCntUser();
         this.chatRoomUserList = chatRoomUserResponseDtos;
+        this.chatRoomSayingList = chatRoomSayingResponseDtos;
     }
 
 

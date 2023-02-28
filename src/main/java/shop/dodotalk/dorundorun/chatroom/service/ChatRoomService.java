@@ -17,6 +17,7 @@ import shop.dodotalk.dorundorun.chatroom.entity.*;
 import shop.dodotalk.dorundorun.chatroom.repository.CategoryRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomUserRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
+import shop.dodotalk.dorundorun.chatroom.repository.SayingRepository;
 import shop.dodotalk.dorundorun.chatroom.util.CreateSaying;
 import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 import shop.dodotalk.dorundorun.users.entity.User;
@@ -42,9 +43,9 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
     //    private final BenUserRepository benUserRepository;
-    private final CreateSaying createSaying;
     private final CategoryRepository categoryRepository;
     private final ChatRoomMapper chatRoomMapper;
+    private final SayingRepository sayingRepository;
 
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
@@ -70,13 +71,27 @@ public class ChatRoomService {
         /* Session Id, Token 셋팅 */
         ChatRoomCreateResponseDto newToken = createNewToken(user);
 
-        /* 카테고리 별 랜덤 명언. */
-        String saying = createSaying.createSaying(CategoryEnum.valueOf(chatRoomCreateRequestDto.getCategory()));
 
+        /* 변경 버전 카테고리 별 명언 리스트*/
         Category category = categoryRepository.findByCategory(CategoryEnum.valueOf(chatRoomCreateRequestDto.getCategory()))
                 .orElseThrow(
                         () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
                 );
+
+
+        List<Saying> sayingList = sayingRepository.findByCategory(category);
+
+
+        List<ChatRoomSayingResponseDto> chatRoomSayingResponseDtos =
+                new ArrayList<>();
+
+        for (Saying saying : sayingList) {
+            ChatRoomSayingResponseDto chatRoomSayingResponseDto
+                    = new ChatRoomSayingResponseDto(saying);
+
+            chatRoomSayingResponseDtos.add(chatRoomSayingResponseDto);
+        }
+
 
 
         /*채팅방 빌드*/
@@ -89,7 +104,6 @@ public class ChatRoomService {
                 .status(chatRoomCreateRequestDto.getStatus())
                 .category(category)
                 .password(chatRoomCreateRequestDto.getPassword())
-                .saying(saying)
                 .cntUser(0L)
                 .build();
 
@@ -107,7 +121,7 @@ public class ChatRoomService {
                 .masterName(savedRoom.getMaster())
                 .isRoomMaster(true)
                 .status(savedRoom.isStatus())
-                .saying(saying)
+                .sayingList(chatRoomSayingResponseDtos)
                 .category(savedRoom.getCategory().getCategory().getCategoryKr())
                 .password(savedRoom.getPassword())
                 .createdAt(savedRoom.getCreatedAt())
@@ -294,8 +308,27 @@ public class ChatRoomService {
 
         }
 
+
+
+        /*명언들 불러오기*/
+        List<Saying> sayingList = sayingRepository.findByCategory(chatRoom.getCategory());
+
+
+        List<ChatRoomSayingResponseDto> chatRoomSayingResponseDtos =
+                new ArrayList<>();
+
+        for (Saying saying : sayingList) {
+            ChatRoomSayingResponseDto chatRoomSayingResponseDto
+                    = new ChatRoomSayingResponseDto(saying);
+
+            chatRoomSayingResponseDtos.add(chatRoomSayingResponseDto);
+        }
+
+
+
         ChatRoomEnterUsersResponseDto chatRoomResponseDto
-                = new ChatRoomEnterUsersResponseDto(chatRoom, chatRoomUserListResponseDto);
+                = new ChatRoomEnterUsersResponseDto(chatRoom, chatRoomUserListResponseDto,
+                chatRoomSayingResponseDtos);
 
         return chatRoomResponseDto;
     }

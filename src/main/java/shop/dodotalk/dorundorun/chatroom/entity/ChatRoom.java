@@ -49,8 +49,6 @@ public class ChatRoom extends Timestamped {
     @Column
     private Long masterUserId;            // 방 생성자 유저 고유번호.
 
-    @Column
-    private String saying;          // 방에 들어가면 보이는 / 카테고리 별 랜덤 명언.
 
 
     @Where(clause = "is_delete = false")

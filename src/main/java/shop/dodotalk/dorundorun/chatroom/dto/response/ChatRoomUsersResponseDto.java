@@ -18,7 +18,6 @@ public class ChatRoomUsersResponseDto {
     private String password;
     private String category;
     private String master;
-    private String saying;
     private Long cntUser;
 
     List<ChatRoomUserResponseDto> chatRoomUserResponseDtos;
@@ -33,7 +32,7 @@ public class ChatRoomUsersResponseDto {
         this.password = room.getPassword();
         this.category = room.getCategory().getCategory().getCategoryKr();
         this.master = room.getMaster();
-        this.saying = room.getSaying();
+
         this.cntUser = room.getCntUser();
         this.chatRoomUserResponseDtos = chatRoomUserResponseDtos;
     }

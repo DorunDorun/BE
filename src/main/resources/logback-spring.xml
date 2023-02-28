@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds">
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./application_log/application.log</file>
+        <file>./application.log</file>
         <encoder>
             <pattern>%d{yyyyMMdd HH:mm:ss.SSS, ${logback.timezone:-Asia/Seoul}} [%thread] %-5level [%logger{0}:%line] - %msg %n</pattern>
         </encoder>

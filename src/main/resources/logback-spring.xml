@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds">
     <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.access-key"/>
     <springProperty name="AWS_SECRET_KEY" source="cloud.aws.credentials.secret-key"/>
@@ -10,7 +11,7 @@
         <logStreamUuidPrefix>DorunLog</logStreamUuidPrefix>
         <logRegion>ap-northeast-2</logRegion>
         <maxBatchLogEvents>50</maxBatchLogEvents>
-        <maxFlushTimeMillis>30000</maxFlushTimeMillis>
+        <maxFlushTimeMillis>1</maxFlushTimeMillis>
         <maxBlockTimeMillis>5000</maxBlockTimeMillis>
         <retentionTimeDays>0</retentionTimeDays>
         <accessKeyId>${AWS_ACCESS_KEY}</accessKeyId>

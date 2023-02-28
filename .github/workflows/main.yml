@@ -42,7 +42,6 @@ jobs:
       - name: make logback-spring.xml
         run: |
           echo ">> mkdir & touch"
-          cd ./src/main/resources
           touch ./logback-spring.xml
           echo ">> copy logback-spring.xml"
           echo "${{ secrets.LOGBACK }}" >> ./logback-spring.xml

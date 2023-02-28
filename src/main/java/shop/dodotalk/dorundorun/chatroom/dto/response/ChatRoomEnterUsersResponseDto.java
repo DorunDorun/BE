@@ -2,7 +2,7 @@ package shop.dodotalk.dorundorun.chatroom.dto.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.dodotalk.dorundorun.chatroom.entity.ButtonImageEnum;
+
 import shop.dodotalk.dorundorun.chatroom.entity.ChatRoom;
 
 import java.util.List;
@@ -15,7 +15,6 @@ public class ChatRoomEnterUsersResponseDto {
     private String title;
     private String subtitle;
     private boolean status;
-    private ButtonImageEnum buttonImage;
     private String password;
     private String category;
     private String master;
@@ -31,7 +30,6 @@ public class ChatRoomEnterUsersResponseDto {
         this.title = room.getTitle();
         this.subtitle = room.getSubtitle();
         this.status = room.isStatus();
-        this.buttonImage = room.getButtonImage();
         this.password = room.getPassword();
         this.category = room.getCategory().getCategory().getCategoryKr();
         this.master = room.getMaster();

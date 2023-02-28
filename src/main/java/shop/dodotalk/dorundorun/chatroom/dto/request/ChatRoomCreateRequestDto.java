@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import shop.dodotalk.dorundorun.chatroom.entity.ButtonImageEnum;
 import shop.dodotalk.dorundorun.chatroom.entity.CategoryEnum;
 
 import javax.validation.constraints.AssertTrue;
@@ -29,10 +28,6 @@ public class ChatRoomCreateRequestDto {
 
 
 
-    @NotBlank(message = "버튼 이미지를 선택해 주세요!")
-    private String buttonImage;    // 버튼 이미지(캐릭터) 색깔
-
-
     @NotNull(message = "방의 상태를 설정해 주세요!")
     private Boolean status;                 // 방 상태 (public / private)
 
@@ -40,16 +35,6 @@ public class ChatRoomCreateRequestDto {
     private String password;                // 방이 private으로 설정될 시 패스워드 입력
 
 
-    @AssertTrue
-    public boolean isButtonImage() {
-
-        try{
-            ButtonImageEnum buttonImageEnum = ButtonImageEnum.valueOf(buttonImage);
-        } catch (Exception exception){
-            throw new IllegalArgumentException("button Image 값을 정확하게 입력해 주세요.");
-        }
-        return true;
-    }
 
 
     @AssertTrue

@@ -32,9 +32,7 @@ public class ChatRoom extends Timestamped {
     @Column
     private boolean status;      // 방 상태(public / private)
 
-    @Column
-    @Enumerated(value = EnumType.STRING)
-    private ButtonImageEnum buttonImage;
+
 
     @Column
     private String password;    // private시 사용할 패스워드

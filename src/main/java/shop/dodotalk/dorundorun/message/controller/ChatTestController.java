@@ -29,11 +29,6 @@ public class ChatTestController {
         return "chat";
     }
 
-//    @GetMapping("/global/test")
-//    public void globaltest1() {
-//        throw new CustomErrorException(HttpStatus.OK, "200", "마지막 테스트");
-//    }
-
     @GetMapping("/global/test2")
     public void globaltest2() {
         throw new IllegalArgumentException();

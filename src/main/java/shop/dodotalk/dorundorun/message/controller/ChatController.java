@@ -2,10 +2,9 @@ package shop.dodotalk.dorundorun.message.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 import shop.dodotalk.dorundorun.message.dto.ChatMessageRequestDto;
@@ -13,14 +12,13 @@ import shop.dodotalk.dorundorun.message.dto.ChatMessageResponseDto;
 import shop.dodotalk.dorundorun.message.service.ChatMessageService;
 
 
-
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
-    private final SimpMessageSendingOperations messagingTemplate;
     private final ChatMessageService chatMessageService;
-    private final RedisMessageListenerContainer redisMessageListenerContainer;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ChannelTopic channelTopic;
     @ResponseBody
     //@CrossOrigin(origins = "https://dorundorun.shop")
     @MessageMapping("/chat/room")
@@ -31,10 +29,8 @@ public class ChatController {
 
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.ChatMessageCreate(chatMessageRequestDto);
 
-        ChannelTopic topic = new ChannelTopic(chatMessageResponseDto.getSessionId());
-        redisMessageListenerContainer.addMessageListener(redisSubscriber, topic);
-
-        redisPublisher.publish(topic, chatMessage);
+        log.info("channelTopic : "  + channelTopic);
+        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageResponseDto);
 
 //        messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageRequestDto.getSessionId(), chatMessageResponseDto);
     }

@@ -19,7 +19,7 @@ public class ChatMessageResponseDto {
     private Long fileId;
     private String sessionId;
     private String nickname;
-    private String message; // 메시지
+    private String message;
     private String imgUrl;
     private Boolean isDelete;
     private String createdAt;
@@ -40,11 +40,8 @@ public class ChatMessageResponseDto {
         this.nickname = roomMessage.getNickname();
         this.message = roomMessage.getMessage();
         this.isDelete = roomMessage.isDelete();
-        System.out.println(roomMessage.getCreatedAt());
-        System.out.println(roomMessage.getModifiedAt());
         this.createdAt = roomMessage.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         this.modifiedAt = roomMessage.getModifiedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        System.out.println("통과?");
     }
 
 }

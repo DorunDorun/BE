@@ -16,6 +16,7 @@
 
 <script>
     const sse = new EventSource("https://dorundorun.shop/api/sse");
+    //const sse = new EventSource("http://localhost:8080/api/sse");
 
     sse.addEventListener('connect', (e) => {
         const { data: receivedConnectData } = e;

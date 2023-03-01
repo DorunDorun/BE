@@ -72,6 +72,7 @@ public class WebSecurityConfig {
                 .antMatchers("/ws-stomp/**").permitAll() // 관우 stomp 시큐리티 처리
                 .antMatchers("/ws-stomp").permitAll() // 관우 stomp 시큐리티 처리
                 .antMatchers("/api/sse").permitAll()
+                .antMatchers("/api/ssehtml").permitAll()
                 .antMatchers("/actuator").permitAll() // 관우 프로메테우스
                 .antMatchers("/actuator/**").permitAll() // 관우 프로메테우스
                 .anyRequest().authenticated();

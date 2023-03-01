@@ -1,12 +1,17 @@
 package shop.dodotalk.dorundorun.message.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import shop.dodotalk.dorundorun.message.entity.RoomFileMessage;
 import shop.dodotalk.dorundorun.message.entity.RoomMessage;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+@Slf4j
 @Getter
 @NoArgsConstructor
 public class ChatMessageResponseDto {
@@ -17,8 +22,8 @@ public class ChatMessageResponseDto {
     private String message; // 메시지
     private String imgUrl;
     private Boolean isDelete;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+    private String createdAt;
+    private String modifiedAt;
 
     public ChatMessageResponseDto(RoomFileMessage roomFileMessage) {
         this.fileId = roomFileMessage.getFileId();
@@ -26,8 +31,8 @@ public class ChatMessageResponseDto {
         this.nickname = roomFileMessage.getNickname();
         this.imgUrl = roomFileMessage.getImgUrl();
         this.isDelete = roomFileMessage.isDelete();
-        this.createdAt = roomFileMessage.getCreatedAt();
-        this.modifiedAt = roomFileMessage.getModifiedAt();
+        this.createdAt = roomFileMessage.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        this.modifiedAt = roomFileMessage.getModifiedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
     public ChatMessageResponseDto(RoomMessage roomMessage) {
         this.messageId = roomMessage.getMessageId();
@@ -35,8 +40,11 @@ public class ChatMessageResponseDto {
         this.nickname = roomMessage.getNickname();
         this.message = roomMessage.getMessage();
         this.isDelete = roomMessage.isDelete();
-        this.createdAt = roomMessage.getCreatedAt();
-        this.modifiedAt = roomMessage.getModifiedAt();
+        System.out.println(roomMessage.getCreatedAt());
+        System.out.println(roomMessage.getModifiedAt());
+        this.createdAt = roomMessage.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        this.modifiedAt = roomMessage.getModifiedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        System.out.println("통과?");
     }
 
 }

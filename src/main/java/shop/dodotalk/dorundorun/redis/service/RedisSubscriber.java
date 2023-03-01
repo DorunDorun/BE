@@ -26,13 +26,13 @@ public class RedisSubscriber implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-
             log.info("onMessage");
 
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
 
             log.info("publishMessage = " + publishMessage);
             ChatMessageResponseDto chatMessageResponseDto = objectMapper.readValue(publishMessage, ChatMessageResponseDto.class);
+
             messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageResponseDto.getSessionId(), chatMessageResponseDto);
 
         } catch (Exception e) {

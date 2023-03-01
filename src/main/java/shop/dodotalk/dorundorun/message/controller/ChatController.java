@@ -31,6 +31,11 @@ public class ChatController {
 
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.ChatMessageCreate(chatMessageRequestDto);
 
+        System.out.println(chatMessageResponseDto.getMessageId());
+        System.out.println(chatMessageResponseDto.getMessage());
+        System.out.println(chatMessageResponseDto.getNickname());
+        System.out.println(chatMessageResponseDto.getCreatedAt());
+        System.out.println(chatMessageResponseDto.getModifiedAt());
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageResponseDto);
     }
 }

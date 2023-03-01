@@ -47,17 +47,11 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
 
     @EventListener
     public void connectEvent(SessionConnectEvent sessionConnectEvent){
-        System.out.println("------------------------연결성공--------------------");
-        System.out.println("sessionId : " + sessionConnectEvent.getUser());
-        System.out.println("------------------------연결성공--------------------");
-        //log.info("socket 연결 성공");
+        log.info("socket 연결 성공");
     }
     @EventListener
     public void onDisconnectEvent(SessionDisconnectEvent sessionDisconnectEvent) {
-        System.out.println("------------------------연결끊김--------------------");
-        System.out.println("sessionId : " + sessionDisconnectEvent.getSessionId());
-        System.out.println("------------------------연결끊김--------------------");
-        //log.info("socket 연결 끊어짐");
+        log.info("socket 연결 끊어짐");
     }
 
 //    @EventListener

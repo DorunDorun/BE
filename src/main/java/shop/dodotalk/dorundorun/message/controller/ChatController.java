@@ -24,11 +24,6 @@ public class ChatController {
     @MessageMapping("/chat/room")
     public void message(ChatMessageRequestDto chatMessageRequestDto) {
 
-        log.info("방 ID : " + chatMessageRequestDto.getSessionId());
-        log.info("메세지 바이트 코드 : " + chatMessageRequestDto.getImgByteCode());
-        log.info("방 메세지 : " + chatMessageRequestDto.getMessage());
-        log.info("channelTopic : "  + channelTopic);
-
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.ChatMessageCreate(chatMessageRequestDto);
 
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageResponseDto);

@@ -26,10 +26,6 @@ import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 public class SseController {
     private final SseEmitters sseEmitters;
     private final ChatRoomRepository chatRoomRepository;
-    @GetMapping("/ssehtml")
-    public String ssehtml() {
-        return "ssechatroom";
-    }
 
     @ResponseBody
     @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

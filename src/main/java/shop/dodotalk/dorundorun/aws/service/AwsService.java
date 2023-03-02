@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +35,9 @@ public class AwsService {
             FileOutputStream fileOutputStream = new FileOutputStream(tempFile); // 파일 삭제시 전부 아웃풋 닫아줘야함
             fileOutputStream.close();
             if (tempFile.delete()) {
-                System.out.println("파일 성공적으로 삭제됨");
-                //log.info("File delete success");
+                log.info("파일 성공적으로 삭제됨");
             } else {
-                System.out.println("파일 성공적으로 삭제안됨");
-                //log.info("File delete fail");
+                log.info("파일 성공적으로 삭제안됨");
             }
         } catch (Exception e) {
             e.printStackTrace();

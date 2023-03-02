@@ -1,9 +1,6 @@
 package shop.dodotalk.dorundorun.error;
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-
 
 @Getter
 public class ExceptionResponseMessage {

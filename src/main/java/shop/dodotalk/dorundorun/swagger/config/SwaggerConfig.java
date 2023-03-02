@@ -37,7 +37,7 @@ import org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandl
 
 @Configuration
 @EnableSwagger2
-@Import(BeanValidatorPluginsConfiguration.class) // Bean Validation을 사용할 수 있도록 하는 역할
+@Import(BeanValidatorPluginsConfiguration.class)
 public class SwaggerConfig extends WebMvcConfigurationSupport {
     @Bean
     public Docket api() {

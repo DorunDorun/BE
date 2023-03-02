@@ -12,22 +12,16 @@
 </head>
 <body>
 <div id="count"></div>
-<div id="count2"></div>
 
 <script>
-    const sse = new EventSource("https://dorundorun.shop/api/sse");
-    //const sse = new EventSource("http://localhost:8080/api/sse");
+    //const sse = new EventSource("https://dorundorun.shop/api/sse");
+    const sse = new EventSource("http://localhost:8080/api/sse");
 
     sse.addEventListener('connect', (e) => {
-        const { data: receivedConnectData } = e;
-        console.log('연결 현재 채팅방 수 :', receivedConnectData);  // "connected!"
-        handleCountEvent(receivedConnectData);
-    });
-
-    sse.addEventListener('connect2', (e) => {
-        const { data: receivedConnectData } = e;
-        console.log('연결 전체 채팅방 수 :', receivedConnectData);  // "connected!"
-        handleCountEvent2(receivedConnectData);
+        console.log("e : ", e);
+        let receive = JSON.parse(e.data);
+        console.log('연결 현재 채팅방 수 :', receive);  // "connected!"
+        handleCountEvent(receive);
     });
 
     sse.onerror = function (event) {
@@ -39,26 +33,15 @@
     };
 
     sse.addEventListener('count', e => {
-        const { data: receivedCount } = e;
-        console.log("현재 채팅방 수 : ", receivedCount);
-        handleCountEvent(receivedCount);
+        console.log("e : ", e);
+        let receive = JSON.parse(e.data);
+        console.log("현재 채팅방 수 : ", receive);
+        handleCountEvent(receive);
     });
 
-    sse.addEventListener('count2', e => {
-        const { data: receivedCount } = e;
-        console.log("전체 채팅방 수 : ", receivedCount);
-
-        handleCountEvent2(receivedCount);
-    });
-
-    function handleCountEvent(count) {
+    function handleCountEvent(receive) {
         const countElement = document.getElementById('count');
-        countElement.innerText = `현재 채팅방 수: ${count}`;
-    }
-    function handleCountEvent2(count2) {
-        console.log("count event data2:", count2);
-        const countElement2 = document.getElementById('count2');
-        countElement2.innerText = `전체 채팅방 수: ${count2}`;
+        countElement.innerText = `현재 채팅방 수: ${receive.chatRoomCount}`;
     }
 </script>
 </body>

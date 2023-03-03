@@ -26,6 +26,8 @@ public class ChatController {
 
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.ChatMessageCreate(chatMessageRequestDto);
 
+        log.info("channelTopic.getTopic() : " + channelTopic.getTopic());
+
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageResponseDto);
     }
 }

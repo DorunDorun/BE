@@ -36,7 +36,7 @@ public class StompHandler implements ChannelInterceptor {
             }
 
             /* Access 토큰이 만료된 경우 */
-            else if (true) { // jwtAccessToken != null && jwtUtil.validateToken(jwtAccessToken) == JwtUtil.JwtCode.EXPIRED
+            else if (jwtAccessToken != null && jwtUtil.validateToken(jwtAccessToken) == JwtUtil.JwtCode.EXPIRED) {
                 log.info("JWT 토큰이 만료되어, Refresh token 확인 작업을 진행합니다.");
 
                 /* Refresh Token 존재 여부 확인.*/

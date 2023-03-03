@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * - JWT 토큰 실패 시 OAuth2 인증과정을 거친다. */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("Jwt Filter Start");
+        log.info("Jwt Filter ready");
 
         String requestURI = request.getRequestURI();
         log.info("사용자가 요청한 URI" + requestURI);
@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-
+        log.info("Jwt Filter start");
 
 
 

@@ -68,8 +68,6 @@ public class WebSecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/login/**").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
                 .antMatchers("/ws-stomp/**").permitAll() // 관우 stomp 시큐리티 처리
                 .antMatchers("/ws-stomp").permitAll() // 관우 stomp 시큐리티 처리

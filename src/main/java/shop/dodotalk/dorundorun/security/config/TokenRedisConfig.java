@@ -15,11 +15,14 @@ import org.springframework.data.redis.core.mapping.RedisMappingContext;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import static org.springframework.data.redis.core.RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP;
+
 @Configuration
 @EnableRedisRepositories(
     basePackages = "shop.dodotalk.dorundorun.security",
         redisTemplateRef = "stringObjectTemplate",
-        keyValueTemplateRef = "stringObjectKV"
+        keyValueTemplateRef = "stringObjectKV",
+        enableKeyspaceEvents = ON_STARTUP
 )
 public class TokenRedisConfig {
 

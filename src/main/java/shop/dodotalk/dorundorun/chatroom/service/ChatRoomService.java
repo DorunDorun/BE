@@ -1,10 +1,14 @@
 package shop.dodotalk.dorundorun.chatroom.service;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.joda.time.MonthDay;
+import org.joda.time.Seconds;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,9 +25,7 @@ import shop.dodotalk.dorundorun.chatroom.repository.CategoryRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomUserRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.SayingRepository;
-import shop.dodotalk.dorundorun.chatroom.util.CreateSaying;
-import shop.dodotalk.dorundorun.chatroom.util.ResponseUtil;
-import shop.dodotalk.dorundorun.error.ExceptionResponseMessage;
+
 import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 import shop.dodotalk.dorundorun.users.entity.User;
 
@@ -31,9 +33,11 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.OutputStream;
+import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -143,7 +147,8 @@ public class ChatRoomService {
 
         /*페이지네이션 설정 --> 무한 스크롤 예정*/
         PageRequest pageable = PageRequest.of(page - 1, 16);
-        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
+//        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
+        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDelete(false, pageable);
 
         /*채팅방이 존재하지 않을 경우
         * 프론트 요청으로 빈배열로 보냄.*/
@@ -227,10 +232,12 @@ public class ChatRoomService {
             /*채팅방 전용 닉네임 재설정*/
             String nickname = requestData.getNickname();
 
-            chatRoomUser.reEnterRoomUsers(enterRoomToken, nickname);
+            chatRoomUser.reEnterRoomUsers(enterRoomToken, nickname, requestData.getMediaBackImage());
             chatRoom.setDelete(false);
 
         } else {/*처음 입장하는 유저*/
+
+
 
             /*채팅 방 유저 빌드*/
             ChatRoomUser chatRoomUser = ChatRoomUser.builder()
@@ -244,6 +251,7 @@ public class ChatRoomService {
                     .roomEnterTime(Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime())
                     .roomStayDay(0L)
                     .roomStayTime(Time.valueOf("00:00:00"))
+                    .mediaBackImage(requestData.getMediaBackImage())
                     .build();
 
             /*현재 방에 접속한 사용자 저장*/
@@ -602,6 +610,42 @@ public class ChatRoomService {
 
         return new ChatRoomGetAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
 
+    }
+
+
+
+
+
+
+
+    /*히스토리 전체 방 조회하기*/
+    @Transactional
+    public ChatRoomGetAllResponseDto getAllHistoryChatRooms(int page, User user) {
+
+        PageRequest pageable = PageRequest.of(page - 1, 16);
+        Page<ChatRoom> chatRoomList = chatRoomRepository.findByUserIdAndIsDelete( user.getId(), user.getId(), true, pageable);
+
+
+        /*채팅방이 존재하지 않을 경우
+         * 프론트 요청으로 빈배열로 보냄.*/
+        if (chatRoomList.isEmpty()) {
+            return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
+
+        }
+
+        /*pagination을 위한 정보를 담은 Dto 생성*/
+        ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
+                = new ChatRoomPageInfoResponseDto(page, 16,
+                (int) chatRoomList.getTotalElements(), chatRoomList.getTotalPages());
+
+
+        /*chatRoomList에서 Page 정보를 제외 ChatRoom만 꺼내온다.*/
+        List<ChatRoom> chatRooms = chatRoomList.getContent();
+
+        /*mapper를 활용하여 chatRoom Entity를 Dto로 변환.*/
+        List<ChatRoomResponseDto> chatRoomResponseDtoList = chatRoomMapper.roomsToRoomResponseDtos(chatRooms);
+
+        return new ChatRoomGetAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
     }
 
 

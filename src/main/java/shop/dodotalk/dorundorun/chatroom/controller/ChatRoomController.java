@@ -133,7 +133,15 @@ public class ChatRoomController {
 
 
         return new ResponseUtil<>().forSuccess(chatRoomService.searchCategory(categoryEnum, page));
+    }
 
+    /*자신이 참여 했던 방 리스트 보여주기. 참여 히스토리.*/
+    @GetMapping("/rooms/{page}/history")
+    public ResponseEntity<PrivateResponseBody> getAllHistoryRooms(@PathVariable int page,
+                                                                  @Authenticated OAuth2UserInfoAuthentication authentication) {
 
+        User user = (User) authentication.getPrincipal();
+
+        return new ResponseUtil<>().forSuccess(chatRoomService.getAllHistoryChatRooms(page, user));
     }
 }

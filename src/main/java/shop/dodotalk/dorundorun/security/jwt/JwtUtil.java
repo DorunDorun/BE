@@ -182,8 +182,10 @@ public class JwtUtil implements InitializingBean {
 //                throw new IllegalArgumentException("Refresh Token이 DB에 존재하지 않음.");
 //            }
 
+
             /*Redis 버전*/
             Optional<RefreshTokenRedis> token = refreshTokenRedisRepository.findByRefreshToken(refreshToken);
+
 
 
             if (token.isEmpty()) {

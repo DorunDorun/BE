@@ -61,8 +61,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.startsWithAny(request.getRequestURI(),
                 "/oauth2", "/login", "/oauth", "/ws-stomp", "/api/sse", "/actuator", "/api/ssehtml",
                 "/api/rooms/info") ||
-
                 requestURI.equals("/")) {
+
+            log.info("요청URI : " + requestURI + "----JWT 필터 안 거침");
 
             filterChain.doFilter(request, response);
             return;
@@ -75,6 +76,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         /* resolveToken()을 통해 request Header에서 토큰값을 빼온다. */
         String jwtAccessToken = jwtUtil.resolveToken(request, AUTHORIZATION_HEADER);
 
+        log.info("Access Token : " + jwtAccessToken);
 
         /* Access Token 검증 성공인 경우 */
         if (jwtAccessToken != null && jwtUtil.validateToken(jwtAccessToken) == JwtUtil.JwtCode.ACCESS) {

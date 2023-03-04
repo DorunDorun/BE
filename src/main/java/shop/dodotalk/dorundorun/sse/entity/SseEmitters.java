@@ -33,18 +33,32 @@ public class SseEmitters {
     }
 
     public void count() {
+
+        log.info("emitter.size() = " + String.valueOf(emitters.size()));
+
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
 
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
 
-        emitters.forEach(emitter -> {
-            try {
-                emitter.send(SseEmitter.event()
-                        .name("count")
-                        .data(sseResposneDto));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+
+        log.info("emitter.size() = " + String.valueOf(emitters.size()));
+
+        if (emitters.size() > 0) {
+            log.info("emitter.size() = " + String.valueOf(emitters.size()));
+            emitters.forEach(emitter -> {
+                try {
+                    log.info("--------try 시작");
+                    emitter.send(SseEmitter.event()
+                            .name("count")
+                            .data(sseResposneDto));
+                    log.info("--------try 끝");
+
+                } catch (IOException e) {
+                    log.info("--------익셉션 발생");
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
     }
 }

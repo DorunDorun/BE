@@ -41,6 +41,7 @@ public class SseEmitters {
                 // SSE 연결이 끊어진 경우
                 emitter.complete();
                 executor.shutdown();
+                this.emitters.remove(emitter);
             }
         }, 0, 5, TimeUnit.SECONDS);
 

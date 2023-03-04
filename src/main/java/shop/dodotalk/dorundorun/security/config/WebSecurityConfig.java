@@ -76,6 +76,7 @@ public class WebSecurityConfig {
                 .antMatchers("/actuator").permitAll() // 관우 프로메테우스
                 .antMatchers("/actuator/**").permitAll() // 관우 프로메테우스
                 .antMatchers("/api/rooms/info").permitAll()
+                .antMatchers("/api/ssehtml").permitAll() // 관우 실시간 채팅방 테스트 삭제해야함
                 .anyRequest().authenticated();
 
 

@@ -11,6 +11,9 @@ import shop.dodotalk.dorundorun.sse.dto.SseResposneDto;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -28,6 +31,19 @@ public class SseEmitters {
         emitter.onTimeout(() -> {
             emitter.complete();
         });
+
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(() -> {
+            try {
+                log.info("하트비트 전송중?");
+                emitter.send("");
+            } catch (IOException e) {
+                // SSE 연결이 끊어진 경우
+                log.info("SSE 종료됨2");
+                emitter.complete();
+                executor.shutdown();
+            }
+        }, 0, 5, TimeUnit.SECONDS);
 
         return emitter;
     }

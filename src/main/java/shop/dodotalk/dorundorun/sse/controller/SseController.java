@@ -2,6 +2,9 @@ package shop.dodotalk.dorundorun.sse.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.parser.JSONParser;
@@ -27,10 +30,15 @@ public class SseController {
     private final SseEmitters sseEmitters;
     private final ChatRoomRepository chatRoomRepository;
 
+    @GetMapping(value = "/ssehtml")
+    public String ssehtml() {
+        return "ssechatroom";
+    }
+
     @ResponseBody
     @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connect() {
-        SseEmitter emitter = new SseEmitter(30 * 1000L);
+        SseEmitter emitter = new SseEmitter(5 * 60 * 1000L);
 
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
 

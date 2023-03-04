@@ -242,6 +242,7 @@ public class ChatRoomService {
                     .profileImage(user.getProfile())
                     .enterRoomToken(enterRoomToken)
                     .roomEnterTime(Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime())
+                    .roomStayDay(0L)
                     .roomStayTime(Time.valueOf("00:00:00"))
                     .build();
 
@@ -380,11 +381,21 @@ public class ChatRoomService {
         long afterSeconds = ChronoUnit.SECONDS.between(start, end);
 
         /*3. 1번의 기존 머문 시간에 + 다시 들어왔을때의 머문시간을 더한다.
-         * 처음 들어온 유저의 경우 ex) 00:00:00 + 00:05:20 */
-        LocalTime chatRoomStayTime = beforeChatRoomStayTime.plusSeconds(afterSeconds);
+         * 처음 들어온 유저의 경우 ex) 00:00:00 + 00:05:20  */
+        /*22.03.03 디자이너님의 요청으로 24시간 넘었을대 1일..2일.. 추가.*/
+        LocalTime chatRoomStayTime = beforeChatRoomStayTime.plusSeconds(afterSeconds);/*시간 계산*/
+
+        /*일자 계산*/
+        int seconds = beforeChatRoomStayTime.toSecondOfDay();
+
+        Long roomStayDay = chatRoomUser.getRoomStayDay();
+        if ((seconds + afterSeconds) >= 86400) {/*24시간을 넘기면 1일 추가*/
+            roomStayDay += 1;
+        }
+
 
         /*4. 채팅방 유저 논리 삭제, 방에서 나간 시간 저장, 방에 머문 시간 교체*/
-        chatRoomUser.deleteRoomUsers(chatRoomExitTime, chatRoomStayTime);
+        chatRoomUser.deleteRoomUsers(chatRoomExitTime, chatRoomStayTime, roomStayDay);
 
         /* 채팅방 유저 수 확인
          * 채팅방 유저가 0명이라면 방 논리삭제. */

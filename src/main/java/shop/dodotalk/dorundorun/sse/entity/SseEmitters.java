@@ -10,20 +10,23 @@ import shop.dodotalk.dorundorun.sse.dto.SseResposneDto;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class SseEmitters {
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+
+    // private final ConcurrentLinkedQueue<SseEmitter> emitters = new ConcurrentLinkedQueue<>();
+
+    //private final ConcurrentHashMap<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+
     private final ChatRoomRepository chatRoomRepository;
 
     public SseEmitter add(SseEmitter emitter) {
         this.emitters.add(emitter);
+
         emitter.onCompletion(() -> {
             log.info("SSE 만료됨");
             this.emitters.remove(emitter);    // 만료되면 리스트에서 삭제
@@ -36,6 +39,7 @@ public class SseEmitters {
         executor.scheduleAtFixedRate(() -> {
             try {
                 log.info("SSE 하트비트 전송");
+                log.info("SSE 리스트 크기 : " + emitters.size());
                 emitter.send("");
             } catch (IOException e) {
                 // SSE 연결이 끊어진 경우

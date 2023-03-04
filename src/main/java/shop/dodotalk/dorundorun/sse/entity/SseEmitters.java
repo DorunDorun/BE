@@ -32,18 +32,18 @@ public class SseEmitters {
             emitter.complete();
         });
 
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(() -> {
-            try {
-                log.info("SSE 하트비트 전송");
-                emitter.send("");
-            } catch (IOException e) {
-                // SSE 연결이 끊어진 경우
-                emitter.complete();
-                executor.shutdown();
-                this.emitters.remove(emitter);
-            }
-        }, 0, 5, TimeUnit.SECONDS);
+//        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+//        executor.scheduleAtFixedRate(() -> {
+//            try {
+//                log.info("SSE 하트비트 전송");
+//                emitter.send("");
+//            } catch (IOException e) {
+//                // SSE 연결이 끊어진 경우
+//                emitter.complete();
+//                executor.shutdown();
+//                this.emitters.remove(emitter);
+//            }
+//        }, 0, 5, TimeUnit.SECONDS);
 
         return emitter;
     }

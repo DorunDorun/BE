@@ -61,8 +61,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.startsWithAny(request.getRequestURI(),
                 "/oauth2", "/login", "/oauth", "/ws-stomp", "/api/sse", "/actuator", "/api/ssehtml",
                 "/api/rooms/info") ||
-
                 requestURI.equals("/")) {
+
+            log.info("요청URI : " + requestURI + "----JWT 필터 안 거침");
 
             filterChain.doFilter(request, response);
             return;

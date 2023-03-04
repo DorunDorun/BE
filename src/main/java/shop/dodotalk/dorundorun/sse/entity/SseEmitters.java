@@ -35,11 +35,10 @@ public class SseEmitters {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> {
             try {
-                log.info("하트비트 전송중?");
+                log.info("SSE 하트비트 전송");
                 emitter.send("");
             } catch (IOException e) {
                 // SSE 연결이 끊어진 경우
-                log.info("SSE 종료됨2");
                 emitter.complete();
                 executor.shutdown();
             }

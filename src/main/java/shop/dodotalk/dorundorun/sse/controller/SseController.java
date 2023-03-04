@@ -38,7 +38,7 @@ public class SseController {
     @ResponseBody
     @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connect() {
-        SseEmitter emitter = new SseEmitter(5 * 60 * 1000L);
+        SseEmitter emitter = new SseEmitter(30 * 1000L);
 
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
 

@@ -21,7 +21,6 @@ public class ChatRoomResponseDto {
     private String password;
     private String category;
     private String master;
-    private String saying;
 
     private List<ChatRoomUserResponseDto> chatRoomUserList;
     private Long cntUser;

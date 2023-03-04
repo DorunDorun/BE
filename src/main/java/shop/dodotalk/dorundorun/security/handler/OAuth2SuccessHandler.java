@@ -76,15 +76,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         userInfoCookie.setPath("/");
         response.addCookie(userInfoCookie);
 
-//        System.out.println("test--start-----");
-//        System.out.println("request : " + request);
-//        System.out.println("contentType : " + request.getContentType());
-//        System.out.println("parts : " + request.getParts());
-//
-//
-//        System.out.println("test--END-------");
-
-
         log.info((String) attributes.get("social") + "유저 리다이렉트 전");
 
 

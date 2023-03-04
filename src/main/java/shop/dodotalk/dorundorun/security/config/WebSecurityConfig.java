@@ -75,6 +75,7 @@ public class WebSecurityConfig {
                 .antMatchers("/api/ssehtml").permitAll()
                 .antMatchers("/actuator").permitAll() // 관우 프로메테우스
                 .antMatchers("/actuator/**").permitAll() // 관우 프로메테우스
+                .antMatchers("/api/rooms/info").permitAll()
                 .anyRequest().authenticated();
 
 

@@ -81,6 +81,9 @@ public class ChatRoomService {
         /* Session Id, Token 셋팅 */
         ChatRoomCreateResponseDto newToken = createNewToken(user);
 
+        log.info("user 정보 : " + user.getName());
+        log.info("user 정보 : " + user.getProfile());
+
 
         /* 변경 버전 카테고리 별 명언 리스트*/
         Category category = categoryRepository.findByCategory(CategoryEnum.valueOf(chatRoomCreateRequestDto.getCategory()))
@@ -117,6 +120,7 @@ public class ChatRoomService {
                 .cntUser(0L)
                 .build();
 
+        log.info("생성된 채팅 방 : " + chatRoom.getTitle());
 
         /*빌드된 채팅방 저장(생성)*/
         ChatRoom savedRoom = chatRoomRepository.save(chatRoom);

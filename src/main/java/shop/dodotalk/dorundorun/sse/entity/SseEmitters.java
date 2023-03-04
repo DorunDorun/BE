@@ -33,6 +33,11 @@ public class SseEmitters {
     }
 
     public void count() {
+
+        if (emitters.size() == 0) {
+            return;
+        }
+
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
 
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));

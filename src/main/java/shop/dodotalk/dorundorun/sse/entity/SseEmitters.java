@@ -16,15 +16,16 @@ import java.util.concurrent.*;
 @Component
 @RequiredArgsConstructor
 public class SseEmitters {
-    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+    //private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
-    // private final ConcurrentLinkedQueue<SseEmitter> emitters = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<SseEmitter> emitters = new ConcurrentLinkedQueue<>();
 
     //private final ConcurrentHashMap<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     private final ChatRoomRepository chatRoomRepository;
 
     public SseEmitter add(SseEmitter emitter) {
+        log.info("emitter.size000000() = " + String.valueOf(emitters.size()));
         this.emitters.add(emitter);
 
         emitter.onCompletion(() -> {
@@ -35,36 +36,34 @@ public class SseEmitters {
             emitter.complete();
         });
 
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(() -> {
-            try {
-                log.info("SSE 하트비트 전송");
-                log.info("SSE 리스트 크기 : " + emitters.size());
-                emitter.send("");
-            } catch (IOException e) {
-                // SSE 연결이 끊어진 경우
-                emitter.complete();
-                executor.shutdown();
-                this.emitters.remove(emitter);
-            }
-        }, 0, 5, TimeUnit.SECONDS);
+//        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+//        executor.scheduleAtFixedRate(() -> {
+//            try {
+//                log.info("SSE 하트비트 전송");
+//                log.info("SSE 리스트 크기 : " + emitters.size());
+//                emitter.send("");
+//            } catch (IOException e) {
+//                // SSE 연결이 끊어진 경우
+//                emitter.complete();
+//                executor.shutdown();
+//                this.emitters.remove(emitter);
+//            }
+//        }, 0, 30, TimeUnit.SECONDS);
 
         return emitter;
     }
 
     public void count() {
 
-        log.info("emitter.size() = " + String.valueOf(emitters.size()));
-
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
 
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
 
 
-        log.info("emitter.size() = " + String.valueOf(emitters.size()));
+        log.info("emitter.size11111() = " + String.valueOf(emitters.size()));
 
         if (emitters.size() > 0) {
-            log.info("emitter.size() = " + String.valueOf(emitters.size()));
+            log.info("emitter.size22222() = " + String.valueOf(emitters.size()));
             emitters.forEach(emitter -> {
                 try {
                     log.info("--------try 시작");
@@ -75,7 +74,10 @@ public class SseEmitters {
 
                 } catch (IOException e) {
                     log.info("--------익셉션 발생");
-                    throw new RuntimeException(e);
+                    emitter.complete();
+                    this.emitters.remove(emitter);
+                    log.info("emitter.size3333333() = " + String.valueOf(emitters.size()));
+                    log.info("--------익셉션 끝");
                 }
             });
         }

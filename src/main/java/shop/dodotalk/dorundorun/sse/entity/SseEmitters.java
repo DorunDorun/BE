@@ -59,11 +59,14 @@ public class SseEmitters {
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
 
         emitters.forEach(emitter -> {
-            log.info(emitter.toString());
+            log.info("------emitter 리스트 시작------ ");
+            log.info("emitter size : " + emitters.size());
             try {
+                log.info("------------- try 시작 ----------------");
                 emitter.send(SseEmitter.event()
                         .name("count")
                         .data(sseResposneDto));
+                log.info("------------- try 끝 ----------------");
 
             } catch (IOException e) {
                 log.info("SSE 익셉션 발생");

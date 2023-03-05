@@ -1,7 +1,6 @@
 package shop.dodotalk.dorundorun.chatroom.service;
 
 
-
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -158,7 +157,7 @@ public class ChatRoomService {
         Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDelete(false, pageable);
 
         /*채팅방이 존재하지 않을 경우
-        * 프론트 요청으로 빈배열로 보냄.*/
+         * 프론트 요청으로 빈배열로 보냄.*/
         if (chatRoomList.isEmpty()) {
             return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
 
@@ -347,7 +346,6 @@ public class ChatRoomService {
 
             chatRoomSayingResponseDtos.add(chatRoomSayingResponseDto);
         }
-
 
 
         ChatRoomEnterUsersResponseDto chatRoomResponseDto
@@ -620,17 +618,12 @@ public class ChatRoomService {
     }
 
 
-
-
-
-
-
     /*히스토리 전체 방 조회하기*/
     @Transactional
     public ChatRoomGetAllResponseDto getAllHistoryChatRooms(int page, User user) {
 
         PageRequest pageable = PageRequest.of(page - 1, 16);
-        Page<ChatRoom> chatRoomList = chatRoomRepository.findByUserIdAndIsDelete( user.getId(), user.getId(), true, pageable);
+        Page<ChatRoom> chatRoomList = chatRoomRepository.findByUserIdAndIsDelete(user.getId(), true, false, pageable);
 
 
         /*채팅방이 존재하지 않을 경우
@@ -656,6 +649,46 @@ public class ChatRoomService {
     }
 
 
+    @Transactional
+    public ChatRoomGetAllResponseDto searchHistoryRoom(String keyword, int page, User user) {
+
+        if (keyword.length() < 1 || keyword.length() > 20) {
+            throw new IllegalArgumentException("검색 양식에 맞지 않습니다.");
+        }
+
+        PageRequest pageable = PageRequest.of(page - 1, 16);
+
+        Page<ChatRoom> searchRoom =
+                chatRoomRepository.findByUserIdAndIsDelete(
+                        keyword,
+                        keyword,
+                        user.getId(),
+                        true,
+                        false,
+                        pageable);
+
+        /*검색 결과가 없다면*/
+        /* 프론트 요청으로 빈배열로 보냄.*/
+        if (searchRoom.isEmpty()) {
+
+            return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
+        }
+
+
+        /*pagination을 위한 정보를 담은 Dto 생성*/
+        ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
+                = new ChatRoomPageInfoResponseDto(page, 16,
+                (int) searchRoom.getTotalElements(), searchRoom.getTotalPages());
+
+
+        /*chatRoomList에서 Page 정보를 제외 ChatRoom만 꺼내온다.*/
+        List<ChatRoom> chatRooms = searchRoom.getContent();
+
+        /*mapper를 활용하여 chatRoom Entity를 Dto로 변환.*/
+        List<ChatRoomResponseDto> chatRoomResponseDtoList = chatRoomMapper.roomsToRoomResponseDtos(chatRooms);
+
+        return new ChatRoomGetAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
+    }
 }
 
 

@@ -124,12 +124,11 @@ public class ChatRoomController {
                                                               @RequestParam String category) {
 
         CategoryEnum categoryEnum;
-        try{
+        try {
             categoryEnum = CategoryEnum.valueOf(category);
-        }catch (Exception exception){
+        } catch (Exception exception) {
             throw new IllegalArgumentException("category 값을 정확하게 입력해 주세요.");
         }
-
 
 
         return new ResponseUtil<>().forSuccess(chatRoomService.searchCategory(categoryEnum, page));
@@ -143,5 +142,16 @@ public class ChatRoomController {
         User user = (User) authentication.getPrincipal();
 
         return new ResponseUtil<>().forSuccess(chatRoomService.getAllHistoryChatRooms(page, user));
+    }
+
+    /*히스토리 방 검색 API(키워드)*/
+    @GetMapping("/rooms/{page}/search/history")
+    public ResponseEntity<PrivateResponseBody> searchHistoryRoom(@PathVariable int page,
+                                                                 @RequestParam String keyword,
+                                                                 @Authenticated OAuth2UserInfoAuthentication authentication) {
+
+        User user = (User) authentication.getPrincipal();
+
+        return new ResponseUtil<>().forSuccess(chatRoomService.searchHistoryRoom(keyword, page, user));
     }
 }

@@ -107,6 +107,8 @@ public class WebSecurityConfig {
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Set-Cookie");
+        configuration.addExposedHeader("authorization");
+        configuration.addExposedHeader("refresh");
 
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

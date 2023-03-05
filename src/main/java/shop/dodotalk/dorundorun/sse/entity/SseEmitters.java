@@ -60,17 +60,15 @@ public class SseEmitters {
 
         emitters.forEach(emitter -> {
             log.info(emitter.toString());
-            if (null != emitter) {
-                try {
-                    emitter.send(SseEmitter.event()
-                            .name("count")
-                            .data(sseResposneDto));
+            try {
+                emitter.send(SseEmitter.event()
+                        .name("count")
+                        .data(sseResposneDto));
 
-                } catch (IOException e) {
-                    log.info("SSE 익셉션 발생");
-                    emitter.complete();
-                    this.emitters.remove(emitter);
-                }
+            } catch (IOException e) {
+                log.info("SSE 익셉션 발생");
+                emitter.complete();
+                this.emitters.remove(emitter);
             }
         });
     }

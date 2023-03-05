@@ -11,6 +11,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.LockModeType;
 import javax.servlet.http.HttpServletRequest;
 import java.io.OutputStream;
 import java.sql.Date;
@@ -189,14 +191,6 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomRepository.findBySessionId(SessionId).orElseThrow(
                 () -> new EntityNotFoundException("해당 방이 없습니다."));
 
-
-        /*방에서 강퇴당한 멤버인지 확인 --> 2차 scope*/
-        /*BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), SessionId);
-        if (benUser != null) {
-            throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "강퇴당한 방입니다."));
-        }*/
-
-
         /*방 인원 초과 시 -> 최대 유저 6명*/
         if (chatRoom.getCntUser() >= 7) {
             throw new IllegalArgumentException("방이 가득찼습니다.");
@@ -226,7 +220,6 @@ public class ChatRoomService {
                 chatRoomUserRepository.findBySessionIdAndUserId(SessionId, user.getId());
 
 
-
         /*방 입장 토큰*/
         String enterRoomToken = enterRoomCreateSession(user, chatRoom.getSessionId());
 
@@ -242,8 +235,6 @@ public class ChatRoomService {
             chatRoom.setDelete(false);
 
         } else {/*처음 입장하는 유저*/
-
-
 
             /*채팅 방 유저 빌드*/
             ChatRoomUser chatRoomUser = ChatRoomUser.builder()

@@ -4,6 +4,7 @@ import org.hibernate.annotations.Where;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
@@ -14,6 +15,7 @@ import shop.dodotalk.dorundorun.chatroom.entity.ChatRoom;
 import shop.dodotalk.dorundorun.chatroom.entity.ChatRoomUser;
 
 
+import javax.persistence.LockModeType;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +48,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
     Optional<ChatRoom> findBySessionIdAndIsDelete(String chatRoomId, boolean isDelete);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<ChatRoom> findBySessionId(String chatRoomId);
 
     Long countAllBy();

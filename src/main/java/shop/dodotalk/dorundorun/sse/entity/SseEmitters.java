@@ -25,7 +25,6 @@ public class SseEmitters {
     private final ChatRoomRepository chatRoomRepository;
 
     public SseEmitter add(SseEmitter emitter) {
-        log.info("emitter.size000000() = " + String.valueOf(emitters.size()));
         this.emitters.add(emitter);
 
         emitter.onCompletion(() -> {
@@ -59,28 +58,20 @@ public class SseEmitters {
 
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
 
-
-        log.info("emitter.size11111() = " + String.valueOf(emitters.size()));
-
-        if (emitters.size() > 0) {
-            log.info("emitter.size22222() = " + String.valueOf(emitters.size()));
-            emitters.forEach(emitter -> {
+        emitters.forEach(emitter -> {
+            log.info(emitter.toString());
+            if (null != emitter) {
                 try {
-                    log.info("--------try 시작");
                     emitter.send(SseEmitter.event()
                             .name("count")
                             .data(sseResposneDto));
-                    log.info("--------try 끝");
 
                 } catch (IOException e) {
-                    log.info("--------익셉션 발생");
+                    log.info("SSE 익셉션 발생");
                     emitter.complete();
                     this.emitters.remove(emitter);
-                    log.info("emitter.size3333333() = " + String.valueOf(emitters.size()));
-                    log.info("--------익셉션 끝");
                 }
-            });
-        }
-
+            }
+        });
     }
 }

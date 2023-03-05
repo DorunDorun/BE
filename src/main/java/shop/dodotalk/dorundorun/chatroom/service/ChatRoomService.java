@@ -125,10 +125,7 @@ public class ChatRoomService {
         /*빌드된 채팅방 저장(생성)*/
         ChatRoom savedRoom = chatRoomRepository.save(chatRoom);
 
-
-        log.info("---sseEmitter.count() 시작 전");
-//        sseEmitters.count(); // 관우 실시간 방 개수 나타내기
-        log.info("---sseEmitter.count() 시작 후");
+        sseEmitters.count(); // 관우 실시간 방 개수 나타내기
 
         /*채팅방에 보여질 정보들을 리턴*/
         return ChatRoomCreateResponseDto.builder()
@@ -424,7 +421,7 @@ public class ChatRoomService {
             /*방인원 0명으로.*/
             chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
 
-//            sseEmitters.count(); // 관우 실시간 방 개수 나타내기
+            sseEmitters.count(); // 관우 실시간 방 개수 나타내기
 
             return "Success";
         }

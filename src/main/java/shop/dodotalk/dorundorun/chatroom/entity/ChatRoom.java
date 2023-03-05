@@ -51,7 +51,7 @@ public class ChatRoom extends Timestamped {
 
 
 
-//    @Where(clause = "is_delete = false")
+    @Where(clause = "is_delete = false")
     @OneToMany(mappedBy = "sessionId", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatRoomUser> chatRoomUserList;
 

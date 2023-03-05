@@ -24,11 +24,16 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
     void delete(ChatRoom room);
 
-//    /*전체 방 조회*/
-//    Page<ChatRoom> findByIsDeleteOrderByModifiedAtDesc(@Param("delete") Boolean isDelete, Pageable pageable);
+    /*전체 방 조회*/
+    Page<ChatRoom> findByIsDeleteOrderByModifiedAtDesc(@Param("delete") Boolean isDelete, Pageable pageable);
 
     /*전체 방 조회*/
-    @Query("select c from ChatRoom c left join c.chatRoomUserList item where c.isDelete = false and item.isDelete = :isDelete or item = null order by c.modifiedAt DESC")
+    @Query("select distinct room from ChatRoom room " +
+            "join room.chatRoomUserList user " +
+            "where room.isDelete = :isDelete " +
+            "and user.isDelete = :isDelete " +
+            "or user = null " +
+            "order by room.modifiedAt DESC")
     Page<ChatRoom> findByIsDelete(@Param("isDelete") boolean isDelete, Pageable pageable);
 
 
@@ -48,7 +53,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
     Optional<ChatRoom> findBySessionIdAndIsDelete(String chatRoomId, boolean isDelete);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+//    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<ChatRoom> findBySessionId(String chatRoomId);
 
     Long countAllBy();

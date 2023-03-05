@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import shop.dodotalk.dorundorun.chatroom.dto.ChatRoomMapper;
 import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomCreateRequestDto;
@@ -152,8 +153,8 @@ public class ChatRoomService {
 
         /*페이지네이션 설정 --> 무한 스크롤 예정*/
         PageRequest pageable = PageRequest.of(page - 1, 16);
-//        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
-        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDelete(false, pageable);
+        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
+//        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDelete(false, pageable);
 
         /*채팅방이 존재하지 않을 경우
          * 프론트 요청으로 빈배열로 보냄.*/
@@ -179,6 +180,7 @@ public class ChatRoomService {
 
 
     /*채팅방 입장*/
+//    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Transactional
     public String enterChatRoom(String SessionId, HttpServletRequest request, ChatRoomEnterDataRequestDto
             requestData, User user) throws OpenViduJavaClientException, OpenViduHttpException {

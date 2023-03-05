@@ -3,8 +3,6 @@ package shop.dodotalk.dorundorun.sse.entity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import shop.dodotalk.dorundorun.chatroom.entity.ChatRoom;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
@@ -75,6 +73,7 @@ public class SseEmitters {
             log.info("emitter size : " + emitters.size());
             try {
                 log.info("------------- try 시작 ----------------");
+
                 emitter.send(SseEmitter.event()
                         .name("count")
                         .data(sseResposneDto));

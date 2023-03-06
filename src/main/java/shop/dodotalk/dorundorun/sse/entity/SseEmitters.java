@@ -77,7 +77,7 @@ public class SseEmitters {
                         .name("count")
                         .data(sseResposneDto));
                 log.info("------------- try 끝 ----------------");
-                emitter.complete();
+                //emitter.complete();
             } catch (IOException e) {
                 log.info("SSE 아이오 익셉션 발생");
                 emitter.complete();

@@ -16,9 +16,9 @@ import java.util.concurrent.*;
 @Component
 @RequiredArgsConstructor
 public class SseEmitters {
-    //private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
-    private final ConcurrentLinkedQueue<SseEmitter> emitters = new ConcurrentLinkedQueue<>();
+    //private final ConcurrentLinkedQueue<SseEmitter> emitters = new ConcurrentLinkedQueue<>();
 
     //private final ConcurrentHashMap<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
@@ -27,13 +27,19 @@ public class SseEmitters {
     public SseEmitter add(SseEmitter emitter) {
         this.emitters.add(emitter);
 
+        log.info("emmiters 사이즈 : " + emitters.size());
+
         emitter.onCompletion(() -> {
-            log.info("SSE 만료됨");
+            log.info("SSE onCompletion2");
             this.emitters.remove(emitter);    // 만료되면 리스트에서 삭제
         });
+
         emitter.onTimeout(() -> {
+            log.info("SSE onTimeout2");
             emitter.complete();
         });
+
+        emitter.onError(throwable -> emitter.complete()); // 트라이 캐치 코치
 
 //        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 //        executor.scheduleAtFixedRate(() -> {
@@ -52,6 +58,10 @@ public class SseEmitters {
         return emitter;
     }
 
+    public void remove(SseEmitter emitter) {
+        this.emitters.remove(emitter);
+    }
+
     public void count() {
 
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
@@ -59,12 +69,15 @@ public class SseEmitters {
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
 
         emitters.forEach(emitter -> {
-            log.info(emitter.toString());
+            log.info("------emitter 리스트 시작------ ");
+            log.info("emitter size : " + emitters.size());
             try {
+                log.info("------------- try 시작 ----------------");
                 emitter.send(SseEmitter.event()
                         .name("count")
                         .data(sseResposneDto));
-
+                log.info("------------- try 끝 ----------------");
+                emitter.complete();
             } catch (IOException e) {
                 log.info("SSE 익셉션 발생");
                 emitter.complete();

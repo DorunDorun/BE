@@ -84,7 +84,7 @@ public class SseEmitters {
                 this.emitters.remove(emitter);
             } catch (IllegalStateException e) {
                 log.info("SSE 일리걸 익셉션 발생");
-                emitter.complete();
+                //emitter.complete();
                 this.emitters.remove(emitter);
             }
         });

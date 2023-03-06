@@ -77,6 +77,7 @@ public class WebSecurityConfig {
                 .antMatchers("/actuator/**").permitAll() // 관우 프로메테우스
                 .antMatchers("/api/rooms/info").permitAll()
                 .antMatchers("/api/ssehtml").permitAll() // 관우 실시간 채팅방 테스트
+                .antMatchers("/api/count").permitAll() // 관우 실시간 채팅방 테스트
                 .anyRequest().authenticated();
 
 

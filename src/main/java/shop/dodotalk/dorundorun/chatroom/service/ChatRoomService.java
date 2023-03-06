@@ -20,7 +20,6 @@ import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomUserRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.SayingRepository;
 
-import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.annotation.PostConstruct;
@@ -55,8 +54,6 @@ public class ChatRoomService {
     private String OPENVIDU_SECRET;
 
     private OpenVidu openvidu;
-
-    private final SseEmitters sseEmitters; // 관우 실시간 방 개수 나타내기
 
     private Long chatRoomMaxUser = 6L;
 
@@ -117,10 +114,6 @@ public class ChatRoomService {
 
         /*빌드된 채팅방 저장(생성)*/
         ChatRoom savedRoom = chatRoomRepository.save(chatRoom);
-
-        log.info("------- SSE 채팅방 생성 ---------");
-        sseEmitters.count(); // 관우 실시간 방 개수 나타내기
-        log.info("------- SSE 채팅방 생성 ---------");
 
         /*채팅방에 보여질 정보들을 리턴*/
         return ChatRoomCreateResponseDto.builder()
@@ -337,7 +330,9 @@ public class ChatRoomService {
 
     /*방 나가기*/
     @Transactional
-    public String outRoomUser(String sessionId, HttpServletRequest request, User user) {
+    public String outRoomUser(String sessionId, User user) {
+
+        log.info("삭제 요청 처음");
 
         /*방이 있는 지 확인*/
         ChatRoom chatRoom = chatRoomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
@@ -351,6 +346,7 @@ public class ChatRoomService {
 
         /*이미 해당 방에서 나간 유저 표시.*/
         if (chatRoomUser.isDelete()) {
+            log.info("방에서 나간 유저 로그 인포");
             throw new IllegalArgumentException("이미 방에서 나간 유저 입니다.");
         }
 
@@ -371,6 +367,8 @@ public class ChatRoomService {
 
         /*2.현재방에 들어왔던 시간 - 나가기 버튼 누른 시간 = 머문 시간*/
         long afterSeconds = ChronoUnit.SECONDS.between(start, end);
+
+        log.info("삭제 요청 중간");
 
         /*3. 1번의 기존 머문 시간에 + 다시 들어왔을때의 머문시간을 더한다.
          * 처음 들어온 유저의 경우 ex) 00:00:00 + 00:05:20  */
@@ -401,10 +399,6 @@ public class ChatRoomService {
             /*방인원 0명으로.*/
             chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
 
-            log.info("------- SSE 채팅방 삭제 ---------");
-            sseEmitters.count(); // 관우 실시간 방 개수 나타내기
-            log.info("------- SSE 채팅방 삭제 ---------");
-
             return "Success";
         }
 
@@ -413,6 +407,9 @@ public class ChatRoomService {
         룸의 유저 수 변경
         */
         chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
+
+        log.info("삭제 요청 끝");
+
 
         return "Success";
     }

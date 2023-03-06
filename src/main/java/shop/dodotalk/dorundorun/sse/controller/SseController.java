@@ -2,6 +2,7 @@ package shop.dodotalk.dorundorun.sse.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -45,12 +46,12 @@ public class SseController {
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
 
         sseEmitters.add(emitter);
+
         try {
             log.info("SSE Connect");
             emitter.send(SseEmitter.event()
                     .name("connect")
                     .data(sseResposneDto));
-            //emitter.complete();
         } catch (IOException e) {
             log.info("SSE 연결 익셉션");
             emitter.complete();
@@ -58,5 +59,11 @@ public class SseController {
         }
 
         return ResponseEntity.ok(emitter);
+    }
+    @ResponseBody
+    @GetMapping("/count")
+    public void send() {
+        log.info("----실시간 채팅방 카운트----");
+        sseEmitters.count();
     }
 }

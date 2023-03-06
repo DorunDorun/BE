@@ -18,6 +18,7 @@ public class ChatMessageResponseDto {
     private Long messageId;
     private Long fileId;
     private String sessionId;
+    private String name;
     private String nickname;
     private String message;
     private String imgUrl;
@@ -28,6 +29,7 @@ public class ChatMessageResponseDto {
     public ChatMessageResponseDto(RoomFileMessage roomFileMessage) {
         this.fileId = roomFileMessage.getFileId();
         this.sessionId = roomFileMessage.getSessionId();
+        this.name = roomFileMessage.getName();
         this.nickname = roomFileMessage.getNickname();
         this.imgUrl = roomFileMessage.getImgUrl();
         this.isDelete = roomFileMessage.isDelete();
@@ -37,6 +39,7 @@ public class ChatMessageResponseDto {
     public ChatMessageResponseDto(RoomMessage roomMessage) {
         this.messageId = roomMessage.getMessageId();
         this.sessionId = roomMessage.getSessionId();
+        this.name = roomMessage.getName();
         this.nickname = roomMessage.getNickname();
         this.message = roomMessage.getMessage();
         this.isDelete = roomMessage.isDelete();

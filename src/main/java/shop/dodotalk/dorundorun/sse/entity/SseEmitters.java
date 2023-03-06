@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 @Component
 @RequiredArgsConstructor
 public class SseEmitters {
-    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>(); // new를 하면 새로 생김?
 
     //private final ConcurrentLinkedQueue<SseEmitter> emitters = new ConcurrentLinkedQueue<>();
 
@@ -27,7 +27,7 @@ public class SseEmitters {
     public SseEmitter add(SseEmitter emitter) {
         this.emitters.add(emitter);
 
-        log.info("emmiters 사이즈 : " + emitters.size());
+        log.info("emmiters2 사이즈 : " + emitters.size());
 
         emitter.onCompletion(() -> {
             log.info("SSE onCompletion2");
@@ -41,20 +41,6 @@ public class SseEmitters {
 
         emitter.onError(throwable -> emitter.complete()); // 트라이 캐치 코치
 
-//        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-//        executor.scheduleAtFixedRate(() -> {
-//            try {
-//                log.info("SSE 하트비트 전송");
-//                log.info("SSE 리스트 크기 : " + emitters.size());
-//                emitter.send("");
-//            } catch (IOException e) {
-//                // SSE 연결이 끊어진 경우
-//                emitter.complete();
-//                executor.shutdown();
-//                this.emitters.remove(emitter);
-//            }
-//        }, 0, 30, TimeUnit.SECONDS);
-
         return emitter;
     }
 
@@ -62,7 +48,7 @@ public class SseEmitters {
         this.emitters.remove(emitter);
     }
 
-    public synchronized void count() {
+    public void count() {
 
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
 
@@ -77,7 +63,7 @@ public class SseEmitters {
                         .name("count")
                         .data(sseResposneDto));
                 log.info("------------- try 끝 ----------------");
-                emitter.complete();
+                //emitter.complete();
             } catch (IOException e) {
                 log.info("SSE 아이오 익셉션 발생");
                 emitter.complete();

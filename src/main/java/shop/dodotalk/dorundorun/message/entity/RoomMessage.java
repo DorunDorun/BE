@@ -19,6 +19,7 @@ public class RoomMessage extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
     private String socialUid;
+    private String name;
     private String nickname;
     private String message;
     private String sessionId; // 방 sessionId
@@ -26,6 +27,7 @@ public class RoomMessage extends Timestamped {
 
     public RoomMessage(ChatMessageRequestDto chatMessageRequestDto) {
         this.socialUid = chatMessageRequestDto.getSocialUid();
+        this.name = chatMessageRequestDto.getName();
         this.nickname = chatMessageRequestDto.getNickname();
         this.message = chatMessageRequestDto.getMessage();
         this.sessionId = chatMessageRequestDto.getSessionId();

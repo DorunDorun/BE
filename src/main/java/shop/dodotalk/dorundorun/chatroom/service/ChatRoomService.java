@@ -5,17 +5,10 @@ import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.joda.time.MonthDay;
-import org.joda.time.Seconds;
-import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import shop.dodotalk.dorundorun.chatroom.dto.ChatRoomMapper;
 import shop.dodotalk.dorundorun.chatroom.dto.request.ChatRoomCreateRequestDto;
@@ -32,14 +25,10 @@ import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.LockModeType;
 import javax.servlet.http.HttpServletRequest;
-import java.io.OutputStream;
-import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -68,6 +57,8 @@ public class ChatRoomService {
     private OpenVidu openvidu;
 
     private final SseEmitters sseEmitters; // 관우 실시간 방 개수 나타내기
+
+    private Long chatRoomMaxUser = 6L;
 
     @PostConstruct
     public void init() {
@@ -182,24 +173,29 @@ public class ChatRoomService {
 
 
     /*채팅방 입장*/
-//    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Transactional
-    public String enterChatRoom(String SessionId, HttpServletRequest request, ChatRoomEnterDataRequestDto
+    public String enterChatRoom(String SessionId, ChatRoomEnterDataRequestDto
             requestData, User user) throws OpenViduJavaClientException, OpenViduHttpException {
 
 
-        /*방이 있는 지 확인*/
+        /*해당 sessionId를 가진 채팅방이 존재하는지 확인한다.*/
         ChatRoom chatRoom = chatRoomRepository.findBySessionId(SessionId).orElseThrow(
                 () -> new EntityNotFoundException("해당 방이 없습니다."));
 
-        /*방 인원 초과 시 -> 최대 유저 6명*/
-        if (chatRoom.getCntUser() >= 7) {
-            throw new IllegalArgumentException("방이 가득찼습니다.");
+
+        /*채팅방의 최대 인원은 6명으로 제한하고, 초과 시 예외를 발생시킨다.*/
+        synchronized (chatRoom) {
+            chatRoom.updateCntUser(chatRoom.getCntUser() + 1);
+
+            if (chatRoom.getCntUser() > chatRoomMaxUser) {
+                /*트랜잭션에 의해 위의 updateCntUser 메서드의 user수 +1 자동으로 롤백(-1)되어서 6에 맞추어짐.*/
+                throw new IllegalArgumentException("방이 가득찼습니다.");
+            }
         }
 
-        /*비공개 방일시 비밀번호 체크*/
+        /*비공개 방일 경우, 비밀번호 체크를 수행한다.*/
         if (!chatRoom.isStatus()) {
-            if (null == requestData || null == requestData.getPassword()) {    // 패스워드를 입력 안했을 때 에러 발생
+            if (requestData == null || requestData.getPassword() == null ) {    // 패스워드를 입력 안했을 때 에러 발생
                 throw new IllegalArgumentException("비밀번호를 입력해주세요.");
             }
             if (!chatRoom.getPassword().equals(requestData.getPassword())) {  // 비밀번호가 틀리면 에러 발생
@@ -208,31 +204,25 @@ public class ChatRoomService {
         }
 
 
-        /*실제로 해당 방에 접속이 되있으면서 다른 경로로 다시 접속하는 경우
-         * -> 다른 브라우저로 똑같은 방에 접속한다던지...*/
+        /* 이미 입장한 유저일 경우 예외를 발생시킨다. */
         Optional<ChatRoomUser> alreadyEnterChatRoomUser
                 = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), SessionId, false);
 
         if (alreadyEnterChatRoomUser.isPresent()) throw new IllegalArgumentException("이미 입장한 멤버입니다.");
 
 
-        /*해당 방에서 나간 기록이 있고, 다시 '재접속' 하는 유저*/
+        /*해당 방에서 나간 후, 다시 '재접속' 하는 유저*/
         Optional<ChatRoomUser> reEnterChatRoomUser =
                 chatRoomUserRepository.findBySessionIdAndUserId(SessionId, user.getId());
 
-
-        /*방 입장 토큰*/
+        /*방 입장 토큰 생성*/
         String enterRoomToken = enterRoomCreateSession(user, chatRoom.getSessionId());
+
 
         /*재 입장 유저의 경우*/
         if (reEnterChatRoomUser.isPresent()) {
-
             ChatRoomUser chatRoomUser = reEnterChatRoomUser.get();
-
-            /*채팅방 전용 닉네임 재설정*/
-            String nickname = requestData.getNickname();
-
-            chatRoomUser.reEnterRoomUsers(enterRoomToken, nickname, requestData.getMediaBackImage());
+            chatRoomUser.reEnterRoomUsers(enterRoomToken, requestData.getNickname(), requestData.getMediaBackImage());
             chatRoom.setDelete(false);
 
         } else {/*처음 입장하는 유저*/
@@ -257,10 +247,7 @@ public class ChatRoomService {
         }
 
 
-        Long currentUser = chatRoomUserRepository.countAllBySessionId(chatRoom.getSessionId());
-
-        chatRoom.updateCntUser(currentUser);
-
+        /*채팅방 정보를 저장한다.*/
         chatRoomRepository.save(chatRoom);
 
 
@@ -433,7 +420,7 @@ public class ChatRoomService {
 
     /*채팅방 생성 시 세션 발급*/
     private ChatRoomCreateResponseDto createNewToken(User user) throws OpenViduJavaClientException, OpenViduHttpException {
-
+        log.info("!--openvidu 세션 생성 시작");
 
         /*사용자 연결 시 닉네임 전달*/
         String serverData = user.getName();
@@ -453,15 +440,19 @@ public class ChatRoomService {
         String token = session.createConnection(connectionProperties).getToken();
         */
 
+        log.info("!--openvidu 세션 생성 끝");
         return ChatRoomCreateResponseDto.builder()
                 .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
                 .build();
+
     }
 
 
     /*채팅방 입장 시 토큰 발급*/
     private String enterRoomCreateSession(User user, String sessionId) throws
             OpenViduJavaClientException, OpenViduHttpException {
+        log.info("!--openvidu 토큰 발급 시작");
+
 
         String serverData = user.getName();
 
@@ -471,16 +462,20 @@ public class ChatRoomService {
 
         openvidu.fetch();
 
+
         /*오픈비두에 활성화된 세션을 모두 가져와 리스트에 담음*/
         List<Session> activeSessionList = openvidu.getActiveSessions();
 
-        /*1. Request : 다른 유저가 타겟 채팅방에 입장하기 위한 타겟 채팅방의 세션 정보 , 입장 요청하는 유저 정보*/
 
+
+
+        /*1. Request : 다른 유저가 타겟 채팅방에 입장하기 위한 타겟 채팅방의 세션 정보 , 입장 요청하는 유저 정보*/
         Session session = null;
 
         /*활성화된 session의 sessionId들을 registerReqChatRoom에서 리턴한 sessionId(입장할 채팅방의 sessionId)와 비교
         같을 경우 해당 session으로 새로운 토큰을 생성*/
         for (Session getSession : activeSessionList) {
+            log.info("!--openvidu 현재 openvidu server에 활성화된 세션(채팅방) 들 : " + getSession.getSessionId());
             if (getSession.getSessionId().equals(sessionId)) {
                 session = getSession;
                 break;
@@ -491,8 +486,13 @@ public class ChatRoomService {
             throw new EntityNotFoundException("방이 존재하지않습니다.");
         }
 
+
+
+
         /*2. Openvidu에 유저 토큰 발급 요청 : 오픈비두 서버에 요청 유저가 타겟 채팅방에 입장할 수 있는 토큰을 발급 요청
         토큰을 가져옴*/
+        log.info("!--openvidu 토큰 발급받은 유저 : " + user.getName());
+        log.info("!--openvidu 토큰 발급 끝");
         return session.createConnection(connectionProperties).getToken();
     }
 

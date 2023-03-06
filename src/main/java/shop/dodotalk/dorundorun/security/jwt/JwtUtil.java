@@ -320,7 +320,7 @@ public class JwtUtil implements InitializingBean {
 
         refreshTokenRedisRepository.findById(userId).ifPresentOrElse(
                 r -> {
-                    System.out.println("기존에 R 토큰이 있습니다. 교체 합니다.");
+                    log.info("기존에 R 토큰이 있습니다. 교체 합니다.");
                     Optional<RefreshTokenRedis> byId = refreshTokenRedisRepository.findById(r.getUserId());
 
                     RefreshTokenRedis refreshTokenRedis = byId.get();
@@ -332,7 +332,7 @@ public class JwtUtil implements InitializingBean {
 
                 },
                 () -> {
-                    System.out.println("기존에 R 토큰이 없습니다. 생성 합니다.");
+                    log.info("기존에 R 토큰이 없습니다. 생성 합니다.");
                     RefreshTokenRedis token = RefreshTokenRedis.createToken(userId, newRefreshToken);
 
                     refreshTokenRedisRepository.save(token);

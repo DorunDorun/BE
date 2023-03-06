@@ -15,12 +15,10 @@ import shop.dodotalk.dorundorun.chatroom.service.ChatRoomService;
 import shop.dodotalk.dorundorun.chatroom.util.ResponseUtil;
 import shop.dodotalk.dorundorun.security.annotation.Authenticated;
 import shop.dodotalk.dorundorun.security.jwt.OAuth2UserInfoAuthentication;
-import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.AssertTrue;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,13 +51,12 @@ public class ChatRoomController {
     /*채팅방 입장 API*/
     @PostMapping("/rooms/{sessionid}")
     public ResponseEntity<PrivateResponseBody> enterRoom(@PathVariable(name = "sessionid") String sessionId,
-                                                         HttpServletRequest request,
                                                          @Valid @RequestBody ChatRoomEnterDataRequestDto requestData,
                                                          @Authenticated OAuth2UserInfoAuthentication authentication)
             throws OpenViduJavaClientException, OpenViduHttpException {
 
         User user = (User) authentication.getPrincipal();
-        return new ResponseUtil<>().forSuccess(chatRoomService.enterChatRoom(sessionId, request, requestData, user));
+        return new ResponseUtil<>().forSuccess(chatRoomService.enterChatRoom(sessionId, requestData, user));
     }
 
     /*채팅방(속한 유저들) 정보 불러오기 API*/

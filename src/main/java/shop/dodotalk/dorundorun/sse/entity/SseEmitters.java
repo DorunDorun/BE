@@ -62,7 +62,7 @@ public class SseEmitters {
         this.emitters.remove(emitter);
     }
 
-    public synchronized void count() {
+    public synchronized String count() {
 
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
 
@@ -88,5 +88,6 @@ public class SseEmitters {
                 this.emitters.remove(emitter);
             }
         });
+        return "success";
     }
 }

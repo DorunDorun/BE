@@ -119,7 +119,8 @@ public class ChatRoomService {
         ChatRoom savedRoom = chatRoomRepository.save(chatRoom);
 
         log.info("------- SSE 채팅방 생성 ---------");
-        sseEmitters.count(); // 관우 실시간 방 개수 나타내기
+        String abc = sseEmitters.count(); // 관우 실시간 방 개수 나타내기
+        log.info("stream 확인" + abc);
         log.info("------- SSE 채팅방 생성 ---------");
 
         /*채팅방에 보여질 정보들을 리턴*/

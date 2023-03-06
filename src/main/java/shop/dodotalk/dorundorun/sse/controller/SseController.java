@@ -2,6 +2,7 @@ package shop.dodotalk.dorundorun.sse.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +30,7 @@ import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 public class SseController {
     private final SseEmitters sseEmitters;
     private final ChatRoomRepository chatRoomRepository;
+    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @GetMapping(value = "/ssehtml")
     public String ssehtml() {
@@ -45,12 +47,15 @@ public class SseController {
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
 
         sseEmitters.add(emitter);
+
+        log.info("emitters1 : " + emitters.size());
+
         try {
             log.info("SSE Connect");
             emitter.send(SseEmitter.event()
                     .name("connect")
                     .data(sseResposneDto));
-            //emitter.complete();
+            emitter.complete();
         } catch (IOException e) {
             log.info("SSE 연결 익셉션");
             emitter.complete();
@@ -58,5 +63,34 @@ public class SseController {
         }
 
         return ResponseEntity.ok(emitter);
+    }
+
+    @GetMapping("/sse/count")
+    public void count() {
+
+        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
+
+        SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
+
+        emitters.forEach(emitter -> {
+            log.info("------emitter 리스트 시작------ ");
+            log.info("emitter size : " + emitters.size());
+            try {
+                log.info("------------- try 시작 ----------------");
+                emitter.send(SseEmitter.event()
+                        .name("count")
+                        .data(sseResposneDto));
+                log.info("------------- try 끝 ----------------");
+                emitter.complete();
+            } catch (IOException e) {
+                log.info("SSE 아이오 익셉션 발생");
+                emitter.complete();
+                this.emitters.remove(emitter);
+            } catch (IllegalStateException e) {
+                log.info("SSE 일리걸 익셉션 발생");
+                //emitter.complete();
+                this.emitters.remove(emitter);
+            }
+        });
     }
 }

@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 @Component
 @RequiredArgsConstructor
 public class SseEmitters {
-    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>(); // new를 하면 새로 생김?
 
     //private final ConcurrentLinkedQueue<SseEmitter> emitters = new ConcurrentLinkedQueue<>();
 
@@ -27,7 +27,7 @@ public class SseEmitters {
     public SseEmitter add(SseEmitter emitter) {
         this.emitters.add(emitter);
 
-        log.info("emmiters 사이즈 : " + emitters.size());
+        log.info("emmiters2 사이즈 : " + emitters.size());
 
         emitter.onCompletion(() -> {
             log.info("SSE onCompletion2");
@@ -62,32 +62,32 @@ public class SseEmitters {
         this.emitters.remove(emitter);
     }
 
-    public synchronized String count() {
-
-        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
-
-        SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
-
-        emitters.forEach(emitter -> {
-            log.info("------emitter 리스트 시작------ ");
-            log.info("emitter size : " + emitters.size());
-            try {
-                log.info("------------- try 시작 ----------------");
-                emitter.send(SseEmitter.event()
-                        .name("count")
-                        .data(sseResposneDto));
-                log.info("------------- try 끝 ----------------");
-                emitter.complete();
-            } catch (IOException e) {
-                log.info("SSE 아이오 익셉션 발생");
-                emitter.complete();
-                this.emitters.remove(emitter);
-            } catch (IllegalStateException e) {
-                log.info("SSE 일리걸 익셉션 발생");
-                //emitter.complete();
-                this.emitters.remove(emitter);
-            }
-        });
-        return "success";
-    }
+//    public synchronized String count() {
+//
+//        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
+//
+//        SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
+//
+//        emitters.forEach(emitter -> {
+//            log.info("------emitter 리스트 시작------ ");
+//            log.info("emitter size : " + emitters.size());
+//            try {
+//                log.info("------------- try 시작 ----------------");
+//                emitter.send(SseEmitter.event()
+//                        .name("count")
+//                        .data(sseResposneDto));
+//                log.info("------------- try 끝 ----------------");
+//                emitter.complete();
+//            } catch (IOException e) {
+//                log.info("SSE 아이오 익셉션 발생");
+//                emitter.complete();
+//                this.emitters.remove(emitter);
+//            } catch (IllegalStateException e) {
+//                log.info("SSE 일리걸 익셉션 발생");
+//                //emitter.complete();
+//                this.emitters.remove(emitter);
+//            }
+//        });
+//        return "success";
+//    }
 }

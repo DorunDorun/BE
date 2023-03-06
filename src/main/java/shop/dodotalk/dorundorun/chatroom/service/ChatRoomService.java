@@ -406,9 +406,9 @@ public class ChatRoomService {
             /*방인원 0명으로.*/
             chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
 
-            log.info("------- SSE 채팅방 삭제 ---------");
-            sseEmitters.count(); // 관우 실시간 방 개수 나타내기
-            log.info("------- SSE 채팅방 삭제 ---------");
+//            log.info("------- SSE 채팅방 삭제 ---------");
+//            sseEmitters.count(); // 관우 실시간 방 개수 나타내기
+//            log.info("------- SSE 채팅방 삭제 ---------");
 
             return "Success";
         }

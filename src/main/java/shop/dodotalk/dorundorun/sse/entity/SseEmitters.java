@@ -73,15 +73,14 @@ public class SseEmitters {
             log.info("emitter size : " + emitters.size());
             try {
                 log.info("------------- try 시작 ----------------");
-
                 emitter.send(SseEmitter.event()
                         .name("count")
                         .data(sseResposneDto));
                 log.info("------------- try 끝 ----------------");
-
+                emitter.complete();
             } catch (IOException e) {
                 log.info("SSE 익셉션 발생");
-                //emitter.complete(); 트라이 캐치 코치는 이거 없음
+                emitter.complete();
                 this.emitters.remove(emitter);
             }
         });

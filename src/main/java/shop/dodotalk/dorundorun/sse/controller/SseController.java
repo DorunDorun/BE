@@ -55,15 +55,6 @@ public class SseController {
             sseEmitters.remove(emitter);
         }
 
-        emitter.onTimeout(() -> {
-            log.info("SSE onTimeout1");
-            emitter.complete();
-        });
-
-        emitter.onCompletion(() -> sseEmitters.remove(emitter));
-
-        emitter.onError(throwable -> emitter.complete());
-
         return ResponseEntity.ok(emitter);
     }
 }

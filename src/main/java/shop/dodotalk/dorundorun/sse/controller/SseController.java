@@ -50,8 +50,10 @@ public class SseController {
             emitter.send(SseEmitter.event()
                     .name("connect")
                     .data(sseResposneDto));
+            emitter.complete();
         } catch (IOException e) {
             log.info("SSE 연결 익셉션");
+            emitter.complete();
             sseEmitters.remove(emitter);
         }
 

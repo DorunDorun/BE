@@ -63,7 +63,7 @@ public class SseController {
     @ResponseBody
     @GetMapping("/count")
     public void send() {
-        log.info("123123123123123123123요청이 오나요12312312312312312321");
+        log.info("----실시간 채팅방 카운트----");
         sseEmitters.count();
     }
 }

@@ -41,20 +41,6 @@ public class SseEmitters {
 
         emitter.onError(throwable -> emitter.complete()); // 트라이 캐치 코치
 
-//        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-//        executor.scheduleAtFixedRate(() -> {
-//            try {
-//                log.info("SSE 하트비트 전송");
-//                log.info("SSE 리스트 크기 : " + emitters.size());
-//                emitter.send("");
-//            } catch (IOException e) {
-//                // SSE 연결이 끊어진 경우
-//                emitter.complete();
-//                executor.shutdown();
-//                this.emitters.remove(emitter);
-//            }
-//        }, 0, 30, TimeUnit.SECONDS);
-
         return emitter;
     }
 

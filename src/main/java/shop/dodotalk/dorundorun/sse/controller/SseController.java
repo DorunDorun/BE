@@ -61,7 +61,7 @@ public class SseController {
 
         return ResponseEntity.ok(emitter);
     }
-
+    @ResponseBody
     @GetMapping("/count")
     public void send() {
         log.info("123123123123123123123요청이 오나요12312312312312312321");

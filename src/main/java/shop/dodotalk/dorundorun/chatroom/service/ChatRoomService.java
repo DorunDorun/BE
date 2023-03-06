@@ -118,14 +118,14 @@ public class ChatRoomService {
         /*빌드된 채팅방 저장(생성)*/
         ChatRoom savedRoom = chatRoomRepository.save(chatRoom);
 
-        log.info("------- SSE 채팅방 생성 ---------");
-        String abc = sseEmitters.count(); // 관우 실시간 방 개수 나타내기
-        try {
-            Thread.sleep(1000); // 3초 동안 스레드 지연
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        log.info("------- SSE 채팅방 생성 ---------");
+        //        log.info("------- SSE 채팅방 생성 ---------");
+        //        String abc = sseEmitters.count(); // 관우 실시간 방 개수 나타내기
+        //        try {
+        //            Thread.sleep(1000); // 3초 동안 스레드 지연
+        //        } catch (InterruptedException e) {
+        //            e.printStackTrace();
+        //        }
+        //        log.info("------- SSE 채팅방 생성 ---------");
 
         /*채팅방에 보여질 정보들을 리턴*/
         return ChatRoomCreateResponseDto.builder()

@@ -53,7 +53,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
     Optional<ChatRoom> findBySessionIdAndIsDelete(String chatRoomId, boolean isDelete);
 
-//    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<ChatRoom> findBySessionId(String chatRoomId);
 
     Long countAllBy();

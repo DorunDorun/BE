@@ -30,7 +30,6 @@ import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
 public class SseController {
     private final SseEmitters sseEmitters;
     private final ChatRoomRepository chatRoomRepository;
-    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     @GetMapping(value = "/ssehtml")
     public String ssehtml() {
@@ -48,8 +47,6 @@ public class SseController {
 
         sseEmitters.add(emitter);
 
-        log.info("emitters1 : " + emitters.size());
-
         try {
             log.info("SSE Connect");
             emitter.send(SseEmitter.event()
@@ -66,31 +63,7 @@ public class SseController {
     }
 
     @GetMapping("/sse/count")
-    public void count() {
-
-        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
-
-        SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
-
-        emitters.forEach(emitter -> {
-            log.info("------emitter 리스트 시작------ ");
-            log.info("emitter size : " + emitters.size());
-            try {
-                log.info("------------- try 시작 ----------------");
-                emitter.send(SseEmitter.event()
-                        .name("count")
-                        .data(sseResposneDto));
-                log.info("------------- try 끝 ----------------");
-                emitter.complete();
-            } catch (IOException e) {
-                log.info("SSE 아이오 익셉션 발생");
-                emitter.complete();
-                this.emitters.remove(emitter);
-            } catch (IllegalStateException e) {
-                log.info("SSE 일리걸 익셉션 발생");
-                //emitter.complete();
-                this.emitters.remove(emitter);
-            }
-        });
+    public void send() {
+        sseEmitters.count();
     }
 }

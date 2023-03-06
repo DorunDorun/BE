@@ -62,32 +62,31 @@ public class SseEmitters {
         this.emitters.remove(emitter);
     }
 
-//    public synchronized String count() {
-//
-//        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
-//
-//        SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
-//
-//        emitters.forEach(emitter -> {
-//            log.info("------emitter 리스트 시작------ ");
-//            log.info("emitter size : " + emitters.size());
-//            try {
-//                log.info("------------- try 시작 ----------------");
-//                emitter.send(SseEmitter.event()
-//                        .name("count")
-//                        .data(sseResposneDto));
-//                log.info("------------- try 끝 ----------------");
-//                emitter.complete();
-//            } catch (IOException e) {
-//                log.info("SSE 아이오 익셉션 발생");
-//                emitter.complete();
-//                this.emitters.remove(emitter);
-//            } catch (IllegalStateException e) {
-//                log.info("SSE 일리걸 익셉션 발생");
-//                //emitter.complete();
-//                this.emitters.remove(emitter);
-//            }
-//        });
-//        return "success";
-//    }
+    public void count() {
+
+        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
+
+        SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
+
+        emitters.forEach(emitter -> {
+            log.info("------emitter 리스트 시작------ ");
+            log.info("emitter size : " + emitters.size());
+            try {
+                log.info("------------- try 시작 ----------------");
+                emitter.send(SseEmitter.event()
+                        .name("count")
+                        .data(sseResposneDto));
+                log.info("------------- try 끝 ----------------");
+                emitter.complete();
+            } catch (IOException e) {
+                log.info("SSE 아이오 익셉션 발생");
+                emitter.complete();
+                this.emitters.remove(emitter);
+            } catch (IllegalStateException e) {
+                log.info("SSE 일리걸 익셉션 발생");
+                //emitter.complete();
+                this.emitters.remove(emitter);
+            }
+        });
+    }
 }

@@ -4,6 +4,7 @@ package shop.dodotalk.dorundorun.chatroom.controller;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import shop.dodotalk.dorundorun.users.entity.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -80,12 +82,11 @@ public class ChatRoomController {
     /*방 나가기 API*/
     @DeleteMapping("/rooms/{sessionid}")
     public ResponseEntity<PrivateResponseBody> outRoomUser(@PathVariable(name = "sessionid") String sessionId,
-                                                           HttpServletRequest request,
                                                            @Authenticated OAuth2UserInfoAuthentication authentication) {
 
         User user = (User) authentication.getPrincipal();
 
-        return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, request, user));
+        return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, user));
     }
 
     /*랜딩 페이지에 보여줄정보

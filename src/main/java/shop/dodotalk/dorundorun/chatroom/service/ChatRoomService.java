@@ -330,7 +330,7 @@ public class ChatRoomService {
 
     /*방 나가기*/
     @Transactional
-    public String outRoomUser(String sessionId, HttpServletRequest request, User user) {
+    public String outRoomUser(String sessionId, User user) {
 
         log.info("삭제 요청 처음");
 

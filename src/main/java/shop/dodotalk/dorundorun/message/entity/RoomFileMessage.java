@@ -21,6 +21,7 @@ public class RoomFileMessage extends Timestamped {
     private String socialUid; // 유저 socialUid
     private String name;
     private String nickname;
+    private String profile;
     private String imgUrl;
     private String sessionId; // 방 sessionId
     private boolean isDelete = false;
@@ -29,6 +30,7 @@ public class RoomFileMessage extends Timestamped {
         this.socialUid = chatMessageRequestDto.getSocialUid();
         this.name = chatMessageRequestDto.getName();
         this.nickname = chatMessageRequestDto.getNickname();
+        this.profile = chatMessageRequestDto.getProfile();
         this.imgUrl = imgUrl;
         this.sessionId = chatMessageRequestDto.getSessionId();
     }

@@ -10,6 +10,7 @@ public class ChatMessageRequestDto {
     private String socialUid; // 유저 소셜 id
     private String name; // 유저 이름
     private String nickname; // 유저 닉네임
+    private String profile;
     private String message; // 메시지
     private String imgByteCode; // 이미지 바이트 코드
 }

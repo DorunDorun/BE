@@ -16,6 +16,8 @@ public class Saying {
     @Column
     private String saying;
 
+    @Column
+    private String font;
 
 
     @ManyToOne

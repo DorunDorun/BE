@@ -18,11 +18,9 @@ public class ChatRoomResponseDto {
     private String title;
     private String subtitle;
     private boolean status;
-    private ButtonImageEnum buttonImage;
     private String password;
     private String category;
     private String master;
-    private String saying;
 
     private List<ChatRoomUserResponseDto> chatRoomUserList;
     private Long cntUser;

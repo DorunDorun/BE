@@ -6,50 +6,73 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import shop.dodotalk.dorundorun.chatroom.entity.ChatRoom;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
+import shop.dodotalk.dorundorun.sse.dto.SseResposneDto;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class SseEmitters {
-    //private static final AtomicLong counter = new AtomicLong();
-    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>(); // new를 하면 새로 생김?
+
+    //private final ConcurrentLinkedQueue<SseEmitter> emitters = new ConcurrentLinkedQueue<>();
+
+    //private final ConcurrentHashMap<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+
     private final ChatRoomRepository chatRoomRepository;
 
     public SseEmitter add(SseEmitter emitter) {
         this.emitters.add(emitter);
+
+        log.info("emmiters2 사이즈 : " + emitters.size());
+
         emitter.onCompletion(() -> {
-            System.out.println("만료됨");
+            log.info("SSE onCompletion2");
             this.emitters.remove(emitter);    // 만료되면 리스트에서 삭제
         });
+
         emitter.onTimeout(() -> {
+            log.info("SSE onTimeout2");
             emitter.complete();
         });
+
+        emitter.onError(throwable -> emitter.complete()); // 트라이 캐치 코치
 
         return emitter;
     }
 
-    public void count() {
-        //long count = counter.incrementAndGet();
+    public void remove(SseEmitter emitter) {
+        this.emitters.remove(emitter);
+    }
+
+    public void count() throws InterruptedException {
+        Thread.sleep(1000L);
+
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
-        List<ChatRoom> chatRooms2 = chatRoomRepository.findAll();
-        System.out.println("------------------채팅방 생성 or 삭제----------------------");
-        System.out.println("chatRooms.size() : " + chatRooms.size());
-        System.out.println("chatRooms2.size() : " + chatRooms2.size());
-        System.out.println("------------------채팅방 생성 or 삭제----------------------");
+
+        SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
+
         emitters.forEach(emitter -> {
+            log.info("------emitter 리스트 시작------ ");
+            log.info("emitter size : " + emitters.size());
             try {
+                log.info("------------- try 시작 ----------------");
                 emitter.send(SseEmitter.event()
                         .name("count")
-                        .data(chatRooms.size()));
-                emitter.send(SseEmitter.event()
-                        .name("count2")
-                        .data(chatRooms2.size()));
+                        .data(sseResposneDto));
+                log.info("------------- try 끝 ----------------");
+                //emitter.complete();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.info("SSE 아이오 익셉션 발생");
+                emitter.complete();
+                this.emitters.remove(emitter);
+            } catch (IllegalStateException e) {
+                log.info("SSE 일리걸 익셉션 발생");
+                //emitter.complete();
+                this.emitters.remove(emitter);
             }
         });
     }

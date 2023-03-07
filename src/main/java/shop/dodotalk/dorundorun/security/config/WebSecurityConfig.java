@@ -18,7 +18,7 @@ import shop.dodotalk.dorundorun.security.jwt.JwtUtil;
 import shop.dodotalk.dorundorun.users.service.UserPrincipalService;
 
 @RequiredArgsConstructor
-@EnableWebSecurity
+@EnableWebSecurity(debug = false)
 public class WebSecurityConfig {
 
     private final OAuthService oAuthService;
@@ -69,10 +69,15 @@ public class WebSecurityConfig {
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
-                .antMatchers("/ws-stomp/**").permitAll()
+                .antMatchers("/ws-stomp/**").permitAll() // 관우 stomp 시큐리티 처리
+                .antMatchers("/ws-stomp").permitAll() // 관우 stomp 시큐리티 처리
                 .antMatchers("/api/sse").permitAll()
-                .antMatchers("/api/count").permitAll() // 관우 실시간 채팅방 개수 테스트 용도 지워야함
-                .antMatchers("/api/ssehtml").permitAll() // 관우 실시간 채팅방 개수 테스트 용도 지워야함
+                .antMatchers("/api/ssehtml").permitAll()
+                .antMatchers("/actuator").permitAll() // 관우 프로메테우스
+                .antMatchers("/actuator/**").permitAll() // 관우 프로메테우스
+                .antMatchers("/api/rooms/info").permitAll()
+                .antMatchers("/api/ssehtml").permitAll() // 관우 실시간 채팅방 테스트
+                .antMatchers("/api/count").permitAll() // 관우 실시간 채팅방 테스트
                 .anyRequest().authenticated();
 
 
@@ -103,6 +108,8 @@ public class WebSecurityConfig {
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Set-Cookie");
+        configuration.addExposedHeader("authorization");
+        configuration.addExposedHeader("refresh");
 
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

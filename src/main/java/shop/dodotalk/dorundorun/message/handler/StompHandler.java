@@ -24,12 +24,9 @@ public class StompHandler implements ChannelInterceptor {
         String refreshToken = "";
 
         if(accessor.getCommand() == StompCommand.CONNECT) {
-            System.out.println("커넥트까지 오나요");
+            log.info("소켓 Connect JWT 확인");
             accessToken = accessor.getFirstNativeHeader("Authorization");
             refreshToken = accessor.getFirstNativeHeader("Refresh");
-
-            System.out.println("accessToken : " + accessToken);
-            System.out.println("refreshToken : " + refreshToken);
 
             String jwtAccessToken = jwtUtil.socketResolveToken(accessToken);
 
@@ -39,7 +36,7 @@ public class StompHandler implements ChannelInterceptor {
             }
 
             /* Access 토큰이 만료된 경우 */
-            else if (true) { // jwtAccessToken != null && jwtUtil.validateToken(jwtAccessToken) == JwtUtil.JwtCode.EXPIRED
+            else if (jwtAccessToken != null && jwtUtil.validateToken(jwtAccessToken) == JwtUtil.JwtCode.EXPIRED) {
                 log.info("JWT 토큰이 만료되어, Refresh token 확인 작업을 진행합니다.");
 
                 /* Refresh Token 존재 여부 확인.*/

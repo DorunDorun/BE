@@ -48,86 +48,94 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
 
+        String socialId = (String) attributes.get("id");
+
+
         /* JWT Access Token 발급 헤더에 넣던지, 쿠키로 전달해주던지. */
         log.info("access token 발급");
 //        response.addHeader(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication));
-        Cookie accessTokenCookie = new Cookie(AUTHORIZATION_HEADER,"Bearer-" + jwtUtil.generateAccessToken(authentication));
+        Cookie accessTokenCookie = new Cookie(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication));
         accessTokenCookie.setPath("/");
         accessTokenCookie.setHttpOnly(true);
         response.addCookie(accessTokenCookie);
 
         /* JWT Refresh Token 발급 헤더에 넣던지, 쿠키로 전달해주던지. */
         log.info("refresh token 발급");
-        Cookie refreshTokenCookie = new Cookie(REFRESH_HEADER,"Bearer-" + jwtUtil.issueRefreshToken(authentication));
+        Cookie refreshTokenCookie = new Cookie(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication));
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setHttpOnly(true);
         response.addCookie(refreshTokenCookie);
 
 
         /* 유저 소셜 정보
-        * Json으로 변환하여 쿠키에 담아 프론트 엔드에 전달.
-        * utf-8 encoding 하지 않으면 한글, 공백 등 불가. */
+         * Json으로 변환하여 쿠키에 담아 프론트 엔드에 전달.
+         * utf-8 encoding 하지 않으면 한글, 공백 등 불가. */
         ObjectMapper mapper = new ObjectMapper();
         String jsonStr = mapper.writeValueAsString(attributes);
 
         Cookie userInfoCookie = new Cookie("user_Info",
-                URLEncoder.encode(jsonStr,"utf-8"));
+                URLEncoder.encode(jsonStr, "utf-8"));
 
         userInfoCookie.setPath("/");
         response.addCookie(userInfoCookie);
 
+        log.info((String) attributes.get("social") + "유저 리다이렉트 전");
+
+
+
+        /*테스트 유저 -> 리액트:3000으로 이동 */
+        /*김준철, 박청우*/
+        if (socialId.equals("102564351285264584911") || socialId.equals("105747747241465459897")) {
+
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/google")
+                    .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
+                    .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
+                    .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))
+                    .build().encode(StandardCharsets.UTF_8)
+                    .toUriString();
+
+            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
+            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+        } else if ("google".equals(attributes.get("social"))) {
+            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/google")
+                    .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
+                    .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
+                    .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))
+                    .build().encode(StandardCharsets.UTF_8)
+                    .toUriString();
+
+            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
+            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+        }
 
         if ("kakao".equals(attributes.get("social"))) {
-           String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/kakao")
-//            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/kakao")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
-                    .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
+                    .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))
                     .build().encode(StandardCharsets.UTF_8)
                     .toUriString();
-
+            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }
-
-
-        if ("google".equals(attributes.get("social"))) {
-            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/google")
-//            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/google")
-                    .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
-                    .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
-                    .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
-                    .build().encode(StandardCharsets.UTF_8)
-                    .toUriString();
-
-            getRedirectStrategy().sendRedirect(request, response, targetUrl);
-
-        }
-
 
 
         if ("naver".equals(attributes.get("social"))) {
             String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/naver")
-  //          String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/naver")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
-                    .queryParam("user_Info", URLEncoder.encode(jsonStr,"utf-8"))
+                    .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))
                     .build().encode(StandardCharsets.UTF_8)
                     .toUriString();
 
+            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }
 
 
-
-
-
-
         log.info("onAuthenticationSuccess() end");
-
-
-        /* 마지막에 프론트 엔드 로그인 완료 화면으로 리다이렉트. */
-
-
 
 
     }

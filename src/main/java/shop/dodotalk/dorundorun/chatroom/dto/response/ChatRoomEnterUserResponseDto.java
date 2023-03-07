@@ -15,8 +15,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class ChatRoomEnterUserResponseDto {
 
-//    private Long roomUserId;
-
     // 채팅방
     private String sessionId;
 
@@ -35,6 +33,11 @@ public class ChatRoomEnterUserResponseDto {
     /*해당 방에 머물은 시간(재 접속 할경우 +해서 계산됨)*/
     private Time stayTime;
 
+    /*해당 방에 머물은 Days -> stayTime이 24시간이 넘을시 1씩 추가됨*/
+    private Long stayDay;
+
+    private Long mediaBackImage;
+
     // 방장인지 확인
     private boolean roomMaster;
 
@@ -44,7 +47,6 @@ public class ChatRoomEnterUserResponseDto {
     private String enterRoomToken;
 
     public ChatRoomEnterUserResponseDto(ChatRoomUser entity, boolean roomMaster, boolean nowUser){
-//        this.roomUserId = entity.getRoomUserId();
         this.sessionId = entity.getSessionId();
         this.social = entity.getSocial();
         this.userId = entity.getUserId();
@@ -53,18 +55,10 @@ public class ChatRoomEnterUserResponseDto {
         this.ProfileImage = entity.getProfileImage();
         this.enterRoomToken = entity.getEnterRoomToken();
         this.stayTime = entity.getRoomStayTime();
+        this.stayDay = entity.getRoomStayDay();
+        this.mediaBackImage = entity.getMediaBackImage();
         this.roomMaster = roomMaster;
         this.nowUser = nowUser;
     }
 
-//    public RoomUsersResponseDto(RoomUsers entity) {
-//        this.roomUserId = entity.getRoomUserId();
-//        this.sessionId = entity.getSessionId();
-//        this.userId = entity.getUserId();
-//        this.nickname = entity.getNickname();
-//        this.email = entity.getEmail();
-//        this.ProfileImage = entity.getProfileImage();
-//        this.enterRoomToken = entity.getEnterRoomToken();
-//        this.roomMaster = false;
-//    }
 }

@@ -8,13 +8,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
-import shop.dodotalk.dorundorun.security.entity.RefreshToken;
+import shop.dodotalk.dorundorun.security.entity.RefreshTokenRedis;
+import shop.dodotalk.dorundorun.security.repository.RefreshTokenRedisRepository;
 import shop.dodotalk.dorundorun.security.repository.RefreshTokenRepository;
+
+import shop.dodotalk.dorundorun.users.entity.User;
 import shop.dodotalk.dorundorun.users.repository.UserRepository;
 import shop.dodotalk.dorundorun.security.service.OAuthService;
 import shop.dodotalk.dorundorun.users.service.UserPrincipalService;
@@ -45,6 +47,8 @@ public class JwtUtil implements InitializingBean {
     private final UserRepository userRepository;
     private final UserPrincipalService userPrincipalService;
 
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+
 
     public JwtUtil(@Value("${jwt.secret-key}") String secretKey,
                    @Value("${jwt.token-validity-in-sec}") long tokenValidity,
@@ -52,7 +56,8 @@ public class JwtUtil implements InitializingBean {
                    RefreshTokenRepository refreshTokenRepository,
                    OAuthService oAuthService,
                    UserRepository userRepository,
-                   UserPrincipalService userPrincipalService) {
+                   UserPrincipalService userPrincipalService,
+                   RefreshTokenRedisRepository refreshTokenRedisRepository) {
 
         this.secretKey = secretKey;
         this.tokenValidityInMs = tokenValidity * 1000;
@@ -61,6 +66,7 @@ public class JwtUtil implements InitializingBean {
         this.oAuthService = oAuthService;
         this.userRepository = userRepository;
         this.userPrincipalService = userPrincipalService;
+        this.refreshTokenRedisRepository = refreshTokenRedisRepository;
     }
 
 
@@ -128,7 +134,6 @@ public class JwtUtil implements InitializingBean {
                     .compact();
 
 
-
         }
 
 
@@ -154,7 +159,8 @@ public class JwtUtil implements InitializingBean {
             return JwtCode.EXPIRED;
 
         } catch (JwtException | IllegalArgumentException e) {
-            log.info("jwtException : {}", e);
+            log.info("jwtException : {}", "Access Token 유효성 검증 실패");
+
         }
         return JwtCode.DENIED;
     }
@@ -165,15 +171,27 @@ public class JwtUtil implements InitializingBean {
             log.info("validate Refresh Token ...");
 
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken);
-            log.info("JWT 토큰 검증 완료");
-            log.info("JWT 토큰 DB 대조 시작");
+            log.info("JWT Refresh 토큰 검증 완료");
+            log.info("JWT Refresh 토큰 DB 대조 시작");
 
-            Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByToken(refreshToken);
 
-            if (refreshTokenOptional.isEmpty()) {
-                throw new IllegalArgumentException("Refresh Token이 DB에 존재하지 않음.");
+            /*mysql 버전*/
+//            Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByToken(refreshToken);
+//
+//            if (refreshTokenOptional.isEmpty()) {
+//                throw new IllegalArgumentException("Refresh Token이 DB에 존재하지 않음.");
+//            }
+
+
+            /*Redis 버전*/
+            Optional<RefreshTokenRedis> token = refreshTokenRedisRepository.findByRefreshToken(refreshToken);
+
+
+
+            if (token.isEmpty()) {
+                log.warn("Refresh Token이 DB에 존재하지 않음.");
+                return null;
             }
-
 
             return JwtCode.ACCESS;
         } catch (ExpiredJwtException e) {
@@ -261,30 +279,72 @@ public class JwtUtil implements InitializingBean {
 
     @Transactional
     public String issueRefreshToken(Authentication authentication) {
+        System.out.println("로그인 성공 리프레쉬 토큰 발급 시작!");
 
         DefaultOAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
         String newRefreshToken = generateRefreshToken(authentication);
 
 
-        // 기존것이 있다면 바꿔주고, 없다면 만들어줌
-        refreshTokenRepository.findByUserEmail((String) oAuth2User.getAttributes().get("email"))
-                .ifPresentOrElse(
-                        r -> {
-                            r.changeToken(newRefreshToken);
-                            log.info("issueRefreshToken method | change token ");
-                        },
-                        () -> {
-                            RefreshToken token = RefreshToken.createToken((String) oAuth2User.getAttributes().get("email"), newRefreshToken);
-                            log.info(" issueRefreshToken method | save tokenID : {}, token : {}", token.getUserEmail(), token.getToken());
-                            refreshTokenRepository.save(token);
-                        });
+        /*RDS, MYSQL 버전*/
+//        refreshTokenRepository.findByUserEmail((String) oAuth2User.getAttributes().get("email"))
+//                .ifPresentOrElse(
+//                        r -> {
+//                            r.changeToken(newRefreshToken);
+//                            log.info("issueRefreshToken method | change token ");
+//                        },
+//                        () -> {
+//                            RefreshToken token = RefreshToken.createToken((String) oAuth2User.getAttributes().get("email"), newRefreshToken);
+//                            log.info(" issueRefreshToken method | save tokenID : {}, token : {}", token.getUserEmail(), token.getToken());
+//                            refreshTokenRepository.save(token);
+//                        });
+
+
+        /*Ec2 Redis 버전 -> 초반에 RDS에서 리팩토링 함.*/
+        Optional<User> user
+                = userRepository.findBySocialUid((String) oAuth2User.getAttributes().get("id"));
+
+        String userId = String.valueOf(user.get().getId());
+
+        /**/
+//        refreshTokenRedisRepository.findById(String.valueOf(user.get().getId()))
+//                .ifPresentOrElse(
+//                        r -> {
+//                            refreshTokenRedisRepository.update(r.getUserId(), newRefreshToken);
+//                            log.info("issueRefreshToken method | change token ");
+//                        },
+//                        () -> {
+//                            RefreshTokenRedis token = RefreshTokenRedis.createToken(String.valueOf(user.get().getId()), newRefreshToken);
+//
+//                            refreshTokenRedisRepository.save(token);
+//                        });
+
+        refreshTokenRedisRepository.findById(userId).ifPresentOrElse(
+                r -> {
+                    log.info("기존에 R 토큰이 있습니다. 교체 합니다.");
+                    Optional<RefreshTokenRedis> byId = refreshTokenRedisRepository.findById(r.getUserId());
+
+                    RefreshTokenRedis refreshTokenRedis = byId.get();
+
+                    RefreshTokenRedis update = refreshTokenRedis.update(r.getUserId(), newRefreshToken);
+
+
+                    refreshTokenRedisRepository.save(update);
+
+                },
+                () -> {
+                    log.info("기존에 R 토큰이 없습니다. 생성 합니다.");
+                    RefreshTokenRedis token = RefreshTokenRedis.createToken(userId, newRefreshToken);
+
+                    refreshTokenRedisRepository.save(token);
+
+                });
+
 
         return newRefreshToken;
     }
 
 
-    /* Refresh Token 재발급
-     * Refresh Token이 만료된 경우. */
+    /* Refresh Token 재발급*/
     @Transactional
     public String reissueRefreshToken(String refreshToken) throws RuntimeException {
 
@@ -294,11 +354,11 @@ public class JwtUtil implements InitializingBean {
         authentication.setPrincipal(principal);
 
 
-        String email = authentication.getEmail();
+        /*String email = authentication.getEmail();*/
 
 
-
-        // 해당 유저 정보와 맞는 Refresh Token이 DB에 있는지 확인.
+        /*MYSQL 버전*/
+        /* 해당 유저 정보와 맞는 Refresh Token이 DB에 있는지 확인.
         RefreshToken findRefreshToken = refreshTokenRepository.findByUserEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("userEmail : " + email + " was not found"));
 
@@ -314,7 +374,39 @@ public class JwtUtil implements InitializingBean {
         } else {
             log.info("refresh 토큰이 일치하지 않습니다. ");
             return null;
+        }*/
+
+
+        /*Redis 버전*/
+        Optional<User> user
+                = userRepository.findBySocialUid((authentication.getUid()));
+
+        String userId = String.valueOf(user.get().getId());
+
+
+        Optional<RefreshTokenRedis> refreshTokenFind
+                = refreshTokenRedisRepository.findById(userId);
+
+        if (!refreshTokenFind.get().getRefreshToken().equals(refreshToken)) {
+            log.info("refresh 토큰이 일치하지 않습니다. ");
+            return null;
         }
+
+        // 새로운 RefreshToken 발급
+        String newRefreshToken = generateRefreshToken(authentication);
+
+        // 새로운 RefreshToken 업데이트.
+        Optional<RefreshTokenRedis> byId
+                = refreshTokenRedisRepository.findById(userId);
+        RefreshTokenRedis refreshTokenRedis = byId.get();
+        RefreshTokenRedis update = refreshTokenRedis.update(userId, newRefreshToken);
+        refreshTokenRedisRepository.save(update);
+
+
+
+
+
+        return newRefreshToken;
     }
 
 

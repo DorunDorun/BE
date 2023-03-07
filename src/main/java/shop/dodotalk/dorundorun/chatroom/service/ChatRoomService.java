@@ -4,6 +4,7 @@ package shop.dodotalk.dorundorun.chatroom.service;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,13 +18,12 @@ import shop.dodotalk.dorundorun.chatroom.entity.*;
 import shop.dodotalk.dorundorun.chatroom.repository.CategoryRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomUserRepository;
 import shop.dodotalk.dorundorun.chatroom.repository.ChatRoomRepository;
-import shop.dodotalk.dorundorun.chatroom.util.CreateSaying;
-import shop.dodotalk.dorundorun.sse.entity.SseEmitters;
+import shop.dodotalk.dorundorun.chatroom.repository.SayingRepository;
+
 import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -41,10 +41,9 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
-    //    private final BenUserRepository benUserRepository;
-    private final CreateSaying createSaying;
     private final CategoryRepository categoryRepository;
     private final ChatRoomMapper chatRoomMapper;
+    private final SayingRepository sayingRepository;
 
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
@@ -54,7 +53,7 @@ public class ChatRoomService {
 
     private OpenVidu openvidu;
 
-    private final SseEmitters sseEmitters; // 관우 실시간 방 개수 나타내기
+    private Long chatRoomMaxUser = 6L;
 
     @PostConstruct
     public void init() {
@@ -70,13 +69,30 @@ public class ChatRoomService {
         /* Session Id, Token 셋팅 */
         ChatRoomCreateResponseDto newToken = createNewToken(user);
 
-        /* 카테고리 별 랜덤 명언. */
-        String saying = createSaying.createSaying(CategoryEnum.valueOf(chatRoomCreateRequestDto.getCategory()));
+        log.info("user 정보 : " + user.getName());
+        log.info("user 정보 : " + user.getProfile());
 
+
+        /* 변경 버전 카테고리 별 명언 리스트*/
         Category category = categoryRepository.findByCategory(CategoryEnum.valueOf(chatRoomCreateRequestDto.getCategory()))
                 .orElseThrow(
                         () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
                 );
+
+
+        List<Saying> sayingList = sayingRepository.findByCategory(category);
+
+
+        List<ChatRoomSayingResponseDto> chatRoomSayingResponseDtos =
+                new ArrayList<>();
+
+        for (Saying saying : sayingList) {
+            ChatRoomSayingResponseDto chatRoomSayingResponseDto
+                    = new ChatRoomSayingResponseDto(saying);
+
+            chatRoomSayingResponseDtos.add(chatRoomSayingResponseDto);
+        }
+
 
 
         /*채팅방 빌드*/
@@ -86,19 +102,16 @@ public class ChatRoomService {
                 .subtitle(chatRoomCreateRequestDto.getSubtitle())
                 .master(user.getName())
                 .masterUserId(user.getId())
-                .buttonImage(ButtonImageEnum.valueOf(chatRoomCreateRequestDto.getButtonImage()))
                 .status(chatRoomCreateRequestDto.getStatus())
                 .category(category)
                 .password(chatRoomCreateRequestDto.getPassword())
-                .saying(saying)
                 .cntUser(0L)
                 .build();
 
+        log.info("생성된 채팅 방 : " + chatRoom.getTitle());
 
         /*빌드된 채팅방 저장(생성)*/
         ChatRoom savedRoom = chatRoomRepository.save(chatRoom);
-
-        sseEmitters.count(); // 관우 실시간 방 개수 나타내기
 
         /*채팅방에 보여질 정보들을 리턴*/
         return ChatRoomCreateResponseDto.builder()
@@ -108,8 +121,7 @@ public class ChatRoomService {
                 .masterName(savedRoom.getMaster())
                 .isRoomMaster(true)
                 .status(savedRoom.isStatus())
-                .buttonImage(savedRoom.getButtonImage().name())
-                .saying(saying)
+                .sayingList(chatRoomSayingResponseDtos)
                 .category(savedRoom.getCategory().getCategory().getCategoryKr())
                 .password(savedRoom.getPassword())
                 .createdAt(savedRoom.getCreatedAt())
@@ -124,17 +136,19 @@ public class ChatRoomService {
 
 
         /*페이지네이션 설정 --> 무한 스크롤 예정*/
-        PageRequest pageable = PageRequest.of(page - 1, 12);
+        PageRequest pageable = PageRequest.of(page - 1, 16);
         Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
 
-        /*채팅방이 존재하지 않을 경우*/
+        /*채팅방이 존재하지 않을 경우
+         * 프론트 요청으로 빈배열로 보냄.*/
         if (chatRoomList.isEmpty()) {
-            throw new EntityNotFoundException("채팅방이 존재하지 않습니다.");
+            return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
+
         }
 
         /*pagination을 위한 정보를 담은 Dto 생성*/
         ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
-                = new ChatRoomPageInfoResponseDto(page, 12,
+                = new ChatRoomPageInfoResponseDto(page, 16,
                 (int) chatRoomList.getTotalElements(), chatRoomList.getTotalPages());
 
 
@@ -150,30 +164,31 @@ public class ChatRoomService {
 
     /*채팅방 입장*/
     @Transactional
-    public String enterChatRoom(String SessionId, HttpServletRequest request, ChatRoomEnterDataRequestDto
+    public String enterChatRoom(String SessionId, ChatRoomEnterDataRequestDto
             requestData, User user) throws OpenViduJavaClientException, OpenViduHttpException {
 
 
-        /*방이 있는 지 확인*/
+
+
+
+        /*해당 sessionId를 가진 채팅방이 존재하는지 확인한다.*/
         ChatRoom chatRoom = chatRoomRepository.findBySessionId(SessionId).orElseThrow(
                 () -> new EntityNotFoundException("해당 방이 없습니다."));
 
 
-        /*방에서 강퇴당한 멤버인지 확인 --> 2차 scope*/
-        /*BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), SessionId);
-        if (benUser != null) {
-            throw new PrivateException(new ErrorCode(HttpStatus.BAD_REQUEST, "400", "강퇴당한 방입니다."));
-        }*/
+        /*채팅방의 최대 인원은 6명으로 제한하고, 초과 시 예외를 발생시킨다.*/
+        synchronized (chatRoom) {
+            chatRoom.updateCntUser(chatRoom.getCntUser() + 1);
 
-
-        /*방 인원 초과 시 -> 최대 유저 6명*/
-        if (chatRoom.getCntUser() >= 7) {
-            throw new IllegalArgumentException("방이 가득찼습니다.");
+            if (chatRoom.getCntUser() > chatRoomMaxUser) {
+                /*트랜잭션에 의해 위의 updateCntUser 메서드의 user수 +1 자동으로 롤백(-1)되어서 6에 맞추어짐.*/
+                throw new IllegalArgumentException("방이 가득찼습니다.");
+            }
         }
 
-        /*비공개 방일시 비밀번호 체크*/
+        /*비공개 방일 경우, 비밀번호 체크를 수행한다.*/
         if (!chatRoom.isStatus()) {
-            if (null == requestData || null == requestData.getPassword()) {    // 패스워드를 입력 안했을 때 에러 발생
+            if (requestData == null || requestData.getPassword() == null ) {    // 패스워드를 입력 안했을 때 에러 발생
                 throw new IllegalArgumentException("비밀번호를 입력해주세요.");
             }
             if (!chatRoom.getPassword().equals(requestData.getPassword())) {  // 비밀번호가 틀리면 에러 발생
@@ -182,32 +197,25 @@ public class ChatRoomService {
         }
 
 
-        /*실제로 해당 방에 접속이 되있으면서 다른 경로로 다시 접속하는 경우
-         * -> 다른 브라우저로 똑같은 방에 접속한다던지...*/
+        /* 이미 입장한 유저일 경우 예외를 발생시킨다. */
         Optional<ChatRoomUser> alreadyEnterChatRoomUser
                 = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), SessionId, false);
 
         if (alreadyEnterChatRoomUser.isPresent()) throw new IllegalArgumentException("이미 입장한 멤버입니다.");
 
 
-        /*해당 방에서 나간 기록이 있고, 다시 '재접속' 하는 유저*/
+        /*해당 방에서 나간 후, 다시 '재접속' 하는 유저*/
         Optional<ChatRoomUser> reEnterChatRoomUser =
                 chatRoomUserRepository.findBySessionIdAndUserId(SessionId, user.getId());
 
-
-
-        /*방 입장 토큰*/
+        /*방 입장 토큰 생성*/
         String enterRoomToken = enterRoomCreateSession(user, chatRoom.getSessionId());
+
 
         /*재 입장 유저의 경우*/
         if (reEnterChatRoomUser.isPresent()) {
-
             ChatRoomUser chatRoomUser = reEnterChatRoomUser.get();
-
-            /*채팅방 전용 닉네임 재설정*/
-            String nickname = requestData.getNickname();
-
-            chatRoomUser.reEnterRoomUsers(enterRoomToken, nickname);
+            chatRoomUser.reEnterRoomUsers(enterRoomToken, requestData.getNickname(), requestData.getMediaBackImage());
             chatRoom.setDelete(false);
 
         } else {/*처음 입장하는 유저*/
@@ -222,7 +230,9 @@ public class ChatRoomService {
                     .profileImage(user.getProfile())
                     .enterRoomToken(enterRoomToken)
                     .roomEnterTime(Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime())
+                    .roomStayDay(0L)
                     .roomStayTime(Time.valueOf("00:00:00"))
+                    .mediaBackImage(requestData.getMediaBackImage())
                     .build();
 
             /*현재 방에 접속한 사용자 저장*/
@@ -230,10 +240,7 @@ public class ChatRoomService {
         }
 
 
-        Long currentUser = chatRoomUserRepository.countAllBySessionId(chatRoom.getSessionId());
-
-        chatRoom.updateCntUser(currentUser);
-
+        /*채팅방 정보를 저장한다.*/
         chatRoomRepository.save(chatRoom);
 
 
@@ -296,8 +303,26 @@ public class ChatRoomService {
 
         }
 
+
+
+        /*명언들 불러오기*/
+        List<Saying> sayingList = sayingRepository.findByCategory(chatRoom.getCategory());
+
+
+        List<ChatRoomSayingResponseDto> chatRoomSayingResponseDtos =
+                new ArrayList<>();
+
+        for (Saying saying : sayingList) {
+            ChatRoomSayingResponseDto chatRoomSayingResponseDto
+                    = new ChatRoomSayingResponseDto(saying);
+
+            chatRoomSayingResponseDtos.add(chatRoomSayingResponseDto);
+        }
+
+
         ChatRoomEnterUsersResponseDto chatRoomResponseDto
-                = new ChatRoomEnterUsersResponseDto(chatRoom, chatRoomUserListResponseDto);
+                = new ChatRoomEnterUsersResponseDto(chatRoom, chatRoomUserListResponseDto,
+                chatRoomSayingResponseDtos);
 
         return chatRoomResponseDto;
     }
@@ -305,7 +330,9 @@ public class ChatRoomService {
 
     /*방 나가기*/
     @Transactional
-    public String outRoomUser(String sessionId, HttpServletRequest request, User user) {
+    public String outRoomUser(String sessionId, User user) {
+
+        log.info("삭제 요청 처음");
 
         /*방이 있는 지 확인*/
         ChatRoom chatRoom = chatRoomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
@@ -319,6 +346,7 @@ public class ChatRoomService {
 
         /*이미 해당 방에서 나간 유저 표시.*/
         if (chatRoomUser.isDelete()) {
+            log.info("방에서 나간 유저 로그 인포");
             throw new IllegalArgumentException("이미 방에서 나간 유저 입니다.");
         }
 
@@ -340,12 +368,24 @@ public class ChatRoomService {
         /*2.현재방에 들어왔던 시간 - 나가기 버튼 누른 시간 = 머문 시간*/
         long afterSeconds = ChronoUnit.SECONDS.between(start, end);
 
+        log.info("삭제 요청 중간");
+
         /*3. 1번의 기존 머문 시간에 + 다시 들어왔을때의 머문시간을 더한다.
-        * 처음 들어온 유저의 경우 ex) 00:00:00 + 00:05:20 */
-        LocalTime chatRoomStayTime = beforeChatRoomStayTime.plusSeconds(afterSeconds);
+         * 처음 들어온 유저의 경우 ex) 00:00:00 + 00:05:20  */
+        /*22.03.03 디자이너님의 요청으로 24시간 넘었을대 1일..2일.. 추가.*/
+        LocalTime chatRoomStayTime = beforeChatRoomStayTime.plusSeconds(afterSeconds);/*시간 계산*/
+
+        /*일자 계산*/
+        int seconds = beforeChatRoomStayTime.toSecondOfDay();
+
+        Long roomStayDay = chatRoomUser.getRoomStayDay();
+        if ((seconds + afterSeconds) >= 86400) {/*24시간을 넘기면 1일 추가*/
+            roomStayDay += 1;
+        }
+
 
         /*4. 채팅방 유저 논리 삭제, 방에서 나간 시간 저장, 방에 머문 시간 교체*/
-        chatRoomUser.deleteRoomUsers(chatRoomExitTime, chatRoomStayTime);
+        chatRoomUser.deleteRoomUsers(chatRoomExitTime, chatRoomStayTime, roomStayDay);
 
         /* 채팅방 유저 수 확인
          * 채팅방 유저가 0명이라면 방 논리삭제. */
@@ -359,8 +399,6 @@ public class ChatRoomService {
             /*방인원 0명으로.*/
             chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
 
-            sseEmitters.count(); // 관우 실시간 방 개수 나타내기
-
             return "Success";
         }
 
@@ -370,13 +408,16 @@ public class ChatRoomService {
         */
         chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
 
+        log.info("삭제 요청 끝");
+
+
         return "Success";
     }
 
 
     /*채팅방 생성 시 세션 발급*/
     private ChatRoomCreateResponseDto createNewToken(User user) throws OpenViduJavaClientException, OpenViduHttpException {
-
+        log.info("!--openvidu 세션 생성 시작");
 
         /*사용자 연결 시 닉네임 전달*/
         String serverData = user.getName();
@@ -396,15 +437,19 @@ public class ChatRoomService {
         String token = session.createConnection(connectionProperties).getToken();
         */
 
+        log.info("!--openvidu 세션 생성 끝");
         return ChatRoomCreateResponseDto.builder()
                 .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
                 .build();
+
     }
 
 
     /*채팅방 입장 시 토큰 발급*/
     private String enterRoomCreateSession(User user, String sessionId) throws
             OpenViduJavaClientException, OpenViduHttpException {
+        log.info("!--openvidu 토큰 발급 시작");
+
 
         String serverData = user.getName();
 
@@ -414,28 +459,48 @@ public class ChatRoomService {
 
         openvidu.fetch();
 
+
         /*오픈비두에 활성화된 세션을 모두 가져와 리스트에 담음*/
         List<Session> activeSessionList = openvidu.getActiveSessions();
 
-        /*1. Request : 다른 유저가 타겟 채팅방에 입장하기 위한 타겟 채팅방의 세션 정보 , 입장 요청하는 유저 정보*/
 
+
+
+        /*1. Request : 다른 유저가 타겟 채팅방에 입장하기 위한 타겟 채팅방의 세션 정보 , 입장 요청하는 유저 정보*/
         Session session = null;
 
         /*활성화된 session의 sessionId들을 registerReqChatRoom에서 리턴한 sessionId(입장할 채팅방의 sessionId)와 비교
         같을 경우 해당 session으로 새로운 토큰을 생성*/
         for (Session getSession : activeSessionList) {
+            log.info("!--openvidu 현재 openvidu server에 활성화된 세션(채팅방) 들 : " + getSession.getSessionId());
             if (getSession.getSessionId().equals(sessionId)) {
                 session = getSession;
                 break;
             }
         }
 
+        /*todo test!!!*/
+        for (Session getSession : activeSessionList) {
+            log.info("!--openvidu 현재 openvidu server에 활성화된 세션 : " + getSession.getSessionId());
+            for (Connection connection : getSession.getConnections()) {
+                log.info("!--openvidu connection.getConnectionId() : " + connection.getConnectionId());
+                log.info("!--openvidu connection.getToken() : " + connection.getToken());
+            }
+
+        }
+
+
         if (session == null) {
             throw new EntityNotFoundException("방이 존재하지않습니다.");
         }
 
+
+
+
         /*2. Openvidu에 유저 토큰 발급 요청 : 오픈비두 서버에 요청 유저가 타겟 채팅방에 입장할 수 있는 토큰을 발급 요청
         토큰을 가져옴*/
+        log.info("!--openvidu 토큰 발급받은 유저 : " + user.getName());
+        log.info("!--openvidu 토큰 발급 끝");
         return session.createConnection(connectionProperties).getToken();
     }
 
@@ -459,13 +524,13 @@ public class ChatRoomService {
                 Duration duration = Duration.between(createdAt, now);
                 totalSecond = totalSecond + duration.getSeconds();
 
-            }else {
+            } else {
                 Duration duration = Duration.between(createdAt, deleteTime);
                 totalSecond = totalSecond + duration.getSeconds();
             }
 
         }
-        Long totalHour = totalSecond / (60*60);
+        Long totalHour = totalSecond / (60 * 60);
 
         return new ChatRoomInfoResponseDto(totalHour, totalRoom);
     }
@@ -480,7 +545,7 @@ public class ChatRoomService {
             throw new IllegalArgumentException("검색 양식에 맞지 않습니다.");
         }
 
-        PageRequest pageable = PageRequest.of(page - 1, 12);
+        PageRequest pageable = PageRequest.of(page - 1, 16);
 
         Page<ChatRoom> searchRoom =
                 chatRoomRepository.findByTitleContainingOrSubtitleContainingOrderByModifiedAtDesc(keyword
@@ -488,13 +553,16 @@ public class ChatRoomService {
                         , pageable);
 
         /*검색 결과가 없다면*/
+        /* 프론트 요청으로 빈배열로 보냄.*/
         if (searchRoom.isEmpty()) {
-            throw new EntityNotFoundException("검색 결과가 없습니다.");
+
+            return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
         }
+
 
         /*pagination을 위한 정보를 담은 Dto 생성*/
         ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
-                = new ChatRoomPageInfoResponseDto(page, 12,
+                = new ChatRoomPageInfoResponseDto(page, 16,
                 (int) searchRoom.getTotalElements(), searchRoom.getTotalPages());
 
 
@@ -508,6 +576,121 @@ public class ChatRoomService {
 
     }
 
+
+    @Transactional
+    public ChatRoomGetAllResponseDto searchCategory(CategoryEnum categoryEnum, int page) {
+
+        Category category = categoryRepository.findByCategory(CategoryEnum.valueOf(String.valueOf(categoryEnum)))
+                .orElseThrow(
+                        () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+                );
+
+
+        PageRequest pageable = PageRequest.of(page - 1, 16);
+
+        Page<ChatRoom> searchRoom =
+                chatRoomRepository.findByIsDeleteAndCategoryOrderByModifiedAtDesc(false, category, pageable);
+
+
+        /*검색 결과가 없다면*/
+        /* 프론트 요청으로 빈배열로 보냄.*/
+        if (searchRoom.isEmpty()) {
+
+            return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
+        }
+
+
+
+
+
+        /*pagination을 위한 정보를 담은 Dto 생성*/
+        ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
+                = new ChatRoomPageInfoResponseDto(page, 16,
+                (int) searchRoom.getTotalElements(), searchRoom.getTotalPages());
+
+
+        /*chatRoomList에서 Page 정보를 제외 ChatRoom만 꺼내온다.*/
+        List<ChatRoom> chatRooms = searchRoom.getContent();
+
+        /*mapper를 활용하여 chatRoom Entity를 Dto로 변환.*/
+        List<ChatRoomResponseDto> chatRoomResponseDtoList = chatRoomMapper.roomsToRoomResponseDtos(chatRooms);
+
+        return new ChatRoomGetAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
+
+    }
+
+
+    /*히스토리 전체 방 조회하기*/
+    @Transactional
+    public ChatRoomGetAllResponseDto getAllHistoryChatRooms(int page, User user) {
+
+        PageRequest pageable = PageRequest.of(page - 1, 16);
+        Page<ChatRoom> chatRoomList = chatRoomRepository.findByUserIdAndIsDelete(user.getId(), true, false, pageable);
+
+
+        /*채팅방이 존재하지 않을 경우
+         * 프론트 요청으로 빈배열로 보냄.*/
+        if (chatRoomList.isEmpty()) {
+            return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
+
+        }
+
+        /*pagination을 위한 정보를 담은 Dto 생성*/
+        ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
+                = new ChatRoomPageInfoResponseDto(page, 16,
+                (int) chatRoomList.getTotalElements(), chatRoomList.getTotalPages());
+
+
+        /*chatRoomList에서 Page 정보를 제외 ChatRoom만 꺼내온다.*/
+        List<ChatRoom> chatRooms = chatRoomList.getContent();
+
+        /*mapper를 활용하여 chatRoom Entity를 Dto로 변환.*/
+        List<ChatRoomResponseDto> chatRoomResponseDtoList = chatRoomMapper.roomsToRoomResponseDtos(chatRooms);
+
+        return new ChatRoomGetAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
+    }
+
+
+    @Transactional
+    public ChatRoomGetAllResponseDto searchHistoryRoom(String keyword, int page, User user) {
+
+        if (keyword.length() < 1 || keyword.length() > 20) {
+            throw new IllegalArgumentException("검색 양식에 맞지 않습니다.");
+        }
+
+        PageRequest pageable = PageRequest.of(page - 1, 16);
+
+        Page<ChatRoom> searchRoom =
+                chatRoomRepository.findByUserIdAndIsDelete(
+                        keyword,
+                        keyword,
+                        user.getId(),
+                        true,
+                        false,
+                        pageable);
+
+        /*검색 결과가 없다면*/
+        /* 프론트 요청으로 빈배열로 보냄.*/
+        if (searchRoom.isEmpty()) {
+
+            return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
+        }
+
+
+        /*pagination을 위한 정보를 담은 Dto 생성*/
+        ChatRoomPageInfoResponseDto chatRoomPageInfoResponseDto
+                = new ChatRoomPageInfoResponseDto(page, 16,
+                (int) searchRoom.getTotalElements(), searchRoom.getTotalPages());
+
+
+        /*chatRoomList에서 Page 정보를 제외 ChatRoom만 꺼내온다.*/
+        List<ChatRoom> chatRooms = searchRoom.getContent();
+
+        /*mapper를 활용하여 chatRoom Entity를 Dto로 변환.*/
+        List<ChatRoomResponseDto> chatRoomResponseDtoList = chatRoomMapper.roomsToRoomResponseDtos(chatRooms);
+
+        return new ChatRoomGetAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
+    }
 }
 
 

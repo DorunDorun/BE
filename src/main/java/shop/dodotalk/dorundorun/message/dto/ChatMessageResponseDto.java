@@ -20,6 +20,7 @@ public class ChatMessageResponseDto {
     private String sessionId;
     private String name;
     private String nickname;
+    private String profile;
     private String message;
     private String imgUrl;
     private Boolean isDelete;
@@ -31,6 +32,7 @@ public class ChatMessageResponseDto {
         this.sessionId = roomFileMessage.getSessionId();
         this.name = roomFileMessage.getName();
         this.nickname = roomFileMessage.getNickname();
+        this.profile = roomFileMessage.getProfile();
         this.imgUrl = roomFileMessage.getImgUrl();
         this.isDelete = roomFileMessage.isDelete();
         this.createdAt = roomFileMessage.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
@@ -41,6 +43,7 @@ public class ChatMessageResponseDto {
         this.sessionId = roomMessage.getSessionId();
         this.name = roomMessage.getName();
         this.nickname = roomMessage.getNickname();
+        this.profile = roomMessage.getProfile();
         this.message = roomMessage.getMessage();
         this.isDelete = roomMessage.isDelete();
         this.createdAt = roomMessage.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);

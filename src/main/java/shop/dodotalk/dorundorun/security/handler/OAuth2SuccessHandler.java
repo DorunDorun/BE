@@ -82,6 +82,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info((String) attributes.get("social") + "유저 리다이렉트 전");
 
 
+
         /*테스트 유저 -> 리액트:3000으로 이동 */
         /*김준철, 박청우*/
         if (socialId.equals("102564351285264584911") || socialId.equals("105747747241465459897")) {

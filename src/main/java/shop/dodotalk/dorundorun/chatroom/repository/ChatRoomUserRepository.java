@@ -11,17 +11,11 @@ import java.util.Optional;
 
 public interface ChatRoomUserRepository extends JpaRepository<ChatRoomUser, Long> {
 
-
-    Long countAllBySessionId(String sessionId);
-
     @Where(clause = "is_delete = true")
     Optional<ChatRoomUser> findBySessionIdAndUserId(String sessionId, Long userId);
 
     Optional<ChatRoomUser> findByUserIdAndSessionIdAndIsDelete(Long userId, String sessionId, boolean isDelete);
 
     List<ChatRoomUser> findAllBySessionIdAndIsDelete(String sessionId, boolean isDelete);
-
-
-
 
 }

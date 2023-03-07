@@ -4,14 +4,19 @@ package shop.dodotalk.dorundorun.security.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
+
 import org.apache.commons.lang3.StringUtils;
+
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.Mapping;
+
 import org.springframework.web.filter.OncePerRequestFilter;
 import shop.dodotalk.dorundorun.error.ExceptionResponseMessage;
 
@@ -22,10 +27,10 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URI;
 import java.security.URIParameter;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -51,14 +56,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * - JWT 토큰 성공 시 로그인
      * - JWT 토큰 실패 시 OAuth2 인증과정을 거친다. */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
         log.info("Jwt Filter ready");
 
         String requestURI = request.getRequestURI();
         log.info("사용자가 요청한 URI" + requestURI);
 
         /*JWT 필터를 탈 필요가 없는 것들*/
-        if (StringUtils.startsWithAny(request.getRequestURI(),
+        if (StringUtils.startsWithAny(requestURI,
                 "/oauth2", "/login", "/oauth", "/ws-stomp", "/api/sse", "/actuator", "/api/ssehtml", "/api/count",
                 "/api/rooms/info") ||
                 requestURI.equals("/")) {
@@ -72,12 +80,69 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("Jwt Filter start");
 
 
+        String body = null;
+        JSONObject jsonObject = null;
+        String jwtAccessToken = null;
+        String jwtRefreshToken = null;
+
+        if (StringUtils.endsWithAny(requestURI, "/delete")) {
+
+            StringBuilder stringBuilder = new StringBuilder();
+            BufferedReader bufferedReader = null;
+
+            try {
+                InputStream inputStream = request.getInputStream();
+                if (inputStream != null) {
+                    bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    char[] charBuffer = new char[128];
+                    int bytesRead = -1;
+                    while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+                        stringBuilder.append(charBuffer, 0, bytesRead);
+                    }
+                }
+            } catch (IOException ex) {
+                throw ex;
+            } finally {
+                if (bufferedReader != null) {
+                    try {
+                        bufferedReader.close();
+                    } catch (IOException ex) {
+                        throw ex;
+                    }
+                }
+            }
+
+            body = stringBuilder.toString();
+            JSONParser jsonParser = new JSONParser();
+
+            log.info(body);
+            try {
+                jsonObject = (JSONObject) jsonParser.parse(body);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
+
+            if (jsonObject != null) {
+
+                jwtAccessToken = ((String) jsonObject.get("authorization")).substring(7);
+                jwtRefreshToken = ((String) jsonObject.get("refresh")).substring(7);
+
+                log.info(jwtAccessToken);
+                log.info(jwtRefreshToken);
+            }
+
+        }
+
+
 
         /* resolveToken()을 통해 request Header에서 토큰값을 빼온다. */
-        String jwtAccessToken = jwtUtil.resolveToken(request, AUTHORIZATION_HEADER);
+        if(jwtAccessToken == null) jwtAccessToken = jwtUtil.resolveToken(request, AUTHORIZATION_HEADER);
 
         log.info("Access Token : " + jwtAccessToken);
 
+
+        log.info("request가 살아있나? " + request);
         /* Access Token 검증 성공인 경우 */
         if (jwtAccessToken != null && jwtUtil.validateToken(jwtAccessToken) == JwtUtil.JwtCode.ACCESS) {
 
@@ -100,7 +165,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("JWT 토큰이 만료되어, Refresh token 확인 작업을 진행합니다.");
 
             /* Refresh Token 존재 여부 확인.*/
-            String jwtRefreshToken = jwtUtil.resolveToken(request, REFRESH_HEADER);
+            if(jwtRefreshToken == null) jwtRefreshToken = jwtUtil.resolveToken(request, REFRESH_HEADER);
 
 
             /* Refresh Token이 검증이 되며, 만료기간이 지나지 않은 경우만 */

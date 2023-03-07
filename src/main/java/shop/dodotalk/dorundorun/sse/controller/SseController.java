@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -61,7 +62,7 @@ public class SseController {
         return ResponseEntity.ok(emitter);
     }
     @ResponseBody
-    @GetMapping("/count")
+    @PostMapping("/count")
     public void send() {
         log.info("----실시간 채팅방 카운트----");
         sseEmitters.count();

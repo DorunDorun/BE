@@ -85,9 +85,10 @@ public class ChatRoomController {
     @PostMapping("/rooms/{sessionid}/delete")
     public ResponseEntity<PrivateResponseBody> outRoomUser(@PathVariable(name = "sessionid") String sessionId,
                                                            @Authenticated OAuth2UserInfoAuthentication authentication) {
-
+        log.info("@@방 나가기 API 시작!");
         User user = (User) authentication.getPrincipal();
 
+        log.info("@@방 나가기 API 끝!");
         return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, user));
     }
 

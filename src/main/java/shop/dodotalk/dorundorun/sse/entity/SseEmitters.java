@@ -48,7 +48,8 @@ public class SseEmitters {
         this.emitters.remove(emitter);
     }
 
-    public void count() {
+    public void count() throws InterruptedException {
+        Thread.sleep(1000L);
 
         List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
 

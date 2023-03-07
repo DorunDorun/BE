@@ -92,6 +92,17 @@ public class ChatRoomController {
         return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, user));
     }
 
+    /*방 나가기 API*/
+    @DeleteMapping("/rooms/{sessionid}")
+    public ResponseEntity<PrivateResponseBody> outClickRoomUser(@PathVariable(name = "sessionid") String sessionId,
+                                                           @Authenticated OAuth2UserInfoAuthentication authentication) {
+        log.info("@@방 나가기 API 시작!");
+        User user = (User) authentication.getPrincipal();
+
+        log.info("@@방 나가기 API 끝!");
+        return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, user));
+    }
+
     /*랜딩 페이지에 보여줄정보
      * 1.지금까지 생성된 채팅방 개수 합산.
      * 2.방이 생성되고 삭제되기 전까지의 시간 총 합(유저 머문 시간 x)*/

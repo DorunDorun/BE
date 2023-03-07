@@ -589,7 +589,7 @@ public class ChatRoomService {
         PageRequest pageable = PageRequest.of(page - 1, 16);
 
         Page<ChatRoom> searchRoom =
-                chatRoomRepository.findByCategoryOrderByModifiedAtDesc(category, pageable);
+                chatRoomRepository.findByIsDeleteAndCategoryOrderByModifiedAtDesc(false, category, pageable);
 
 
         /*검색 결과가 없다면*/

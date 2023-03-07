@@ -84,7 +84,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
 
     /*카테고리 클릭 시 해당 카테고리 글 반환*/
-    Page<ChatRoom> findByCategoryOrderByModifiedAtDesc(Category category, Pageable pageable);
+    Page<ChatRoom> findByIsDeleteAndCategoryOrderByModifiedAtDesc(boolean isDelete, Category category, Pageable pageable);
 
     /* 관우 삭제되지 않은 실시간 채팅방 개수 전부 나타내기 */
     List<ChatRoom> findAllByIsDelete(boolean isDelete);

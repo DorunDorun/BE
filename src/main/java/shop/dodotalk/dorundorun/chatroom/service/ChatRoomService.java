@@ -24,7 +24,6 @@ import shop.dodotalk.dorundorun.users.entity.User;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -42,7 +41,6 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
-    //    private final BenUserRepository benUserRepository;
     private final CategoryRepository categoryRepository;
     private final ChatRoomMapper chatRoomMapper;
     private final SayingRepository sayingRepository;
@@ -140,7 +138,6 @@ public class ChatRoomService {
         /*페이지네이션 설정 --> 무한 스크롤 예정*/
         PageRequest pageable = PageRequest.of(page - 1, 16);
         Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
-//        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDelete(false, pageable);
 
         /*채팅방이 존재하지 않을 경우
          * 프론트 요청으로 빈배열로 보냄.*/
@@ -169,6 +166,9 @@ public class ChatRoomService {
     @Transactional
     public String enterChatRoom(String SessionId, ChatRoomEnterDataRequestDto
             requestData, User user) throws OpenViduJavaClientException, OpenViduHttpException {
+
+
+
 
 
         /*해당 sessionId를 가진 채팅방이 존재하는지 확인한다.*/
@@ -478,6 +478,17 @@ public class ChatRoomService {
                 break;
             }
         }
+
+        /*todo test!!!*/
+        for (Session getSession : activeSessionList) {
+            log.info("!--openvidu 현재 openvidu server에 활성화된 세션 : " + getSession.getSessionId());
+            for (Connection connection : getSession.getConnections()) {
+                log.info("!--openvidu connection.getConnectionId() : " + connection.getConnectionId());
+                log.info("!--openvidu connection.getToken() : " + connection.getToken());
+            }
+
+        }
+
 
         if (session == null) {
             throw new EntityNotFoundException("방이 존재하지않습니다.");

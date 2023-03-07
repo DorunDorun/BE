@@ -15,8 +15,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class ChatRoomEnterUserResponseDto {
 
-//    private Long roomUserId;
-
     // 채팅방
     private String sessionId;
 
@@ -49,7 +47,6 @@ public class ChatRoomEnterUserResponseDto {
     private String enterRoomToken;
 
     public ChatRoomEnterUserResponseDto(ChatRoomUser entity, boolean roomMaster, boolean nowUser){
-//        this.roomUserId = entity.getRoomUserId();
         this.sessionId = entity.getSessionId();
         this.social = entity.getSocial();
         this.userId = entity.getUserId();
@@ -64,14 +61,4 @@ public class ChatRoomEnterUserResponseDto {
         this.nowUser = nowUser;
     }
 
-//    public RoomUsersResponseDto(RoomUsers entity) {
-//        this.roomUserId = entity.getRoomUserId();
-//        this.sessionId = entity.getSessionId();
-//        this.userId = entity.getUserId();
-//        this.nickname = entity.getNickname();
-//        this.email = entity.getEmail();
-//        this.ProfileImage = entity.getProfileImage();
-//        this.enterRoomToken = entity.getEnterRoomToken();
-//        this.roomMaster = false;
-//    }
 }

@@ -80,7 +80,9 @@ public class ChatRoomController {
 
 
     /*방 나가기 API*/
-    @DeleteMapping("/rooms/{sessionid}")
+//    @DeleteMapping("/rooms/{sessionid}")
+    //todo test
+    @PostMapping("/rooms/{sessionid}/delete")
     public ResponseEntity<PrivateResponseBody> outRoomUser(@PathVariable(name = "sessionid") String sessionId,
                                                            @Authenticated OAuth2UserInfoAuthentication authentication) {
 
@@ -152,4 +154,18 @@ public class ChatRoomController {
 
         return new ResponseUtil<>().forSuccess(chatRoomService.searchHistoryRoom(keyword, page, user));
     }
+
+
+//    @GetMapping("/rooms/{sessionid}/openvidu")
+//    public ResponseEntity<PrivateResponseBody> getAllOpenviduUsers(@PathVariable(name = "sessionid") String sessionId,
+//                                                           @Authenticated OAuth2UserInfoAuthentication authentication) {
+//
+//        User user = (User) authentication.getPrincipal();
+//
+//        return new ResponseUtil<>().forSuccess(chatRoomService.getRoomUserData(sessionId, user));
+//    }
+
+
+
+
 }

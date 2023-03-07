@@ -448,59 +448,31 @@ public class ChatRoomService {
     /*채팅방 입장 시 토큰 발급*/
     private String enterRoomCreateSession(User user, String sessionId) throws
             OpenViduJavaClientException, OpenViduHttpException {
-        log.info("!--openvidu 토큰 발급 시작");
 
-
+        /*입장하는 유저의 이름을 server data에 저장*/
         String serverData = user.getName();
 
         /*serverData을 사용하여 connectionProperties 객체를 빌드*/
         ConnectionProperties connectionProperties
                 = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).build();
 
+
         openvidu.fetch();
 
 
-        /*오픈비두에 활성화된 세션을 모두 가져와 리스트에 담음*/
+        /*Openvidu Server에 활성화되어 있는 세션(채팅방) 목록을 가지고 온다.*/
         List<Session> activeSessionList = openvidu.getActiveSessions();
 
 
+        /* 세션 리스트에서 요청자가 입력한 세션 ID가 일치하는 세션을 찾아서 새로운 토큰을 생성
+        * 없다면, Openvidu Server에 해당 방이 존재하지 않는 것이므로, 익셉션 발생 */
+        Session session = activeSessionList.stream()
+                .filter(s -> s.getSessionId().equals(sessionId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("방이 존재하지 않습니다."));
 
 
-        /*1. Request : 다른 유저가 타겟 채팅방에 입장하기 위한 타겟 채팅방의 세션 정보 , 입장 요청하는 유저 정보*/
-        Session session = null;
-
-        /*활성화된 session의 sessionId들을 registerReqChatRoom에서 리턴한 sessionId(입장할 채팅방의 sessionId)와 비교
-        같을 경우 해당 session으로 새로운 토큰을 생성*/
-        for (Session getSession : activeSessionList) {
-            log.info("!--openvidu 현재 openvidu server에 활성화된 세션(채팅방) 들 : " + getSession.getSessionId());
-            if (getSession.getSessionId().equals(sessionId)) {
-                session = getSession;
-                break;
-            }
-        }
-
-        /*todo test!!!*/
-        for (Session getSession : activeSessionList) {
-            log.info("!--openvidu 현재 openvidu server에 활성화된 세션 : " + getSession.getSessionId());
-            for (Connection connection : getSession.getConnections()) {
-                log.info("!--openvidu connection.getConnectionId() : " + connection.getConnectionId());
-                log.info("!--openvidu connection.getToken() : " + connection.getToken());
-            }
-
-        }
-
-
-        if (session == null) {
-            throw new EntityNotFoundException("방이 존재하지않습니다.");
-        }
-
-
-
-
-        /*2. Openvidu에 유저 토큰 발급 요청 : 오픈비두 서버에 요청 유저가 타겟 채팅방에 입장할 수 있는 토큰을 발급 요청
-        토큰을 가져옴*/
-        log.info("!--openvidu 토큰 발급받은 유저 : " + user.getName());
-        log.info("!--openvidu 토큰 발급 끝");
+        /*해당 채팅방에 프로퍼티스를 설정하면서 커넥션을 만들고, 방에 접속할 수 있는 토큰을 발급한다.*/
         return session.createConnection(connectionProperties).getToken();
     }
 

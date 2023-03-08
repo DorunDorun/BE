@@ -332,8 +332,6 @@ public class ChatRoomService {
     @Transactional
     public String outRoomUser(String sessionId, User user) {
 
-        log.info("삭제 요청 처음");
-
         /*방이 있는 지 확인*/
         ChatRoom chatRoom = chatRoomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
                 () -> new EntityNotFoundException("방이 존재하지않습니다.")
@@ -346,7 +344,6 @@ public class ChatRoomService {
 
         /*이미 해당 방에서 나간 유저 표시.*/
         if (chatRoomUser.isDelete()) {
-            log.info("방에서 나간 유저 로그 인포");
             throw new IllegalArgumentException("이미 방에서 나간 유저 입니다.");
         }
 
@@ -368,7 +365,6 @@ public class ChatRoomService {
         /*2.현재방에 들어왔던 시간 - 나가기 버튼 누른 시간 = 머문 시간*/
         long afterSeconds = ChronoUnit.SECONDS.between(start, end);
 
-        log.info("삭제 요청 중간");
 
         /*3. 1번의 기존 머문 시간에 + 다시 들어왔을때의 머문시간을 더한다.
          * 처음 들어온 유저의 경우 ex) 00:00:00 + 00:05:20  */
@@ -408,24 +404,22 @@ public class ChatRoomService {
         */
         chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
 
-        log.info("삭제 요청 끝");
-
-
         return "Success";
     }
 
 
     /*채팅방 생성 시 세션 발급*/
     private ChatRoomCreateResponseDto createNewToken(User user) throws OpenViduJavaClientException, OpenViduHttpException {
-        log.info("!--openvidu 세션 생성 시작");
 
         /*사용자 연결 시 닉네임 전달*/
         String serverData = user.getName();
 
 
         /*serverData을 사용하여 connectionProperties 객체를 빌드*/
-        ConnectionProperties connectionProperties =
-                new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).build();
+        ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
+                .type(ConnectionType.WEBRTC)
+                .data(serverData)
+                .build();
 
 
         /*새로운 OpenVidu 세션(채팅방) 생성*/

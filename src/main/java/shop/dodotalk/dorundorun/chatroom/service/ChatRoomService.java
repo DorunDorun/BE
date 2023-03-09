@@ -384,26 +384,23 @@ public class ChatRoomService {
 
         /* 채팅방 유저 수 확인
          * 채팅방 유저가 0명이라면 방 논리삭제. */
-        Long cntUsers = chatRoom.getCntUser();
-
-        if ((cntUsers - 1) <= 0) {
-            /*방 논리 삭제 + 방 삭제된 시간 기록*/
-            LocalDateTime roomDeleteTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
-            chatRoom.deleteRoom(roomDeleteTime);
-
-            /*방인원 0명으로.*/
+        synchronized (chatRoom) {
+            /*방 인원 카운트 - 1*/
             chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
 
+            if (chatRoom.getCntUser() <= 0) {
+                /*방 논리 삭제 + 방 삭제된 시간 기록*/
+                LocalDateTime roomDeleteTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
+                chatRoom.deleteRoom(roomDeleteTime);
+                return "Success";
+            }
+
+            /*채팅방의 유저 수가 1명 이상있다면 유저 수만 변경*/
             return "Success";
+
         }
 
-        /*
-        채팅방의 유저 수가 1명 이상 있다면,
-        룸의 유저 수 변경
-        */
-        chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
 
-        return "Success";
     }
 
 

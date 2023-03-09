@@ -59,6 +59,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
             Pageable pageable);
 
 
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<ChatRoom> findBySessionIdAndIsDelete(String chatRoomId, boolean isDelete);
 
 

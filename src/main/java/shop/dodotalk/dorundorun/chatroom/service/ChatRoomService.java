@@ -137,7 +137,7 @@ public class ChatRoomService {
 
         /*페이지네이션 설정 --> 무한 스크롤 예정*/
         PageRequest pageable = PageRequest.of(page - 1, 16);
-        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteOrderByModifiedAtDesc(false, pageable);
+        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteAndCntUserAfterOrderByModifiedAtDesc(false,0L, pageable);
 
         /*채팅방이 존재하지 않을 경우
          * 프론트 요청으로 빈배열로 보냄.*/
@@ -188,7 +188,7 @@ public class ChatRoomService {
 
         /*비공개 방일 경우, 비밀번호 체크를 수행한다.*/
         if (!chatRoom.isStatus()) {
-            if (requestData == null || requestData.getPassword() == null ) {    // 패스워드를 입력 안했을 때 에러 발생
+            if (requestData == null || requestData.getPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
                 throw new IllegalArgumentException("비밀번호를 입력해주세요.");
             }
             if (!chatRoom.getPassword().equals(requestData.getPassword())) {  // 비밀번호가 틀리면 에러 발생
@@ -334,7 +334,7 @@ public class ChatRoomService {
 
         /*방이 있는 지 확인*/
         ChatRoom chatRoom = chatRoomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
-                () -> new EntityNotFoundException("방이 존재하지않습니다.")
+                () -> new EntityNotFoundException("채팅방이 존재하지않습니다.")
         );
 
         /*방에 멤버가 존재하는지 확인.*/
@@ -348,10 +348,9 @@ public class ChatRoomService {
         }
 
 
-        /*해당 채팅방에서 얼마나 있었는지 시간 표시 기능 구현
-         * 1. 사용자 입장 -> 프론트 엔드 시계 돌아감 -> 퇴장 시 사용자가 방에 있었던 시간 저장
-         * 2. 다음 입장 시 해당 시간부터 시계 보여줌.*/
 
+
+        /*해당 채팅방에서 얼마나 있었는지 시간 표시 기능 구현*/
 
         /*방에서 나간 시간 저장.*/
         LocalDateTime chatRoomExitTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
@@ -431,7 +430,6 @@ public class ChatRoomService {
         String token = session.createConnection(connectionProperties).getToken();
         */
 
-        log.info("!--openvidu 세션 생성 끝");
         return ChatRoomCreateResponseDto.builder()
                 .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
                 .build();
@@ -459,11 +457,11 @@ public class ChatRoomService {
 
 
         /* 세션 리스트에서 요청자가 입력한 세션 ID가 일치하는 세션을 찾아서 새로운 토큰을 생성
-        * 없다면, Openvidu Server에 해당 방이 존재하지 않는 것이므로, 익셉션 발생 */
+         * 없다면, Openvidu Server에 해당 방이 존재하지 않는 것이므로, 익셉션 발생 */
         Session session = activeSessionList.stream()
                 .filter(s -> s.getSessionId().equals(sessionId))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("방이 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("채팅세션이 존재하지 않습니다."));
 
 
         /*해당 채팅방에 프로퍼티스를 설정하면서 커넥션을 만들고, 방에 접속할 수 있는 토큰을 발급한다.*/
@@ -514,14 +512,15 @@ public class ChatRoomService {
         PageRequest pageable = PageRequest.of(page - 1, 16);
 
         Page<ChatRoom> searchRoom =
-                chatRoomRepository.findByTitleContainingOrSubtitleContainingOrderByModifiedAtDesc(keyword
-                        , keyword
-                        , pageable);
+                chatRoomRepository.findByCntUserAfterAndTitleContainingOrSubtitleContainingOrderByModifiedAtDesc(
+                        0L,
+                        keyword,
+                        keyword,
+                        pageable);
 
         /*검색 결과가 없다면*/
         /* 프론트 요청으로 빈배열로 보냄.*/
         if (searchRoom.isEmpty()) {
-
             return new ChatRoomGetAllResponseDto(new ArrayList<>(), null);
         }
 
@@ -555,7 +554,7 @@ public class ChatRoomService {
         PageRequest pageable = PageRequest.of(page - 1, 16);
 
         Page<ChatRoom> searchRoom =
-                chatRoomRepository.findByIsDeleteAndCategoryOrderByModifiedAtDesc(false, category, pageable);
+                chatRoomRepository.findByIsDeleteAndCategoryAndCntUserAfterOrderByModifiedAtDesc(false, category, 0L, pageable);
 
 
         /*검색 결과가 없다면*/
@@ -591,7 +590,7 @@ public class ChatRoomService {
     public ChatRoomGetAllResponseDto getAllHistoryChatRooms(int page, User user) {
 
         PageRequest pageable = PageRequest.of(page - 1, 16);
-        Page<ChatRoom> chatRoomList = chatRoomRepository.findByUserIdAndIsDelete(user.getId(), true, false, pageable);
+        Page<ChatRoom> chatRoomList = chatRoomRepository.findByUserIdAndIsDelete(user.getId(), true, false, 0L, pageable);
 
 
         /*채팅방이 존재하지 않을 경우
@@ -633,6 +632,7 @@ public class ChatRoomService {
                         user.getId(),
                         true,
                         false,
+                        0L,
                         pageable);
 
         /*검색 결과가 없다면*/

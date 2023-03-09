@@ -24,8 +24,10 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
     void delete(ChatRoom room);
 
+
     /*전체 방 조회*/
-    Page<ChatRoom> findByIsDeleteOrderByModifiedAtDesc(@Param("delete") Boolean isDelete, Pageable pageable);
+    Page<ChatRoom> findByIsDeleteAndCntUserAfterOrderByModifiedAtDesc(boolean isDelete, Long cntUser, Pageable pageable);
+
 
     /*전체 방 조회*/
     @Query("select distinct room from ChatRoom room " +
@@ -42,16 +44,23 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 //    @Query("select c from ChatRoom c left join c.chatRoomUserList item where c.masterUserId = :masterId or item.isDelete = :isDelete or item.userId = :userId order by c.modifiedAt DESC")
     @Query("select distinct room from ChatRoom room " +
             "left join room.chatRoomUserList user " +
-            "where room.isDelete = :isDelete2 " +
+            "where (room.isDelete = :isDelete2 " +
             "and room.masterUserId = :userId " +
             "or room.isDelete = :isDelete2 " +
             "and user.userId = :userId " +
-            "and user.isDelete = :isDelete " +
+            "and user.isDelete = :isDelete) " +
+            "and room.cntUser > :cntUser " +
             "order by room.modifiedAt DESC")
-    Page<ChatRoom> findByUserIdAndIsDelete(@Param("userId") Long userId, @Param("isDelete") boolean isDelete, @Param("isDelete2") boolean isDelete2, Pageable pageable);
+    Page<ChatRoom> findByUserIdAndIsDelete(
+            @Param("userId") Long userId,
+            @Param("isDelete") boolean isDelete,
+            @Param("isDelete2") boolean isDelete2,
+            @Param("cntUser") Long cntUser,
+            Pageable pageable);
 
 
     Optional<ChatRoom> findBySessionIdAndIsDelete(String chatRoomId, boolean isDelete);
+
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<ChatRoom> findBySessionId(String chatRoomId);
@@ -59,11 +68,17 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
     Long countAllBy();
 
     /* 채팅방 검색 */
-    Page<ChatRoom> findByTitleContainingOrSubtitleContainingOrderByModifiedAtDesc(String title,
-                                                                                  String subtitle,
-                                                                                  Pageable pageable);
+    @Query("select chatRoom from ChatRoom chatRoom WHERE " +
+            "(chatRoom.title like %:title% " +
+            "or chatRoom.subtitle like %:subtitle%) " +
+            "and chatRoom.cntUser > :cntUser ")
+    Page<ChatRoom> findByCntUserAfterAndTitleContainingOrSubtitleContainingOrderByModifiedAtDesc(
+            @Param("cntUser") Long cntUser,
+            @Param("title") String title,
+            @Param("subtitle") String subtitle,
+            Pageable pageable);
 
-//    /*히스토리 채팅방 검색*/
+    //    /*히스토리 채팅방 검색*/
     @Query("select distinct room from ChatRoom room " +
             "left join room.chatRoomUserList user " +
             "where room.isDelete = :isDelete2 " +
@@ -72,19 +87,21 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
             "and user.userId = :userId " +
             "and user.isDelete = :isDelete " +
             "group by room.title, room.subtitle " +
-            "HAVING room.title like %:title% " +
-            "or room.subtitle like %:subtitle% " +
+            "HAVING (room.title like %:title% " +
+            "or room.subtitle like %:subtitle%) " +
+            "and room.cntUser > :cntUser " +
             "order by room.modifiedAt DESC")
-    Page<ChatRoom> findByUserIdAndIsDelete(@Param("title") String title,@Param("subtitle") String subtitle,
+    Page<ChatRoom> findByUserIdAndIsDelete(@Param("title") String title, @Param("subtitle") String subtitle,
                                            @Param("userId") Long userId,
                                            @Param("isDelete") boolean isDelete,
                                            @Param("isDelete2") boolean isDelete2,
+                                           @Param("cntUser") Long cntUser,
                                            Pageable pageable);
 
 
-
     /*카테고리 클릭 시 해당 카테고리 글 반환*/
-    Page<ChatRoom> findByIsDeleteAndCategoryOrderByModifiedAtDesc(boolean isDelete, Category category, Pageable pageable);
+    Page<ChatRoom> findByIsDeleteAndCategoryAndCntUserAfterOrderByModifiedAtDesc(boolean isDelete, Category category,
+                                                                                 Long cntUser, Pageable pageable);
 
     /* 관우 삭제되지 않은 실시간 채팅방 개수 전부 나타내기 */
     List<ChatRoom> findAllByIsDelete(boolean isDelete);

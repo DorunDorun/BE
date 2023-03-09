@@ -51,7 +51,7 @@ public class SseEmitters {
     public void count() throws InterruptedException {
         Thread.sleep(1000L);
 
-        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDeleteAndCntUserAfter(false, 0L);
+        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
 
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
 

@@ -79,8 +79,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         userInfoCookie.setPath("/");
         response.addCookie(userInfoCookie);
 
-        log.info((String) attributes.get("social") + "유저 리다이렉트 전");
-
 
         /*테스트 유저 -> 리액트:3000으로 이동 */
         /*김준철, 박청우*/
@@ -93,8 +91,19 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .build().encode(StandardCharsets.UTF_8)
                     .toUriString();
 
-            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+        } else if(socialId.equals("2669187698")){/*준철님 카카오 로컬용 계정 */
+
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao")
+                    .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
+                    .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
+                    .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))
+                    .build().encode(StandardCharsets.UTF_8)
+                    .toUriString();
+            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+
 
         } else if ("google".equals(attributes.get("social"))) {
             String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/google")
@@ -104,7 +113,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .build().encode(StandardCharsets.UTF_8)
                     .toUriString();
 
-            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
+
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
         }
@@ -116,7 +125,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))
                     .build().encode(StandardCharsets.UTF_8)
                     .toUriString();
-            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
+
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }
 
@@ -129,7 +138,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .build().encode(StandardCharsets.UTF_8)
                     .toUriString();
 
-            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
+
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }
 

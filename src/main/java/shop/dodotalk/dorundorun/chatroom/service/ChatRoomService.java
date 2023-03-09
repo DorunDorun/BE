@@ -137,7 +137,7 @@ public class ChatRoomService {
 
         /*페이지네이션 설정 --> 무한 스크롤 예정*/
         PageRequest pageable = PageRequest.of(page - 1, 16);
-        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteAndCntUserAfterOrderByModifiedAtDesc(false,0L, pageable);
+        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteAndCntUserAfterOrderByModifiedAtDesc(false, 0L, pageable);
 
         /*채팅방이 존재하지 않을 경우
          * 프론트 요청으로 빈배열로 보냄.*/
@@ -166,9 +166,6 @@ public class ChatRoomService {
     @Transactional
     public String enterChatRoom(String SessionId, ChatRoomEnterDataRequestDto
             requestData, User user) throws OpenViduJavaClientException, OpenViduHttpException {
-
-
-
 
 
         /*해당 sessionId를 가진 채팅방이 존재하는지 확인한다.*/
@@ -330,12 +327,24 @@ public class ChatRoomService {
 
     /*방 나가기*/
     @Transactional
-    public String outRoomUser(String sessionId, User user) {
+    public String outRoomUser(String sessionId, User user, boolean prev) {
 
         /*방이 있는 지 확인*/
         ChatRoom chatRoom = chatRoomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
                 () -> new EntityNotFoundException("채팅방이 존재하지않습니다.")
         );
+
+
+        if (prev == true) {/*방장이 방을 만들기만하고 들어가지 않고 뒤로가기 클릭 시*/
+
+            synchronized (chatRoom) {
+                LocalDateTime roomDeleteTime = LocalDateTime.now();
+                chatRoom.deleteRoom(roomDeleteTime);
+                return "Success";
+            }
+        }
+
+
 
         /*방에 멤버가 존재하는지 확인.*/
         ChatRoomUser chatRoomUser = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), sessionId, false).orElseThrow(

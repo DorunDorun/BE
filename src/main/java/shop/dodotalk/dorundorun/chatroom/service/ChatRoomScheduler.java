@@ -64,7 +64,7 @@ public class ChatRoomScheduler {
         for (ChatRoom chatRoom : all) {
             Session activeSession = openvidu.getActiveSession(chatRoom.getSessionId());
 
-            if (null == activeSession) {
+            if (null == activeSession && !chatRoom.getMaster().equals("두런두런")) {/*더미 방은 제외하고 삭제!*/
 //                log.info("❌❌ " + chatRoom.getSessionId() + "는 Openvidu에 존재하지않습니다..");
 
                 List<ChatRoomUser> chatRoomUserList
@@ -120,7 +120,6 @@ public class ChatRoomScheduler {
             }
 
         }
-
 
 
     }

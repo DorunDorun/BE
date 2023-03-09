@@ -42,7 +42,7 @@ public class SseController {
     public ResponseEntity<SseEmitter> connect() {
         SseEmitter emitter = new SseEmitter(5 * 60 * 1000L);
 
-        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDelete(false);
+        List<ChatRoom> chatRooms = chatRoomRepository.findAllByIsDeleteAndCntUserAfter(false, 0L);
 
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
 

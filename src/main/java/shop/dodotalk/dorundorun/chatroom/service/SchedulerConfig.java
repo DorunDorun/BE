@@ -17,13 +17,15 @@ public class SchedulerConfig implements AsyncConfigurer, SchedulingConfigurer {
         scheduler.setThreadNamePrefix("OPENVIDU-SCHEDULER-");
         scheduler.initialize();
         return scheduler;
-        }
+    }
 
-@Override
-public Executor getAsyncExecutor() { return this.threadPoolTaskScheduler(); }
+    @Override
+    public Executor getAsyncExecutor() {
+        return this.threadPoolTaskScheduler();
+    }
 
-@Override
-public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         taskRegistrar.setTaskScheduler(this.threadPoolTaskScheduler());
-        }
-        }
+    }
+}

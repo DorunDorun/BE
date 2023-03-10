@@ -17,6 +17,13 @@
 <img src="https://user-images.githubusercontent.com/72375179/224343896-d2c79df7-e9c3-406b-8afb-6ad8f0fe2d8d.png" style="width:1000px; height:400px;">
 
 ### 💡 트러블 슈팅
+<details>
+<summary>BACK-END</summary>
+<div markdown="1">
+  
+</div>
+</details>
+
 
 
 ### 🏅 기술 스택

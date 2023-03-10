@@ -1,4 +1,5 @@
 # DORUNDORUN
+
 🎯🏅🥉🥈🥇🎓🎀🎁🎁✨👀😎🤣😂😂😊❓❌🍄🍒✏️💡📸🎵🎙️🎤 ✋ ❗❓⁉️‼️❕❔🎤⌨ ⚒🛠 💡🔧🔦
 ## ✨프로젝트 소개
 화상채팅으로 다양한 공감대의 사람들을 만나 대화해보세요!
@@ -31,20 +32,16 @@
 <img src="https://img.shields.io/badge/SockJS-000000?style=flat-square&logo=SockJS&logoColor=white"/>
 <img src="https://img.shields.io/badge/STOMP-000000?style=flat-square&logo=STOMP&logoColor=white"/>
 
-<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=000000">
-<img src="https://img.shields.io/badge/stomp-010101?style=for-the-badge&logo=&logoColor=white">   
-<img src="https://img.shields.io/badge/sockjs-010101?style=for-the-badge&logo=기술스택아이콘&logoColor=white">   
-<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white">   
-<img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white">   
-<img src="https://img.shields.io/badge/React Router-CA4245?style=for-the-badge&logo=React Router&logoColor=white">   
-<img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=Vercel&logoColor=white"> 
-<img src="https://img.shields.io/badge/openvidu-412991?style=for-the-badge&logo=기술스택아이콘&logoColor=white">   
-<img src="https://img.shields.io/badge/styled-components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white">   
-<img src="https://img.shields.io/badge/zustand-색상?style=for-the-badge&logo=기술스택아이콘&logoColor=white">   
-<img src="https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=WebRTC&logoColor=white">   
-<img src="https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=MUI&logoColor=white"> 
-<img src="https://img.shields.io/badge/react-colorpalette-FF4154?style=for-the-badge&logo=기술스택아이콘&logoColor=white">   
-<img src="https://img.shields.io/badge/React Query-FF4154?style=for-the-badge&logo=React Query&logoColor=white">
+
+
+
+
+
+
+
+<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=000000"> <img src="https://img.shields.io/badge/stomp-010101?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/sockjs-010101?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white"> <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white"> <img src="https://img.shields.io/badge/React Router-CA4245?style=for-the-badge&logo=React Router&logoColor=white"> <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=Vercel&logoColor=white"> <img src="https://img.shields.io/badge/openvidu-412991?style=for-the-badge&logo=&logoColor=white">
+
+<img src="https://img.shields.io/badge/styled-components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white"> <img src="https://img.shields.io/badge/zustand-000000?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=WebRTC&logoColor=white"> <img src="https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=MUI&logoColor=white"> <img src="https://img.shields.io/badge/react-colorpalette-FF4154?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/React Query-FF4154?style=for-the-badge&logo=React Query&logoColor=white"> <img src="https://img.shields.io/badge/HTML5-canvas-F68D2E?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/Intersection Observer-3B7D1C?style=for-the-badge&logo=&logoColor=white">      
 
 
 
@@ -70,5 +67,6 @@
 <img src="https://img.shields.io/badge/AMAZON ROUTER 53-FFBB00?style=flat-square&logo=AMAZON ROUTER 53&logoColor=white"/>
 <img src="https://img.shields.io/badge/HTTPS-FF5E00?style=flat-square&logo=HTTPS&logoColor=white"/>
 
+### 프로젝트 기간
 
 

@@ -13,7 +13,7 @@
 
 
 ### 🛠 아키텍쳐
-
+<img src="https://user-images.githubusercontent.com/72375179/224342385-cf5e945d-62b2-4a2f-a7b2-2f46e0abf5aa.png" style="width:500px; height:500px;">
 
 ### 💡 트러블 슈팅
 

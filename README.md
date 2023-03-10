@@ -14,7 +14,7 @@
 
 
 ### 🛠 아키텍쳐
-<img src="https://user-images.githubusercontent.com/72375179/224343896-d2c79df7-e9c3-406b-8afb-6ad8f0fe2d8d.png" style="width:1000px; height:400px;">
+<img src="https://user-images.githubusercontent.com/72375179/224369810-e86526cd-5451-4b38-954e-0c818e41b3d8.png" style="width:1000px; height:400px;">
 
 ### 💡 트러블 슈팅
 <details>

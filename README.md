@@ -12,8 +12,9 @@
 ### 👀 서비스 대표 이미지
 
 
-### 🛠 아키텍쳐
-<img src="https://user-images.githubusercontent.com/72375179/224342385-cf5e945d-62b2-4a2f-a7b2-2f46e0abf5aa.png" style="width:500px; height:500px;">
+## 🛠 아키텍쳐
+
+<img src="https://user-images.githubusercontent.com/72375179/224342385-cf5e945d-62b2-4a2f-a7b2-2f46e0abf5aa.png" style="width:1000px; height:400px;">
 
 ### 💡 트러블 슈팅
 

@@ -16,11 +16,33 @@
 ### 🛠 아키텍쳐
 <img src="https://user-images.githubusercontent.com/72375179/224369810-e86526cd-5451-4b38-954e-0c818e41b3d8.png" style="width:1000px; height:500px;">
 
-### 💡 트러블 슈팅
+### 🤔기술적 의사 결정
+<details>
+<summary>FRONT-END</summary>
+<div markdown="1">
+
+</div>
+</details>
+
 <details>
 <summary>BACK-END</summary>
 <div markdown="1">
-  
+
+</div>
+</details>
+
+### 💡 트러블 슈팅
+<details>
+<summary>FRONT-END</summary>
+<div markdown="1">
+
+</div>
+</details>
+
+<details>
+<summary>BACK-END</summary>
+<div markdown="1">
+
 </div>
 </details>
 

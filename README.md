@@ -14,3 +14,23 @@
 
 ### 💡 트러블 슈팅
 
+
+### 🏅 기술 스택
+프론트 엔드
+
+
+백엔드<br>
+<img src="https://img.shields.io/badge/SPRING-FFCA28?style=flat-square&logo=spring&logoColor=white"/>
+<img src="https://img.shields.io/badge/SPRING BOOT-FFCA28?style=flat-square&logo=springboot&logoColor=white"/>
+<img src="https://img.shields.io/badge/SPRING SECURITY-FFCA28?style=flat-square&logo=springsecurity&logoColor=white"/>
+<img src="https://img.shields.io/badge/REDIS-FFCA28?style=flat-square&logo=redis&logoColor=white"/>
+<img src="https://img.shields.io/badge/MYSQL-FFCA28?style=flat-square&logo=mysql&logoColor=white"/>
+<img src="https://img.shields.io/badge/WEBRTC-FFCA28?style=flat-square&logo=webrtc&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON RDS-FFCA28?style=flat-square&logo=amazonrds&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON S3-FFCA28?style=flat-square&logo=amazons3&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON EC2-FFCA28?style=flat-square&logo=amazons3&logoColor=white"/>
+<img src="https://img.shields.io/badge/sockjs-FFCA28?style=flat-square&logo=sockjs&logoColor=white"/>
+<img src="https://img.shields.io/badge/stomp-FFCA28?style=flat-square&logo=stomp&logoColor=white"/>
+
+
+

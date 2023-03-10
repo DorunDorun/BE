@@ -28,7 +28,15 @@
 <img src="https://img.shields.io/badge/WEBRTC-FFCA28?style=flat-square&logo=webrtc&logoColor=white"/>
 <img src="https://img.shields.io/badge/AMAZON RDS-FFCA28?style=flat-square&logo=amazonrds&logoColor=white"/>
 <img src="https://img.shields.io/badge/AMAZON S3-FFCA28?style=flat-square&logo=amazons3&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON EC2-FFCA28?style=flat-square&logo=AMAZON EC2&logoColor=white"/>
+<img src="https://img.shields.io/badge/DOCKER?style=flat-square&logo=DOCKER&logoColor=white"/>
 <img src="https://img.shields.io/badge/AMAZON EC2-FFCA28?style=flat-square&logo=amazons3&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON EC2-FFCA28?style=flat-square&logo=amazons3&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON EC2-FFCA28?style=flat-square&logo=amazons3&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON EC2-FFCA28?style=flat-square&logo=amazons3&logoColor=white"/>
+
+
+
 <img src="https://img.shields.io/badge/sockjs-FFCA28?style=flat-square&logo=sockjs&logoColor=white"/>
 <img src="https://img.shields.io/badge/stomp-FFCA28?style=flat-square&logo=stomp&logoColor=white"/>
 

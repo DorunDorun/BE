@@ -20,32 +20,29 @@
 
 
 ### 🏅 기술 스택
-프론트 엔드<br>
+
+**FRONT-END**
+<br></br>
 <img src="https://img.shields.io/badge/REACT-00D8FF?style=flat-square&logo=REACT&logoColor=white"/>
-<img src="https://img.shields.io/badge/AXIOS-000000?style=flat-square&logo=AXIOS&logoColor=white"/>
+<img src="https://img.shields.io/badge/AXIOS-5A29E4?style=flat-square&logo=Axios&logoColor=white"/>
+<img src="https://img.shields.io/badge/JAVASCRIPT-F7DF1E?style=flat-square&logo=JAVASCRIPT&logoColor=white"/>
 <img src="https://img.shields.io/badge/VERCEL-000000?style=flat-square&logo=VERCEL&logoColor=white"/>
 <img src="https://img.shields.io/badge/REACT ROUTER-CC3D3D?style=flat-square&logo=REACT ROUTER&logoColor=white"/>
-<img src="https://img.shields.io/badge/STYELD COMPONENTS-1DDB16?style=flat-square&logo=STYELD COMPONENTS&logoColor=white"/>
+<img src="https://img.shields.io/badge/STYLED-COMPONENTS-DB7093?style=flat-square&logo=STYLED-COMPONENTS&logoColor=white"/>
 <img src="https://img.shields.io/badge/ZUSTAND-1DDB16?style=flat-square&logo=ZUSTAND&logoColor=white"/>
 <img src="https://img.shields.io/badge/WEBRTC-000000?style=flat-square&logo=webrtc&logoColor=white"/>
 <img src="https://img.shields.io/badge/OPENVIDU-1DDB16?style=flat&logo=OPENVIDU&logoColor=white"/>
+<img src="https://img.shields.io/badge/MUI-007FFF?style=flat-square&logo=MUI&logoColor=white"/>
+<img src="https://img.shields.io/badge/REACT-COLORPALETTE-FF4154?style=flat-square&logo=&logoColor=white"/>
+<img src="https://img.shields.io/badge/REACT QUERY-FF4154?style=flat-square&logo=REACT QUERY&logoColor=white"/>
+<img src="https://img.shields.io/badge/HTML5-CANVAS-F68D2E?style=flat-square&logo=&logoColor=white"/>
+<img src="https://img.shields.io/badge/INTERSECTION OBSERVER-3B7D1C?style=flat-square&logo=&logoColor=white"/>
 <img src="https://img.shields.io/badge/SockJS-000000?style=flat-square&logo=SockJS&logoColor=white"/>
 <img src="https://img.shields.io/badge/STOMP-000000?style=flat-square&logo=STOMP&logoColor=white"/>
 
 
-
-
-
-
-
-
-<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=000000"> <img src="https://img.shields.io/badge/stomp-010101?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/sockjs-010101?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=white"> <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white"> <img src="https://img.shields.io/badge/React Router-CA4245?style=for-the-badge&logo=React Router&logoColor=white"> <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=Vercel&logoColor=white"> <img src="https://img.shields.io/badge/openvidu-412991?style=for-the-badge&logo=&logoColor=white">
-
-<img src="https://img.shields.io/badge/styled-components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white"> <img src="https://img.shields.io/badge/zustand-000000?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/WebRTC-333333?style=for-the-badge&logo=WebRTC&logoColor=white"> <img src="https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=MUI&logoColor=white"> <img src="https://img.shields.io/badge/react-colorpalette-FF4154?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/React Query-FF4154?style=for-the-badge&logo=React Query&logoColor=white"> <img src="https://img.shields.io/badge/HTML5-canvas-F68D2E?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/Intersection Observer-3B7D1C?style=for-the-badge&logo=&logoColor=white">      
-
-
-
-백엔드<br>
+**BACK-END**
+<br></br>
 <img src="https://img.shields.io/badge/SPRING BOOT-1DDB16?style=flat-square&logo=springboot&logoColor=white"/>
 <img src="https://img.shields.io/badge/SPRING SECURITY-1DDB16?style=flat-square&logo=springsecurity&logoColor=white"/>
 <img src="https://img.shields.io/badge/OAUTH2-000000?style=flat-square&logo=OAUTH2&logoColor=white"/>
@@ -62,11 +59,12 @@
 <img src="https://img.shields.io/badge/NGINX-1DDB16?style=flat&logo=NGINX&logoColor=white"/>
 <img src="https://img.shields.io/badge/KURENTO-000000?style=flat&logo=KURENTO&logoColor=white"/>
 <img src="https://img.shields.io/badge/OPENVIDU-1DDB16?style=flat&logo=OPENVIDU&logoColor=white"/>
-<img src="https://img.shields.io/badge/SockJS-000000?style=flat-square&logo=SockJS&logoColor=white"/>
-<img src="https://img.shields.io/badge/STOMP-000000?style=flat-square&logo=STOMP&logoColor=white"/>
 <img src="https://img.shields.io/badge/AMAZON ROUTER 53-FFBB00?style=flat-square&logo=AMAZON ROUTER 53&logoColor=white"/>
 <img src="https://img.shields.io/badge/HTTPS-FF5E00?style=flat-square&logo=HTTPS&logoColor=white"/>
+<img src="https://img.shields.io/badge/SockJS-000000?style=flat-square&logo=SockJS&logoColor=white"/>
+<img src="https://img.shields.io/badge/STOMP-000000?style=flat-square&logo=STOMP&logoColor=white"/>
 
-### 프로젝트 기간
+### 📆 프로젝트 기간
+2023.02.02 ~ 2023.03.15 / 서비스 런칭 : 2023.03.08
 
-
+## 🎓 프로젝트 멤버

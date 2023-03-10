@@ -79,29 +79,27 @@ public class ChatRoomController {
     }
 
 
-    /*방 나가기 API*/
-//    @DeleteMapping("/rooms/{sessionid}")
-    //todo test
+    /*방 나가기 API -> 브라우저 종료 시*/
     @PostMapping("/rooms/{sessionid}/delete")
     public ResponseEntity<PrivateResponseBody> outRoomUser(@PathVariable(name = "sessionid") String sessionId,
                                                            @Authenticated OAuth2UserInfoAuthentication authentication) {
-        log.info("@@방 나가기 API 시작!");
         User user = (User) authentication.getPrincipal();
 
-        log.info("@@방 나가기 API 끝!");
-        return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, user));
+        return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, user, false));
     }
 
-    /*방 나가기 API*/
+    /*방 나가기 API -> 일반적인 방 나가기 API*/
     @DeleteMapping("/rooms/{sessionid}")
     public ResponseEntity<PrivateResponseBody> outClickRoomUser(@PathVariable(name = "sessionid") String sessionId,
-                                                           @Authenticated OAuth2UserInfoAuthentication authentication) {
-        log.info("@@방 나가기 API 시작!");
+                                                                @Authenticated OAuth2UserInfoAuthentication authentication,
+                                                                @RequestParam boolean prev) {
         User user = (User) authentication.getPrincipal();
 
-        log.info("@@방 나가기 API 끝!");
-        return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, user));
+        return new ResponseUtil<>().forDeletedSuccess(chatRoomService.outRoomUser(sessionId, user, prev));
     }
+
+
+
 
     /*랜딩 페이지에 보여줄정보
      * 1.지금까지 생성된 채팅방 개수 합산.
@@ -176,8 +174,6 @@ public class ChatRoomController {
 //
 //        return new ResponseUtil<>().forSuccess(chatRoomService.getRoomUserData(sessionId, user));
 //    }
-
-
 
 
 }

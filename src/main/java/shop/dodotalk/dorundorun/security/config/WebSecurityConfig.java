@@ -85,6 +85,7 @@ public class WebSecurityConfig {
         /* Oauth2 */
         http.oauth2Login()
                 .successHandler(successHandler)
+                .failureUrl("https://dorundourn.vercel.app/Login")/*OAuth 로그인 중 실패시 프론트 URL로 리다이렉트 하기*/
                 .userInfoEndpoint()
                 .userService(oAuthService);
 

@@ -47,9 +47,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
-
         String socialId = (String) attributes.get("id");
-
 
         /* JWT Access Token 발급 헤더에 넣던지, 쿠키로 전달해주던지. */
         log.info("access token 발급");
@@ -79,8 +77,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         userInfoCookie.setPath("/");
         response.addCookie(userInfoCookie);
 
-        log.info((String) attributes.get("social") + "유저 리다이렉트 전");
-
 
 
         /*테스트 유저 -> 리액트:3000으로 이동 */
@@ -94,8 +90,20 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .build().encode(StandardCharsets.UTF_8)
                     .toUriString();
 
-            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+        } else if(socialId.equals("2669187698")){/*준철님 카카오 로컬용 계정 */
+
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/kakao")
+                    .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
+                    .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
+                    .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))
+                    .build().encode(StandardCharsets.UTF_8)
+                    .toUriString();
+
+            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+
 
         } else if ("google".equals(attributes.get("social"))) {
             String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/google")
@@ -105,19 +113,17 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .build().encode(StandardCharsets.UTF_8)
                     .toUriString();
 
-            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
+
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
-        }
-
-        if ("kakao".equals(attributes.get("social"))) {
+        }else if ("kakao".equals(attributes.get("social"))) {
             String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/kakao")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))
                     .build().encode(StandardCharsets.UTF_8)
                     .toUriString();
-            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
+
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }
 
@@ -130,7 +136,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .build().encode(StandardCharsets.UTF_8)
                     .toUriString();
 
-            log.info((String) attributes.get("social") + "유저 리다이렉트 완료");
+
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
         }
 

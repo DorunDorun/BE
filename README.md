@@ -20,29 +20,29 @@
 
 
 백엔드<br>
-<img src="https://img.shields.io/badge/SPRING-FFCA28?style=flat-square&logo=spring&logoColor=white"/>
-<img src="https://img.shields.io/badge/SPRING BOOT-FFCA28?style=flat-square&logo=springboot&logoColor=white"/>
-<img src="https://img.shields.io/badge/SPRING SECURITY-FFCA28?style=flat-square&logo=springsecurity&logoColor=white"/>
-<img src="https://img.shields.io/badge/OAUTH2-FFCA28?style=flat-square&logo=OAUTH2&logoColor=white"/>
-<img src="https://img.shields.io/badge/JWT-FFCA28?style=flat-square&logo=JWT&logoColor=white"/>
-<img src="https://img.shields.io/badge/REDIS-FFCA28?style=flat-square&logo=redis&logoColor=white"/>
-<img src="https://img.shields.io/badge/MYSQL-FFCA28?style=flat-square&logo=mysql&logoColor=white"/>
-<img src="https://img.shields.io/badge/WEBRTC-FFCA28?style=flat-square&logo=webrtc&logoColor=white"/>
-<img src="https://img.shields.io/badge/AMAZON RDS-FFCA28?style=flat-square&logo=amazonrds&logoColor=white"/>
-<img src="https://img.shields.io/badge/AMAZON S3-FFCA28?style=flat-square&logo=amazons3&logoColor=white"/>
-<img src="https://img.shields.io/badge/AMAZON EC2-FFCA28?style=flat-square&logo=AMAZON EC2&logoColor=white"/>
+<img src="https://img.shields.io/badge/SPRING BOOT-1DDB16?style=flat-square&logo=springboot&logoColor=white"/>
+<img src="https://img.shields.io/badge/SPRING SECURITY-1DDB16?style=flat-square&logo=springsecurity&logoColor=white"/>
+<img src="https://img.shields.io/badge/OAUTH2-000000?style=flat-square&logo=OAUTH2&logoColor=white"/>
+<img src="https://img.shields.io/badge/JWT-000000?style=flat-square&logo=JWT&logoColor=white"/>
+<img src="https://img.shields.io/badge/REDIS-FF0000?style=flat-square&logo=redis&logoColor=white"/>
+<img src="https://img.shields.io/badge/MYSQL-4374D9?style=flat-square&logo=mysql&logoColor=white"/>
+<img src="https://img.shields.io/badge/WEBRTC-000000?style=flat-square&logo=webrtc&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON RDS-4374D9?style=flat-square&logo=amazonrds&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON S3-ABF200?style=flat-square&logo=amazons3&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON EC2-FFBB00?style=flat-square&logo=AMAZON EC2&logoColor=white"/>
 <img src="https://img.shields.io/badge/DOCKER-2496ED?style=flat&logo=Docker&logoColor=white"/>
 
-<img src="https://img.shields.io/badge/GITHUB-2496ED?style=flat&logo=GITHUB&logoColor=white"/>
-<img src="https://img.shields.io/badge/NGINX-2496ED?style=flat&logo=NGINX&logoColor=white"/>
-<img src="https://img.shields.io/badge/KURENTO-2496ED?style=flat&logo=KURENTO&logoColor=white"/>
-<img src="https://img.shields.io/badge/OPENVIDU-2496ED?style=flat&logo=OPENVIDU&logoColor=white"/>
+<img src="https://img.shields.io/badge/GITHUB-000000?style=flat&logo=GITHUB&logoColor=white"/>
+<img src="https://img.shields.io/badge/GITHUB ACTIONS-0054FF?style=flat&logo=GITHUB ACTIONS&logoColor=white"/>
+<img src="https://img.shields.io/badge/NGINX-1DDB16?style=flat&logo=NGINX&logoColor=white"/>
+<img src="https://img.shields.io/badge/KURENTO-000000?style=flat&logo=KURENTO&logoColor=white"/>
+<img src="https://img.shields.io/badge/OPENVIDU-1DDB16?style=flat&logo=OPENVIDU&logoColor=white"/>
 
-<img src="https://img.shields.io/badge/sockjs-FFCA28?style=flat-square&logo=sockjs&logoColor=white"/>
-<img src="https://img.shields.io/badge/stomp-FFCA28?style=flat-square&logo=stomp&logoColor=white"/>
+<img src="https://img.shields.io/badge/sockjs-000000?style=flat-square&logo=sockjs&logoColor=white"/>
+<img src="https://img.shields.io/badge/stomp-000000?style=flat-square&logo=stomp&logoColor=white"/>
 
-<img src="https://img.shields.io/badge/AMAZON ROUTER 53-FFCA28?style=flat-square&logo=AMAZON ROUTER 53&logoColor=white"/>
-<img src="https://img.shields.io/badge/HTTPS-FFCA28?style=flat-square&logo=HTTPS&logoColor=white"/>
+<img src="https://img.shields.io/badge/AMAZON ROUTER 53-FFBB00?style=flat-square&logo=AMAZON ROUTER 53&logoColor=white"/>
+<img src="https://img.shields.io/badge/HTTPS-FF5E00?style=flat-square&logo=HTTPS&logoColor=white"/>
 
 
 

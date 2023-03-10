@@ -16,7 +16,18 @@
 
 
 ### 🏅 기술 스택
-프론트 엔드
+프론트 엔드<br>
+<img src="https://img.shields.io/badge/REACT-00D8FF?style=flat-square&logo=REACT&logoColor=white"/>
+<img src="https://img.shields.io/badge/AXIOS-000000?style=flat-square&logo=AXIOS&logoColor=white"/>
+<img src="https://img.shields.io/badge/VERCEL-000000?style=flat-square&logo=VERCEL&logoColor=white"/>
+<img src="https://img.shields.io/badge/REACT ROUTER-CC3D3D?style=flat-square&logo=REACT ROUTER&logoColor=white"/>
+<img src="https://img.shields.io/badge/STYELD COMPONENTS-1DDB16?style=flat-square&logo=STYELD COMPONENTS&logoColor=white"/>
+<img src="https://img.shields.io/badge/ZUSTAND-1DDB16?style=flat-square&logo=ZUSTAND&logoColor=white"/>
+<img src="https://img.shields.io/badge/WEBRTC-000000?style=flat-square&logo=webrtc&logoColor=white"/>
+<img src="https://img.shields.io/badge/OPENVIDU-1DDB16?style=flat&logo=OPENVIDU&logoColor=white"/>
+<img src="https://img.shields.io/badge/SockJS-000000?style=flat-square&logo=SockJS&logoColor=white"/>
+<img src="https://img.shields.io/badge/STOMP-000000?style=flat-square&logo=STOMP&logoColor=white"/>
+
 
 
 백엔드<br>
@@ -31,16 +42,13 @@
 <img src="https://img.shields.io/badge/AMAZON S3-ABF200?style=flat-square&logo=amazons3&logoColor=white"/>
 <img src="https://img.shields.io/badge/AMAZON EC2-FFBB00?style=flat-square&logo=AMAZON EC2&logoColor=white"/>
 <img src="https://img.shields.io/badge/DOCKER-2496ED?style=flat&logo=Docker&logoColor=white"/>
-
 <img src="https://img.shields.io/badge/GITHUB-000000?style=flat&logo=GITHUB&logoColor=white"/>
 <img src="https://img.shields.io/badge/GITHUB ACTIONS-0054FF?style=flat&logo=GITHUB ACTIONS&logoColor=white"/>
 <img src="https://img.shields.io/badge/NGINX-1DDB16?style=flat&logo=NGINX&logoColor=white"/>
 <img src="https://img.shields.io/badge/KURENTO-000000?style=flat&logo=KURENTO&logoColor=white"/>
 <img src="https://img.shields.io/badge/OPENVIDU-1DDB16?style=flat&logo=OPENVIDU&logoColor=white"/>
-
-<img src="https://img.shields.io/badge/sockjs-000000?style=flat-square&logo=sockjs&logoColor=white"/>
-<img src="https://img.shields.io/badge/stomp-000000?style=flat-square&logo=stomp&logoColor=white"/>
-
+<img src="https://img.shields.io/badge/SockJS-000000?style=flat-square&logo=SockJS&logoColor=white"/>
+<img src="https://img.shields.io/badge/STOMP-000000?style=flat-square&logo=STOMP&logoColor=white"/>
 <img src="https://img.shields.io/badge/AMAZON ROUTER 53-FFBB00?style=flat-square&logo=AMAZON ROUTER 53&logoColor=white"/>
 <img src="https://img.shields.io/badge/HTTPS-FF5E00?style=flat-square&logo=HTTPS&logoColor=white"/>
 

@@ -70,7 +70,5 @@
 ## 🎓 프로젝트 멤버
 | 박청우 | 김준철 | 황현준 | 박관우 | 우채윤 |
 | ------ | --- | --- | --- | --- | 
-| 테스트1 | 테스트2 | 테스트3 | 테스트1 | 테스트1 |
-| 테스트1 | 테스트2 | 테스트3 | 테스트1 | 테스트1 |
-| 테스트1 | 테스트2 | 테스트3 | 테스트1 | 테스트1 |
+| 테스트1 | <img src="https://user-images.githubusercontent.com/72375179/224364990-584c5d45-246a-4afc-93d2-2e00d483e1ec.png" style="width:100px; height:150px;"> | <img src="https://user-images.githubusercontent.com/72375179/224364427-e93e2f20-f86b-49ed-b84c-eba520664d3b.png" style="width:100px; height:150px;"> | <img src="https://user-images.githubusercontent.com/72375179/224364345-707629db-c838-49c5-9124-e609f44c0277.png" style="width:100px; height:150px;"> | 테스트1 |
 | FRONT-END | FRONT-END | BACK-END | BACK-END | DESIGN |

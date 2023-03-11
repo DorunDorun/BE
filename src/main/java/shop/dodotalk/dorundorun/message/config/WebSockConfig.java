@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @RequiredArgsConstructor
 public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
     private final StompHandler stompHandler; // jwt 인증
-    private final List<StompSession> sessions = new CopyOnWriteArrayList<>();
+    private final List<String> sessions = new CopyOnWriteArrayList<>();
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/sub");
@@ -38,7 +38,7 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-stomp")
-                .setAllowedOriginPatterns("*").withSockJS();
+                .setAllowedOriginPatterns("*").withSockJS().setHeartbeatTime(1000);
     }
 
     @Override
@@ -54,9 +54,8 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
     public void connectEvent(SessionConnectEvent sessionConnectEvent){
         log.info("1111111111111111111111111111111111111111");
         log.info("socket 연결 성공");
-        log.info(String.valueOf(sessionConnectEvent.getUser()));
-        log.info(String.valueOf(sessionConnectEvent));
-        sessions.add((StompSession) sessionConnectEvent);
+        log.info((String) sessionConnectEvent.getMessage().getHeaders().get("simpSessionId"));
+        sessions.add((String) sessionConnectEvent.getMessage().getHeaders().get("simpSessionId"));
         log.info(String.valueOf(sessions.size()));
         log.info("1111111111111111111111111111111111111111");
     }
@@ -64,9 +63,8 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
     public void onDisconnectEvent(SessionDisconnectEvent sessionDisconnectEvent) {
         log.info("2222222222222222222222222222222222222222222222");
         log.info("socket 연결 끊어짐");
-        log.info(String.valueOf(sessionDisconnectEvent.getUser()));
-        log.info(String.valueOf(sessionDisconnectEvent));
-        sessions.remove((StompSession) sessionDisconnectEvent);
+        log.info(String.valueOf(sessionDisconnectEvent.getSessionId()));
+        sessions.remove((String) sessionDisconnectEvent.getSessionId());
         log.info(String.valueOf(sessions.size()));
         log.info("2222222222222222222222222222222222222222222222");
     }

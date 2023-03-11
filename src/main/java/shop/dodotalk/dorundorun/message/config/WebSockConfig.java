@@ -38,7 +38,7 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-stomp")
-                .setAllowedOriginPatterns("*").withSockJS().setHeartbeatTime(1000);
+                .setAllowedOriginPatterns("*").withSockJS(); //.setHeartbeatTime(1000);
     }
 
     @Override

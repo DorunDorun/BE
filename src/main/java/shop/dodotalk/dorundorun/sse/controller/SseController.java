@@ -64,7 +64,6 @@ public class SseController {
     @ResponseBody
     @PostMapping("/count")
     public void send() throws InterruptedException {
-        log.info("----실시간 채팅방 카운트----");
         sseEmitters.count();
     }
 }

@@ -69,15 +69,15 @@ public class WebSecurityConfig {
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
-                .antMatchers("/ws-stomp/**").permitAll() // 관우 stomp 시큐리티 처리
-                .antMatchers("/ws-stomp").permitAll() // 관우 stomp 시큐리티 처리
+                .antMatchers("/ws-stomp/**").permitAll()
+                .antMatchers("/ws-stomp").permitAll()
                 .antMatchers("/api/sse").permitAll()
                 .antMatchers("/api/ssehtml").permitAll()
-                .antMatchers("/actuator").permitAll() // 관우 프로메테우스
-                .antMatchers("/actuator/**").permitAll() // 관우 프로메테우스
+                .antMatchers("/actuator").permitAll()
+                .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/api/rooms/info").permitAll()
-                .antMatchers("/api/ssehtml").permitAll() // 관우 실시간 채팅방 테스트
-                .antMatchers("/api/count").permitAll() // 관우 실시간 채팅방 테스트
+                .antMatchers("/api/ssehtml").permitAll()
+                .antMatchers("/api/count").permitAll()
                 .anyRequest().authenticated();
 
 
@@ -85,7 +85,7 @@ public class WebSecurityConfig {
         /* Oauth2 */
         http.oauth2Login()
                 .successHandler(successHandler)
-                .failureUrl("https://dorundourn.vercel.app/Login")/*OAuth 로그인 중 실패시 프론트 URL로 리다이렉트 하기*/
+                .failureUrl("https://dorun-dorun.vercel.app/Login")/*OAuth 로그인 중 실패시 프론트 URL로 리다이렉트 하기*/
                 .userInfoEndpoint()
                 .userService(oAuthService);
 
@@ -105,7 +105,7 @@ public class WebSecurityConfig {
 
 //        configuration.addAllowedOriginPattern("*");
         configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedOrigin("https://dorundourn.vercel.app");
+        configuration.addAllowedOrigin("https://dorun-dorun.vercel.app");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Set-Cookie");

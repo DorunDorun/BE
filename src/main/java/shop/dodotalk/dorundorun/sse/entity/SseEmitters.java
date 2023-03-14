@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 @Component
 @RequiredArgsConstructor
 public class SseEmitters {
-    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>(); // new를 하면 새로 생김?
+    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     //private final ConcurrentLinkedQueue<SseEmitter> emitters = new ConcurrentLinkedQueue<>();
 
@@ -39,7 +39,7 @@ public class SseEmitters {
             emitter.complete();
         });
 
-        emitter.onError(throwable -> emitter.complete()); // 트라이 캐치 코치
+        emitter.onError(throwable -> emitter.complete());
 
         return emitter;
     }
@@ -56,14 +56,10 @@ public class SseEmitters {
         SseResposneDto sseResposneDto = new SseResposneDto(Long.valueOf(chatRooms.size()));
 
         emitters.forEach(emitter -> {
-            log.info("------emitter 리스트 시작------ ");
-            log.info("emitter size : " + emitters.size());
             try {
-                log.info("------------- try 시작 ----------------");
                 emitter.send(SseEmitter.event()
                         .name("count")
                         .data(sseResposneDto));
-                log.info("------------- try 끝 ----------------");
                 //emitter.complete();
             } catch (IOException e) {
                 log.info("SSE 아이오 익셉션 발생");

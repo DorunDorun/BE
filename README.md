@@ -16,7 +16,40 @@
 ### 🛠 아키텍쳐
 <img src="https://user-images.githubusercontent.com/72375179/224369810-e86526cd-5451-4b38-954e-0c818e41b3d8.png" style="width:1000px; height:500px;">
 
-### 🤔기술적 의사 결정
+### 🤔 트러블 슈팅
+<details>
+<summary>FRONT-END</summary>
+<div markdown="1">
+  
+</div>
+</details>
+
+<details>
+<summary>BACK-END</summary>
+<div markdown="1">
+  <img src="https://user-images.githubusercontent.com/72375179/224990114-197afb2b-fa33-4ffb-b2cb-8ba4c9cad1c2.png"/>
+  <img src="https://user-images.githubusercontent.com/72375179/224991223-a46159a9-472c-49fd-bced-90098f4f6c1d.png"/>
+  <img src="https://user-images.githubusercontent.com/72375179/224991324-d1c1a00b-c10f-446a-b27e-83500b89ed87.png"/>
+</div>
+</details>
+
+### 🎯 기술적 도전
+<details>
+<summary>FRONT-END</summary>
+<div markdown="1">
+  
+</div>
+</details>
+
+<details>
+<summary>BACK-END</summary>
+<div markdown="1">
+  <img src="https://user-images.githubusercontent.com/72375179/224991515-d0679ee6-73e0-44c5-b454-56e538d55868.png"/>
+  <img src="https://user-images.githubusercontent.com/72375179/224991648-7e37f10a-7c77-4063-8fd4-f9f9349a9280.png"/>
+</div>
+</details>
+
+### 💡기술적 의사 결정
 <details>
 <summary>FRONT-END</summary>
 <div markdown="1">
@@ -105,21 +138,6 @@ canvas가 webGL에 비해 러닝 커브가 낮고, 비교적 간단하게 구현
 2. 알림 기능을 구현하여 메모리, CPU 사용량이 높을때 Slack으로 메시지가 갈 수 있도록 구현함.</td>
     </tr>
   </table>
-</div>
-</details>
-
-### 💡 트러블 슈팅
-<details>
-<summary>FRONT-END</summary>
-<div markdown="1">
-  
-</div>
-</details>
-
-<details>
-<summary>BACK-END</summary>
-<div markdown="1">
-  <img src="https://user-images.githubusercontent.com/72375179/224990114-197afb2b-fa33-4ffb-b2cb-8ba4c9cad1c2.png"/>
 </div>
 </details>
 

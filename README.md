@@ -1,8 +1,7 @@
-# DORUNDORUN(수정중)
+# DORUNDORUN
+<img src="https://user-images.githubusercontent.com/72375179/225020116-beb9fe39-e323-4343-9ec6-b75f105347e2.png"/>
 
-🎯🏅🥉🥈🥇🎓🎀🎁🎁✨👀😎🤣😂😂😊❓❌🍄🍒✏️💡📸🎵🎙️🎤 ✋ ❗❓⁉️‼️❕❔🎤⌨ ⚒🛠 💡🔧🔦
 ## ✨프로젝트 소개
-화상채팅으로 다양한 공감대의 사람들을 만나 대화해보세요!
 
 ### 🔍 주요 기능
 - `화상 채팅` 😎 웹캠을 통해 상대방의 얼굴을 보며 🎤 보이스 채팅을 할 수 있습니다.
@@ -12,7 +11,6 @@
 
 ### 👀 서비스 대표 이미지
 
-
 ### 🛠 아키텍쳐
 <img src="https://user-images.githubusercontent.com/72375179/224369810-e86526cd-5451-4b38-954e-0c818e41b3d8.png" style="width:1000px; height:500px;">
 
@@ -20,7 +18,10 @@
 <details>
 <summary>FRONT-END</summary>
 <div markdown="1">
-  
+  <img src="https://user-images.githubusercontent.com/72375179/225014701-bc91f98e-82ec-410f-8f26-fffc887fa4c2.png"/>
+  <img src="https://user-images.githubusercontent.com/72375179/225014867-d3ca160e-6ef8-4a00-853d-af6daa656cd3.png"/>
+  <img src="https://user-images.githubusercontent.com/72375179/225014963-5bd5fc05-caaa-44c9-8d2e-ca16707c8465.png"/>
+  <img src="https://user-images.githubusercontent.com/72375179/225015070-c36a4d01-3ee2-4609-8bf9-f0fec981b782.png"/>
 </div>
 </details>
 
@@ -37,7 +38,10 @@
 <details>
 <summary>FRONT-END</summary>
 <div markdown="1">
-  
+  <img src="https://user-images.githubusercontent.com/72375179/225019515-062633ee-942e-48af-9d96-95a8f0d97460.png"/>
+  <img src="https://user-images.githubusercontent.com/72375179/225019645-bbad88ea-611f-411c-a3ab-9a3c6208dd00.png"/>
+  <img src="https://user-images.githubusercontent.com/72375179/225019723-ef087f9d-22a9-4436-928b-7e24c8adbf40.png"/>
+  <img src="https://user-images.githubusercontent.com/72375179/225019811-e1b57c29-48ee-4b58-9324-942749b0f8ab.png"/>
 </div>
 </details>
 

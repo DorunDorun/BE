@@ -8,7 +8,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.dodotalk.dorundorun.security.entity.RefreshToken;
-import shop.dodotalk.dorundorun.security.repository.RefreshTokenRedisTestRepository;
 import shop.dodotalk.dorundorun.security.repository.RefreshTokenRepository;
 
 import java.util.Optional;

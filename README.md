@@ -9,9 +9,21 @@
 - `드로잉` 🎨 화이트 보드에 그림을 그려보거나 상대방의 얼굴에 낙서를 해볼 수 있습니다.
 - `캡처` 📸 자기가 그린 그림을 캡처해서 채팅방에 전송할 수 있습니다
 
-### 👀 서비스 대표 이미지
+## 👀 서비스 대표 이미지
 
-### 🛠 아키텍쳐
+### 1. 방목록 ~ 검색
+<img src="https://user-images.githubusercontent.com/72375179/225041698-e5511bdf-760e-44f0-bec1-589661d98673.gif">
+
+### 2. 방생성 ~ 입장
+<img src="https://user-images.githubusercontent.com/72375179/225041817-b9a92669-bbb5-4ca5-9e3c-f93b52639d2e.gif">
+
+### 3. 방초대 ~ 참여자 ~ 입장
+<img src="https://user-images.githubusercontent.com/72375179/225042037-a58e92a7-f434-4ef3-b82f-64bdeb0c31f4.gif">
+
+### 4. 채팅방 기능
+<img src="https://user-images.githubusercontent.com/72375179/225044157-c1da89e4-193c-45ca-9ac2-18c05703084a.gif">
+
+## 🛠 아키텍쳐
 <img src="https://user-images.githubusercontent.com/72375179/224369810-e86526cd-5451-4b38-954e-0c818e41b3d8.png" style="width:1000px; height:500px;">
 
 ### 🤔 트러블 슈팅

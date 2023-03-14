@@ -78,6 +78,7 @@ public class WebSecurityConfig {
                 .antMatchers("/api/rooms/info").permitAll()
                 .antMatchers("/api/ssehtml").permitAll() // 관우 실시간 채팅방 테스트
                 .antMatchers("/api/count").permitAll() // 관우 실시간 채팅방 테스트
+                .antMatchers("/test/**").permitAll()
                 .anyRequest().authenticated();
 
 

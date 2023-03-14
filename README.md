@@ -112,14 +112,14 @@ canvas가 webGL에 비해 러닝 커브가 낮고, 비교적 간단하게 구현
 <details>
 <summary>FRONT-END</summary>
 <div markdown="1">
-
+  
 </div>
 </details>
 
 <details>
 <summary>BACK-END</summary>
 <div markdown="1">
-
+  <img src="https://user-images.githubusercontent.com/72375179/224990114-197afb2b-fa33-4ffb-b2cb-8ba4c9cad1c2.png"/>
 </div>
 </details>
 

@@ -1,9 +1,13 @@
 //package shop.dodotalk.dorundorun.hyunjun.redis;
 //
 //
+//import org.springframework.data.redis.core.RedisKeyValueAdapter;
+//import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 //import org.springframework.test.context.DynamicPropertyRegistry;
 //import org.springframework.test.context.DynamicPropertySource;
 //import org.testcontainers.containers.GenericContainer;
+//
+//
 //
 //
 //public abstract class AbstractContainerBaseTest {
@@ -19,7 +23,7 @@
 //
 //    @DynamicPropertySource
 //    public static void overrideProps(DynamicPropertyRegistry registry){
-//        registry.add("spring.redisTest.host", REDIS_CONTAINER::getHost);
-//        registry.add("spring.redisTest.port", () -> ""+REDIS_CONTAINER.getMappedPort(6379));
+//        registry.add("spring.ec2Redis.host", REDIS_CONTAINER::getHost);
+//        registry.add("spring.ec2Redis.port", () -> ""+REDIS_CONTAINER.getMappedPort(6379));
 //    }
 //}

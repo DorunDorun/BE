@@ -137,7 +137,11 @@ public class ChatRoomService {
 
         /*페이지네이션 설정 --> 무한 스크롤 예정*/
         PageRequest pageable = PageRequest.of(page - 1, 16);
-        Page<ChatRoom> chatRoomList = chatRoomRepository.findByIsDeleteAndCntUserAfterOrderByModifiedAtDesc(false, 0L, pageable);
+        Page<ChatRoom> chatRoomList = chatRoomRepository
+                .findByIsDelete(false,pageable);
+
+
+
 
         /*채팅방이 존재하지 않을 경우
          * 프론트 요청으로 빈배열로 보냄.*/
@@ -517,12 +521,19 @@ public class ChatRoomService {
 
         PageRequest pageable = PageRequest.of(page - 1, 16);
 
+//        Page<ChatRoom> searchRoom =
+//                chatRoomRepository.findByCntUserAfterAndTitleContainingOrSubtitleContainingOrderByModifiedAtDesc(
+//                        0L,
+//                        keyword,
+//                        keyword,
+//                        pageable);
+
+
+
         Page<ChatRoom> searchRoom =
-                chatRoomRepository.findByCntUserAfterAndTitleContainingOrSubtitleContainingOrderByModifiedAtDesc(
-                        0L,
-                        keyword,
-                        keyword,
-                        pageable);
+                chatRoomRepository.findByTitleContainingOrSubtitleContaining(keyword, keyword, pageable);
+
+
 
         /*검색 결과가 없다면*/
         /* 프론트 요청으로 빈배열로 보냄.*/
@@ -548,6 +559,8 @@ public class ChatRoomService {
     }
 
 
+
+    /*해당 카테고리의 모든 채팅방 조회*/
     @Transactional
     public ChatRoomGetAllResponseDto searchCategory(CategoryEnum categoryEnum, int page) {
 
@@ -560,7 +573,8 @@ public class ChatRoomService {
         PageRequest pageable = PageRequest.of(page - 1, 16);
 
         Page<ChatRoom> searchRoom =
-                chatRoomRepository.findByIsDeleteAndCategoryAndCntUserAfterOrderByModifiedAtDesc(false, category, 0L, pageable);
+                chatRoomRepository.findByCategory(category, pageable);
+
 
 
         /*검색 결과가 없다면*/
@@ -596,7 +610,8 @@ public class ChatRoomService {
     public ChatRoomGetAllResponseDto getAllHistoryChatRooms(int page, User user) {
 
         PageRequest pageable = PageRequest.of(page - 1, 16);
-        Page<ChatRoom> chatRoomList = chatRoomRepository.findByUserIdAndIsDelete(user.getId(), true, false, 0L, pageable);
+
+        Page<ChatRoom> chatRoomList = chatRoomRepository.findByUserId(user.getId(), pageable);
 
 
         /*채팅방이 존재하지 않을 경우
@@ -611,17 +626,19 @@ public class ChatRoomService {
                 = new ChatRoomPageInfoResponseDto(page, 16,
                 (int) chatRoomList.getTotalElements(), chatRoomList.getTotalPages());
 
-
         /*chatRoomList에서 Page 정보를 제외 ChatRoom만 꺼내온다.*/
         List<ChatRoom> chatRooms = chatRoomList.getContent();
 
         /*mapper를 활용하여 chatRoom Entity를 Dto로 변환.*/
         List<ChatRoomResponseDto> chatRoomResponseDtoList = chatRoomMapper.roomsToRoomResponseDtos(chatRooms);
 
+
+
+
         return new ChatRoomGetAllResponseDto(chatRoomResponseDtoList, chatRoomPageInfoResponseDto);
     }
 
-
+    /*히스토리 채팅방 검색하기.*/
     @Transactional
     public ChatRoomGetAllResponseDto searchHistoryRoom(String keyword, int page, User user) {
 
@@ -632,13 +649,10 @@ public class ChatRoomService {
         PageRequest pageable = PageRequest.of(page - 1, 16);
 
         Page<ChatRoom> searchRoom =
-                chatRoomRepository.findByUserIdAndIsDelete(
+                chatRoomRepository.findByUserId(
                         keyword,
                         keyword,
                         user.getId(),
-                        true,
-                        false,
-                        0L,
                         pageable);
 
         /*검색 결과가 없다면*/

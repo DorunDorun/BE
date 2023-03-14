@@ -1,8 +1,10 @@
 package shop.dodotalk.dorundorun.security.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 
 import java.io.Serializable;
@@ -10,6 +12,7 @@ import java.io.Serializable;
 
 @Data
 @RedisHash(value = "refreshToken", timeToLive = 604800)// 1주일
+@NoArgsConstructor
 public class RefreshTokenRedis {
 
     @Id
@@ -23,7 +26,6 @@ public class RefreshTokenRedis {
         this.userId = userId;
         this.refreshToken = refreshToken;
     }
-
 
 
     public static RefreshTokenRedis createToken(String userId, String refreshToken){

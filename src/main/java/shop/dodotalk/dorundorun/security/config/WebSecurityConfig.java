@@ -76,8 +76,9 @@ public class WebSecurityConfig {
                 .antMatchers("/actuator").permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/api/rooms/info").permitAll()
-                .antMatchers("/api/ssehtml").permitAll()
-                .antMatchers("/api/count").permitAll()
+                .antMatchers("/api/ssehtml").permitAll() 
+                .antMatchers("/api/count").permitAll() 
+                .antMatchers("/test/**").permitAll()
                 .anyRequest().authenticated();
 
 

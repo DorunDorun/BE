@@ -105,7 +105,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         } else if ("google".equals(attributes.get("social"))) {
-            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/google")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://dorun-dorun.vercel.app/google")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))
@@ -116,7 +116,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
         }else if ("kakao".equals(attributes.get("social"))) {
-            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/kakao")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://dorun-dorun.vercel.app/kakao")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))
@@ -128,7 +128,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         if ("naver".equals(attributes.get("social"))) {
-            String targetUrl = UriComponentsBuilder.fromUriString("https://dorundourn.vercel.app/naver")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://dorun-dorun.vercel.app/naver")
                     .queryParam(AUTHORIZATION_HEADER, "Bearer-" + jwtUtil.generateAccessToken(authentication))
                     .queryParam(REFRESH_HEADER, "Bearer-" + jwtUtil.issueRefreshToken(authentication))
                     .queryParam("user_Info", URLEncoder.encode(jsonStr, "utf-8"))

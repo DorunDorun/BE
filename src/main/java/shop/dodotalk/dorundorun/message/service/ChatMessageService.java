@@ -38,7 +38,6 @@ public class ChatMessageService {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
-//    private final BenUserRepository benUserRepository;
     private final RoomMessageRepository roomMessageRepository;
     private final RoomFileMessageRepository roomFileMessageRepository;
 
@@ -67,11 +66,6 @@ public class ChatMessageService {
         ChatRoom room = chatRoomRepository.findById(chatMsgDeleteRequestDto.getSessionId()).orElseThrow(
                 () -> new NullPointerException("해당 방이 없습니다."));
 
-//        BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatMsgDeleteRequestDto.getSessionId());
-//        if (benUser != null) {
-//            throw new NullPointerException("강퇴당한 방입니다.");
-//        }
-
         ChatRoomUser alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(chatMsgDeleteRequestDto.getSessionId(), user.getId())
                 .orElseThrow(() -> new NullPointerException("해당 방에 유저가 없습니다."));
         
@@ -91,11 +85,6 @@ public class ChatMessageService {
                                                        User user) {
         ChatRoom room = chatRoomRepository.findById(chatFileDeleteRequestDto.getSessionId()).orElseThrow(
                 () -> new NullPointerException("해당 방이 없습니다."));
-
-//        BenUser benUser = benUserRepository.findByUserIdAndRoomId(user.getId(), chatFileDeleteRequestDto.getSessionId());
-//        if (benUser != null) {
-//            throw new NullPointerException("강퇴당한 방입니다.");
-//        }
 
         ChatRoomUser alreadyRoomUser = chatRoomUserRepository.findBySessionIdAndUserId(chatFileDeleteRequestDto.getSessionId(), user.getId())
                 .orElseThrow(() -> new NullPointerException("해당 방에 유저가 없습니다."));

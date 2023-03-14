@@ -43,8 +43,8 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(false) // swagger default response message 삭제
-                .securityContexts(securityContext()) // swagger에서 jwt 토큰값 넣기위한 설정
-                .securitySchemes(apiKey()) // swagger에서 jwt 토큰값 넣기위한 설정
+                .securityContexts(securityContext()) // jwt
+                .securitySchemes(apiKey()) // jwt
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("shop.dodotalk.dorundorun"))
                 .paths(PathSelectors.ant("/api/**"))

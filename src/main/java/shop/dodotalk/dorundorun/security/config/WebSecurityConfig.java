@@ -69,15 +69,15 @@ public class WebSecurityConfig {
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
-                .antMatchers("/ws-stomp/**").permitAll() // 관우 stomp 시큐리티 처리
-                .antMatchers("/ws-stomp").permitAll() // 관우 stomp 시큐리티 처리
+                .antMatchers("/ws-stomp/**").permitAll()
+                .antMatchers("/ws-stomp").permitAll()
                 .antMatchers("/api/sse").permitAll()
                 .antMatchers("/api/ssehtml").permitAll()
-                .antMatchers("/actuator").permitAll() // 관우 프로메테우스
-                .antMatchers("/actuator/**").permitAll() // 관우 프로메테우스
+                .antMatchers("/actuator").permitAll()
+                .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/api/rooms/info").permitAll()
-                .antMatchers("/api/ssehtml").permitAll() // 관우 실시간 채팅방 테스트
-                .antMatchers("/api/count").permitAll() // 관우 실시간 채팅방 테스트
+                .antMatchers("/api/ssehtml").permitAll()
+                .antMatchers("/api/count").permitAll()
                 .anyRequest().authenticated();
 
 

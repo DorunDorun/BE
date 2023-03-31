@@ -1,6 +1,8 @@
 # DORUNDORUN
 <img src="https://user-images.githubusercontent.com/72375179/225020116-beb9fe39-e323-4343-9ec6-b75f105347e2.png"/>
 
+<img src="https://user-images.githubusercontent.com/72375179/229087040-d9d857c0-ad8a-47de-a8a7-ede4f979ef32.png" style="width:100%;">
+
 ## ✨프로젝트 소개
 
 ### 🔍 주요 기능
